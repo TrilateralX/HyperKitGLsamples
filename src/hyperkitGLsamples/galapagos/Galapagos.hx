@@ -153,7 +153,4 @@ class Galapagos extends PlyMix {
         g.clear();
         renderDaedalus( g );
     }
-    static function main() {
-        new BitmapPathfinding();
-    }
 }
