@@ -1,5 +1,5 @@
 -js test.js
--cp ../../src
+-cp ../../../src
 -lib fracs
 -lib justPath
 -lib trilateral3
@@ -9,7 +9,7 @@
 -lib hxGeomAlgo
 -lib hyperKitGL
 
--main hyperkitGLsamples.jigsawPuzzle.JigsawPuzzle
+-main hyperKitGLsamples.jigsawPuzzle.JigsawPuzzle
 -D js-flatten 
 -D useHyperKitGL
 #-D trilateral_debug
