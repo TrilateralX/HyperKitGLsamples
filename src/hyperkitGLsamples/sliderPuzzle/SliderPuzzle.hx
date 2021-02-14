@@ -1,4 +1,4 @@
-package hyperkitGLsamples.sliderPuzzle;
+package hyperKitGLsamples.sliderPuzzle;
 // Color pallettes
 import pallette.simple.QuickARGB;
 import js.Browser;
@@ -29,10 +29,11 @@ import trilateral3.reShape.QuadDepth;
 import trilateral3.geom.Transformer;
 import trilateral3.matrix.Vertex;
 import trilateral3.Trilateral;
+import hyperKitGLsamples.sliderPuzzle.TableCloth;
 
 // To trace on screen
 import hyperKitGL.DivertTrace;
-import NextTo;
+import hyperKitGLsamples.sliderPuzzle.NextTo;
 function main(){
     new SliderPuzzle( 1000, 1000 );
     var divertTrace = new DivertTrace();

@@ -1,3 +1,4 @@
+package hyperKitGLsamples.sliderPuzzle;
 #if useTypeDef
 typedef NextToCore = {
     var width:  Int;

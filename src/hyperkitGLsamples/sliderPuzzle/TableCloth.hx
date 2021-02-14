@@ -1,4 +1,4 @@
-package;
+package hyperKitGLsamples.sliderPuzzle;
 
 class TableCloth{ 
     public var png_: String = png;
