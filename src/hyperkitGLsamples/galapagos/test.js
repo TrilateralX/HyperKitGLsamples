@@ -8806,15 +8806,15 @@ var hyperKitGLsamples_galapagos_Galapagos = function(width,height) {
 	this.x = 0;
 	this._newPath = false;
 	hyperKitGL_PlyMix.call(this,width,height);
-	haxe_Log.trace("draw",{ fileName : "../../../src/hyperKitGLsamples/galapagos/Galapagos.hx", lineNumber : 71, className : "hyperKitGLsamples.galapagos.Galapagos", methodName : "new"});
+	haxe_Log.trace("draw",{ fileName : "../../../src/hyperKitGLsamples/galapagos/Galapagos.hx", lineNumber : 72, className : "hyperKitGLsamples.galapagos.Galapagos", methodName : "new"});
 	this.imageLoader.loadEncoded(["galapagosBW.png","galapagosColor.png"],["galapagosBW","galapagosColor"]);
 };
 hyperKitGLsamples_galapagos_Galapagos.__name__ = true;
 hyperKitGLsamples_galapagos_Galapagos.__super__ = hyperKitGL_PlyMix;
 hyperKitGLsamples_galapagos_Galapagos.prototype = $extend(hyperKitGL_PlyMix.prototype,{
 	draw: function() {
-		haxe_Log.trace(this.imageLoader.imageArr[0],{ fileName : "../../../src/hyperKitGLsamples/galapagos/Galapagos.hx", lineNumber : 77, className : "hyperKitGLsamples.galapagos.Galapagos", methodName : "draw"});
-		haxe_Log.trace(this.imageLoader.imageArr[1],{ fileName : "../../../src/hyperKitGLsamples/galapagos/Galapagos.hx", lineNumber : 78, className : "hyperKitGLsamples.galapagos.Galapagos", methodName : "draw"});
+		haxe_Log.trace(this.imageLoader.imageArr[0],{ fileName : "../../../src/hyperKitGLsamples/galapagos/Galapagos.hx", lineNumber : 78, className : "hyperKitGLsamples.galapagos.Galapagos", methodName : "draw"});
+		haxe_Log.trace(this.imageLoader.imageArr[1],{ fileName : "../../../src/hyperKitGLsamples/galapagos/Galapagos.hx", lineNumber : 79, className : "hyperKitGLsamples.galapagos.Galapagos", methodName : "draw"});
 		this.img = this.imageLoader.imageArr[1];
 		var imgBW = this.imageLoader.imageArr[0];
 		var w_bw = imgBW.width;
