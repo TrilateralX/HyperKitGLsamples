@@ -1,6 +1,6 @@
 
 -js test.js
--cp ../../src
+-cp ../../../src
 -lib fracs
 -lib justPath
 -lib trilateral3
@@ -9,8 +9,10 @@
 -lib poly2trihx 
 -lib hxGeomAlgo
 -lib hyperKitGL
+-lib hxDaedalus
 
--main hyperkitGLsamples.galapagos.Galapagos
+
+-main hyperKitGLsamples.galapagos.Galapagos
 -D js-flatten 
 -D useHyperKitGL
 #-D trilateral_debug

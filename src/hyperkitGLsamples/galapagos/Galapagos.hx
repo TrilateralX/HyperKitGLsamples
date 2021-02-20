@@ -1,13 +1,14 @@
 
-package;
+package hyperKitGLsamples.galapagos;
 import hxDaedalus.ai.EntityAI;
 import hxDaedalus.ai.PathFinder;
 import hxDaedalus.ai.trajectory.LinearPathSampler;
 import hxDaedalus.data.Mesh;
 import hxDaedalus.data.Object;
+import hxDaedalus.data.Vertex;
 import hxDaedalus.factories.BitmapObject;
 import hxDaedalus.factories.RectMesh;
-import hxDaedalus.view.HeapsSimpleView;
+import trilateral3.structure.XY;
 import hxPixels.Pixels;
 import pallette.simple.QuickARGB;
 import js.Browser;
@@ -38,6 +39,7 @@ import trilateral3.reShape.QuadDepth;
 import trilateral3.geom.Transformer;
 import trilateral3.matrix.Vertex;
 import trilateral3.Trilateral;
+import hyperKitGLsamples.galapagos.View;
 
 // To trace on screen
 import hyperKitGL.DivertTrace;
@@ -46,98 +48,133 @@ function main(){
     var divertTrace = new DivertTrace();
     trace("Galapagos example");
 }
+//Galapagos based on the example I created for hxDaedalus
 class Galapagos extends PlyMix {
-    var _mesh : Mesh;
-    var _view : TrilateralSimpleView;
-    var _entityAI : EntityAI;
-    var _pathfinder : PathFinder;
-    var _path : Array<Float>;
-    var _pathSampler : LinearPathSampler;
-    var _newPath:Bool = false;
-    var x: Float = 0;
-    var y: Float = 0;
-
-    var imgBW:      Image;
-
-    var imgColor:   Image;
+    // 
+    var _mesh:         Mesh;
+    var _view:         View;
+    var _entityAI:     EntityAI;
+    var _pathfinder:   PathFinder;
+    var _path:         Array<Float>;
+    var _pathSampler:  LinearPathSampler;
+    var _newPath:      Bool  = false;
+    var x:             Float = 0;
+    var y:             Float = 0;
+    var imgBW:         Image;
+    var imgColor:      Image;
+    public var penColor:            Pen;
+    public var penNoduleColor       = new PenNodule();
+    public var penTexture:          Pen;
+    public var penNoduleTexture     = new PenPaint();
     public
     function new( width: Int, height: Int ){
         super( width, height );
         trace( 'draw' );
-        imageLoader.loadEncoded( [ 'galapagosBW.png','galapagosColor.png'],[ 'galapagosBW','galapagosColor' ] );
+        imageLoader.loadEncoded( [ 'galapagosBW.png','galapagosColor.png' ]
+                               , [ 'galapagosBW',    'galapagosColor'     ] );
     }
     override
     public function draw(){
-        var imgBW =  imageLoader.imageArr[ 0 ];
-        var w_bw            = imgBW.width;
-        var h_bw            = imgBW.height;
-        var imgColor =  imageLoader.imageArr[ 1 ];
-        var w_color         = imgColor.width;
-        var h_color         = imgColor.height;
+        trace( imageLoader.imageArr[ 0 ] );
+        trace( imageLoader.imageArr[ 1] );
+        img =  imageLoader.imageArr[ 1 ];
+        var imgBW     = imageLoader.imageArr[ 0 ];
+        var w_bw      = imgBW.width;
+        var h_bw      = imgBW.height;
+        var imgColor  = imageLoader.imageArr[ 1 ];
+        var w_color   = imgColor.width;
+        var h_color   = imgColor.height;
       /*
         bg.onPush       = function( e ){ onMouseDown( e.button, e.relX, e.relY ); };
         bg.onRelease    = function( e ){ onMouseUp(   e.button, e.relX, e.relY ); };
         bg.onMove       = function( e ){ onMouseMove( e.relX, e.relY ); };
       */
-        _view = new TrilateralSimpleView();
+       mainSheet.mouseDownXY = mouseDownXY;
+       mainSheet.mouseUpXY   = mouseUpXY;
+       mainSheet.mouseMoveXY = mouseMoveXY;
+          
+        var surface = mainSheet.cx;
+        surface.drawImage( imgBW, 0, 0, w_bw, h_bw );
+        
+        setupDrawingPens();
+        
+        _view = new View( penNoduleColor );
         // create pixels from imgBW
-        var pixels = hxPixels.Pixels.fromBytes( pixs.bytes, pixs.width, pixs.height );
+        //var pixels          = hxPixels.Pixels.fromBytes( pixs.bytes, pixs.width, pixs.height );
+        
+        var pixels = Pixels.fromImageData( surface.getImageData(0, 0, w_bw, h_bw ) );
         // build a rectangular 2 polygons mesh
-        _mesh = RectMesh.buildRectangle( 1024, 780 );
+        _mesh               = RectMesh.buildRectangle( 1024, 780 );
         // create viewports
-        var object = BitmapObject.buildFromBmpData( pixels, 1.8 );
-        object.x = 0;
-        object.y = 0;
+        var object          = BitmapObject.buildFromBmpData( pixels, 1.8 );
+        object.x            = 0;
+        object.y            = 0;
         _mesh.insertObject( object );
         // we need an entity
-        _entityAI = new EntityAI();
+        _entityAI           = new EntityAI();
         // set radius size for your entity
-        _entityAI.radius = 4;
+        _entityAI.radius    = 4;
         // set a position
-        _entityAI.x = 50;
-        _entityAI.y = 50;
+        _entityAI.x         = 50;
+        _entityAI.y         = 50;
         // now configure the pathfinder
-        _pathfinder = new PathFinder();
-        _pathfinder.entity = _entityAI; // set the entity
-        _pathfinder.mesh = _mesh; // set the mesh
+        _pathfinder         = new PathFinder();
+        _pathfinder.entity  = _entityAI; // set the entity
+        _pathfinder.mesh    = _mesh; // set the mesh
         // we need a vector to store the path
-        _path = new Array<Float>();
+        _path               = new Array<Float>();
         // then configure the path sampler
-        _pathSampler = new LinearPathSampler();
+        _pathSampler        = new LinearPathSampler();
         _pathSampler.entity = _entityAI;
         _pathSampler.samplingDistance = 10;
-        _pathSampler.path = _path;
+        _pathSampler.path   = _path;
     }
-    public function onMouseDown( button: Int, x_: Float, y_: Float ): Void {
-        if( button == 0 ){
-            x = x_;
-            y = y_;
-            _newPath = true;
-        }
+    inline
+    function setupDrawingPens(){
+        setupNoduleBuffers();
+        penInits();
     }
-    public function onMouseUp( button: Int, x_: Float, y_: Float ): Void {
-        if( button == 0 ){
-            x = x_;
-            y = y_;
-            _newPath = false;
-        }
+    inline
+    function setupNoduleBuffers(){
+        dataGLcolor   = { get_data: penNoduleColor.get_data
+                        , get_size: penNoduleColor.get_size };
+        dataGLtexture = { get_data: penNoduleTexture.get_data
+                        , get_size: penNoduleTexture.get_size };
     }
-    public function onMouseMove( x_: Float, y_: Float ): Void {
+    inline
+    function penInits(){
+        penColor = penNoduleColor.pen;
+        penColor.currentColor = 0xFFFFFFFF;
+        penTexture = penNoduleTexture.pen;
+        penTexture.useTexture   = true;
+        penTexture.currentColor = 0xffFFFFFF;
+    }
+    public function mouseDownXY( xy: XY ): Void {
+        x = xy.x;
+        y = xy.y;
+        _newPath = true;
+    }
+    public function mouseUpXY( xy: XY ): Void {
+        x = xy.x;
+        y = xy.y;
+        _newPath = false;
+    }
+    public function mouseMoveXY( xy: XY ): Void {
         if( _newPath ){
-            x = x_;
-            y = y_;
+            x = xy.x;
+            y = xy.y;
         }
     }
-    inline function renderDaedalus( g2: Graphics ){
+    inline function renderDaedalus(){
         // show result mesh on screen
-        _view.drawMesh( g2, _mesh );
+        _view.drawMesh( _mesh );
         if( _newPath ){
             // find path !
             _pathfinder.findPath( x, y, _path );
             // show path on screen
-            _view.drawPath( g2, _path );
+            _view.drawPath( _path );
              // show entity position on screen
-            _view.drawEntity( g2, _entityAI ); 
+            _view.drawEntity( _entityAI ); 
             // reset the path sampler to manage new generated path
             _pathSampler.reset();
         }
@@ -147,10 +184,18 @@ class Galapagos extends PlyMix {
             _pathSampler.next();
         }
         // show entity position on screen
-        _view.drawEntity( g2, _entityAI );
+        _view.drawEntity( _entityAI );
     }
-    override function update(dt:Float) {
-        g.clear();
-        renderDaedalus( g );
+    override
+    public function renderDraw(){
+        penColor.pos = 0;
+        renderDaedalus();
+        drawColorShape( 0, Std.int( penColor.pos -1) );
+        tempHackFix();
+    }
+    
+    public function tempHackFix(){
+        // need to work out why the color mode needs to be set each frame
+        drawTextureShape( 0, 0, 0x00000000 );
     }
 }
