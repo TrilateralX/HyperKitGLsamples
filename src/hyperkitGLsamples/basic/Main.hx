@@ -68,9 +68,11 @@ class Main extends PlyMix {
         var w            = img.width;
         var h            = img.height;
         var ratio = 1.;
+        // show original flower.
         //showImageOnCanvas( img, w, h );
         setupDrawingPens();
         posMin = Std.int( penTexture.pos );
+        // create a quad and populate it with an image
         quadShaper       = new QuadShaper( penTexture, 0 );
         quadShaper.drawQuad( 0., 0., 1000., 1000. );
         quadRange = posMin...Std.int( penTexture.pos );
@@ -86,7 +88,7 @@ class Main extends PlyMix {
         // store for render
         draw_Shape[ draw_Shape.length ] = { textured: true, range: iterRange, bgColor: bgStarFill };
         
-        // start fill
+        // star fill
         penColor.currentColor = 0xFFffccff;
         posMin = Std.int( penColor.pos );
         triangulate( penColor, sketch, polyK );
@@ -119,7 +121,9 @@ class Main extends PlyMix {
     public function renderDraw(){
         var haveTextures: Bool = false;
         var haveColors:   Bool = false;
+        // how to animate a quad shape.
         quadShaper.xy = { x: quadShaper.xy.x + Math.sin( theta ), y: quadShaper.xy.y };
+        // rangeshaper animation needs more work in trilateral.
         //starRangeShaper.setXY( {x: 0, y: 0 } );//0.1*Math.sin( theta ) } );
         theta += 0.1;
         for( a_shape in draw_Shape ){
