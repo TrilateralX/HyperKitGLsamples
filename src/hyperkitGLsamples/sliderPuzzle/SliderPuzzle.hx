@@ -71,7 +71,7 @@ class SliderPuzzle extends PlyMix {
     function new( width: Int, height: Int ){
         super( width, height );
         trace( 'draw' );
-        imageLoader.loadEncoded( [ Flower.png ],[ 'tableCloth' ] );
+        imageLoader.loadEncoded( [ TableCloth.png ],[ 'tableCloth' ] );
     }
     inline
     function showImageOnCanvas( img: Image, wid: Int, hi: Int ){
@@ -113,7 +113,7 @@ class SliderPuzzle extends PlyMix {
         //nW = 1;
         //nH = 1;
         //ratio = 400/300;
-        ratio = 1;//262/371;
+        ratio = 262/371;
         dw = 1000/nW;
         dh = 1000*ratio/nH;
         
