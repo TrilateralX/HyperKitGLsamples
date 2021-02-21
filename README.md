@@ -2,6 +2,7 @@
 WebGL Examples of using Trilateral3 using HyperKitGL - TODO!
 
 ### working but more SFW image should be created.
+- [basic](https://trilateralx.github.io/HyperKitGLsamples/src/hyperkitGLsamples/basic/index.html) for experimenting.
 - [sliderPuzzle](https://trilateralx.github.io/HyperKitGLsamples/src/hyperkitGLsamples/sliderPuzzle/index.html) now works.
 
 ### compiling
