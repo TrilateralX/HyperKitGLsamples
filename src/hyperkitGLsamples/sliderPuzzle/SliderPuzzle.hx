@@ -11,8 +11,8 @@ import hyperKitGL.DataGL;
 import haxe.Timer;
 // Sketching
 import trilateral3.drawing.Pen;
-import trilateral3.nodule.PenPaint;
-import trilateral3.nodule.PenNodule;
+import trilateral3.nodule.PenTexture;
+import trilateral3.nodule.PenColor;
 import trilateral3.shape.IteratorRange;
 import hyperKitGL.ImageGL;
 import hyperKitGL.BufferGL;
@@ -41,9 +41,9 @@ function main(){
 }
 class SliderPuzzle extends PlyMix {
     public var penColor:            Pen;
-    public var penNoduleColor       = new PenNodule();
+    public var penNoduleColor       = new PenColor();
     public var penTexture:          Pen;
-    public var penNoduleTexture     = new PenPaint();
+    public var penNoduleTexture     = new PenTexture();
     public var theta                = 0.;
     public var quadDepth:           QuadDepth;
     public var firstRange:          IteratorRange;

@@ -1,6 +1,5 @@
 package hyperKitGLsamples.galapagos;
 import wings.core.ISimpleDrawingContext;
-import trilateral3.nodule.PenPaint;
 // Sketching
 import trilateral3.drawing.StyleEndLine;
 import trilateral3.drawing.Sketch;
@@ -30,34 +29,34 @@ typedef DPoint2D = hxDaedalus.data.math.Point2D;
 
 class View {
     
-    public var edgesColor:Int = 0x999999;
-    public var edgesWidth:Float = 1;
-    public var edgesAlpha:Float = .25;
-    public var constraintsColor:Int = 0xFF0000;
-    public var constraintsWidth:Float = 2;
-    public var constraintsAlpha:Float = 1.0;
-    public var verticesColor:Int = 0x0000FF;
-    public var verticesRadius:Float = .5;
-    public var verticesAlpha:Float = .25;
-    public var pathsColor:Int = 0xFF00FF;//FFC010;
-    public var pathsWidth:Float = 1.5;
-    public var pathsAlpha:Float = .75;
-    public var entitiesColor:Int = 0x00FF00;
-    public var entitiesWidth:Float = 1;
-    public var entitiesAlpha:Float = .75;
-    public var faceColor: Int = 0xff00ff;
-    public var faceWidth: Float = 1;
-    public var faceAlpha: Float = .5;
-    public var faceToEdgeIter = new FromFaceToInnerEdges();
+    public var edgesColor:       Int   = 0xFF999999;
+    public var edgesWidth:       Float = 1;
+    public var edgesAlpha:       Float = .25;
+    public var constraintsColor: Int   = 0xFFFF0000;
+    public var constraintsWidth: Float = 2;
+    public var constraintsAlpha: Float = 1.0;
+    public var verticesColor:    Int   = 0xFF0000FF;
+    public var verticesRadius:   Float = .5;
+    public var verticesAlpha:    Float = .25;
+    public var pathsColor:       Int    = 0xFFFF00FF;//FFC010;
+    public var pathsWidth:       Float  = 1.5;
+    public var pathsAlpha:       Float  = .75;
+    public var entitiesColor:    Int    = 0xFF00FF00;
+    public var entitiesWidth:    Float  = 1;
+    public var entitiesAlpha:    Float  = .75;
+    public var faceColor:        Int    = 0xFFff00ff;
+    public var faceWidth:        Float  = 1;
+    public var faceAlpha:        Float  = .5;
+    public var faceToEdgeIter           = new FromFaceToInnerEdges();
     
-    var _prevX:Float = 0;
-    var _prevY:Float = 0;
-    var _lineColor:Int;
-    var _fillColor:Int;
-    var _inFillingMode:Bool = false;
-    var sketch: Sketch;
-    var pen: Pen;
-    var regular: Regular;
+    var _prevX:                  Float  = 0;
+    var _prevY:                  Float  = 0;
+    var _lineColor:              Int;
+    var _fillColor:              Int;
+    var _inFillingMode:          Bool   = false;
+    var sketch:                  Sketch;
+    var pen:                     Pen;
+    var regular:                 Regular;
     
     public function new( nodulePen: PenNodule ){//paintPen: PaintPen ) {
         //pen = paintPen.pen;
@@ -65,54 +64,27 @@ class View {
         regular = new Regular( pen );
         lineSketch();
     }
-    public function clear():Void {
-        // not yet implemented
+    // line and fill sketch setup
+    function lineSketch(){
+        if( sketch != null ) sketch.reset();
+        sketch = new Sketch( pen, StyleSketch.Crude, StyleEndLine.no );
     }
-    public function lineStyle( thickness: Float, color: Int, ?alpha: Float = 1 ): Void {
-        sketch.width = thickness;
-        _lineColor = color;
-        if( !_inFillingMode ) pen.currentColor = color;
+    function fillSketch(){
+        if( sketch != null ) sketch.reset();
+        sketch = new Sketch( pen, StyleSketch.FillOnly, StyleEndLine.no );
     }
-    
+    // sketch simple
     public function moveTo(x:Float, y:Float):Void {
         _prevX = x;
         _prevY = y;
         sketch.moveTo( x, y );
     }
-
-    public function beginFill(color:Int, ?alpha:Float = 1):Void {
-        _fillColor = color;
-        pen.currentColor = _fillColor;
-        // alpha to implement
-        //_fillColor.a = alpha;
-        _inFillingMode = true;
-        fillSketch();
-    }
-    
-    function fillSketch(){
-        if( sketch != null ) sketch.reset();
-        sketch = new Sketch( pen, StyleSketch.FillOnly, StyleEndLine.no );
-    }
-
-    function lineSketch(){
-        if( sketch != null ) sketch.reset();
-        sketch = new Sketch( pen, StyleSketch.Crude, StyleEndLine.no );
-    }
-    
-    public function endFill():Void {
-        _inFillingMode = false;
-        pen.currentColor = _lineColor;
-        lineSketch();
-    }
-    
-    public function quadTo( cx: Float, cy: Float, ax: Float, ay: Float ):Void {
-        sketch.quadTo( cx, cy, ax, ay );
-    }
-
     public function lineTo( x: Float, y: Float ):Void {
         sketch.lineTo( x, y );
     }
-
+    public function quadTo( cx: Float, cy: Float, ax: Float, ay: Float ):Void {
+        sketch.quadTo( cx, cy, ax, ay );
+    }
     public function drawTri( points:Array<Float> ){
         //if( _inFillingMode ){
             sketch.moveTo( points[0], points[1] );
@@ -125,15 +97,35 @@ class View {
                            , points[4], points[5] );
         }*/
     }
-
+    public function drawDot( cx:Float, cy:Float, radius: Float ):Void { 
+        circle( pen.paintType, cx, cy, radius );
+    }
+    // line style setup and fills
+    public function lineStyle( thickness: Float, color: Int, ?alpha: Float = 1 ): Void {
+        sketch.width = thickness;
+        _lineColor = color;
+        if( !_inFillingMode ) pen.currentColor = color;
+    }
+    public function beginFill(color:Int, ?alpha:Float = 1):Void {
+        _fillColor = color;
+        pen.currentColor = _fillColor;
+        // alpha to implement
+        //_fillColor.a = alpha;
+        _inFillingMode = true;
+        fillSketch();
+    }
+    public function endFill():Void {
+        _inFillingMode = false;
+        pen.currentColor = _lineColor;
+        lineSketch();
+    }
+    // more drawing with styles
     // These shapes assumes not called durring Fill, may need some more thought on trilateral3 implementation details.
-    
     public function drawCircle( cx:Float, cy:Float, radius: Float ):Void { 
         pen.currentColor = _fillColor;
-        circle( pen.paintType, cx, cy, radius );
+        drawDot( cx, cy, radius );
         pen.currentColor = _lineColor;
     }
-   
     public function drawRect(x:Float, y:Float, width:Float, height:Float):Void {    
         pen.quad2DFill( x, y, width, height, _fillColor );
         pen.currentColor = _lineColor;
@@ -161,7 +153,14 @@ class View {
         moveTo( p0.x, p0.y );
         lineTo( p1.x, p1.y );
     }
+    
+    public function clear():Void {
+        // not yet implemented
+    }
+    
+    // daedalus drawing
     public function drawVertex( vertex : Vertex): Void {
+        trace( 'vertex ' + vertex.pos );
         circle_( vertex.pos, verticesRadius, verticesColor, verticesAlpha );
         #if showVerticesIndices
             // todo add font!
@@ -215,5 +214,4 @@ class View {
           i += 2;
         }
     }
-    
 }

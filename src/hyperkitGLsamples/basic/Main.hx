@@ -11,8 +11,8 @@ import hyperKitGL.DataGL;
 import haxe.Timer;
 // Sketching
 import trilateral3.drawing.Pen;
-import trilateral3.nodule.PenPaint;
-import trilateral3.nodule.PenNodule;
+import trilateral3.nodule.PenColor;
+import trilateral3.nodule.PenTexture;
 import trilateral3.shape.IteratorRange;
 import hyperKitGL.ImageGL;
 import hyperKitGL.BufferGL;
@@ -40,10 +40,12 @@ function main(){
 }
 
 class Main extends PlyMix {
+    // always required
     public var penColor:            Pen;
-    public var penNoduleColor       = new PenNodule();
+    public var penNoduleColor       = new PenColor();
     public var penTexture:          Pen;
-    public var penNoduleTexture     = new PenPaint();
+    public var penNoduleTexture     = new PenTexture();
+    
     public var quadShaper:          QuadShaper;
     public var sketch:              Sketch;
     public var posMin:              Int;
@@ -55,22 +57,78 @@ class Main extends PlyMix {
     public var bgQuadFill           = 0xFFFFFFFF; 
     public var draw_Shape           = new Array<RangeEntity>();
     public var starRangeShaper:     RangeShaper;
+    public var imgW:                Int;
+    public var imgH:                Int;
+    
     var colors = [ Violet, Indigo, Blue, Green, Yellow, Orange, Red, Red ];
+    
+    inline
+    function setupDrawingPens(){
+        setupNoduleBuffers();
+        penInits();
+    }
+    // connects data buffers to pen drawing.
+    inline
+    function setupNoduleBuffers(){
+        dataGLcolor   = { get_data: penNoduleColor.get_data
+                        , get_size: penNoduleColor.get_size };
+        dataGLtexture = { get_data: penNoduleTexture.get_data
+                        , get_size: penNoduleTexture.get_size };
+    }
+    inline
+    function penInits(){
+        penColor = penNoduleColor.pen;
+        penColor.currentColor = 0xFFFFFFFF;
+        penTexture = penNoduleTexture.pen;
+        penTexture.useTexture   = true;
+        penTexture.currentColor = 0xffFFFFFF;
+    }
+    
     public
     function new( width: Int, height: Int ){
         super( width, height );
         trace( 'draw' );
+        loadFlower();
+    }
+    inline 
+    function loadFlower(){
+        // built in load images
         imageLoader.loadEncoded( [ Flower.png ],[ 'Flower' ] );
+    }
+    inline 
+    function setupImage(){
+        img             =  imageLoader.imageArr[ 0 ];
+        imgW            = img.width;
+        imgH            = img.height;
+        var ratio       = 1.; // image ratio.
+        // image tranform.
+        transformUVArr = [ 2.,0.,0.
+                         , 0.,2./ratio,0.
+                         , 0.,0.,1.];
+        // show original flower.
+        //showImageOnCanvas( img, imgW, imgH );
     }
     override
     public function draw(){
-        img =  imageLoader.imageArr[ 0 ];
-        var w            = img.width;
-        var h            = img.height;
-        var ratio = 1.;
-        // show original flower.
-        //showImageOnCanvas( img, w, h );
+        // setup
+        setupImage();
         setupDrawingPens();
+        setupSketch();
+        // drawing examples
+        drawQuad();
+        starDrawing();
+    }
+    inline 
+    function setupSketch(){
+        if( outlineTexture ){
+            sketch       = new Sketch( penTexture, StyleSketch.Fine, StyleEndLine.no );
+        } else {
+            sketch       = new Sketch( penColor, StyleSketch.Fine, StyleEndLine.no );
+        }
+        sketch.width     = 40;
+    }
+    inline
+    function drawQuad(){
         posMin = Std.int( penTexture.pos );
         // create a quad and populate it with an image
         quadShaper       = new QuadShaper( penTexture, 0 );
@@ -78,28 +136,25 @@ class Main extends PlyMix {
         quadRange = posMin...Std.int( penTexture.pos );
         // store for render
         draw_Shape[ draw_Shape.length ] = { textured: true, range: quadRange, bgColor: bgQuadFill };
-        
-        sketch           = new Sketch( penTexture, StyleSketch.Fine, StyleEndLine.no );
-        
-        sketch.width     = 40;
+    }
+    var outlineTexture = true;
+    inline
+    function starDrawing(){
         
         // star outline
-        var iterRange = drawStarOutline( true, 3, 0xFFffccff );
+        var iterRange = drawStarOutline( outlineTexture, 3, 0xFFffccff );
         // store for render
-        draw_Shape[ draw_Shape.length ] = { textured: true, range: iterRange, bgColor: bgStarFill };
-        
-        // star fill
+        draw_Shape[ draw_Shape.length ] = { textured: outlineTexture, range: iterRange, bgColor: bgStarFill };
+        // star  fill
         penColor.currentColor = 0xFFffccff;
         posMin = Std.int( penColor.pos );
         triangulate( penColor, sketch, polyK );
         fillStarRange = posMin...Std.int( penColor.pos -1 );
-        
         // store for render
-        draw_Shape[ draw_Shape.length ] = { textured: false, range: fillStarRange, bgColor: bgStarOutline };
+        draw_Shape[ draw_Shape.length ] = { textured: false
+                                          , range:    fillStarRange
+                                          , bgColor:   bgStarOutline };
         starRangeShaper = new RangeShaper( penColor, fillStarRange );
-        transformUVArr = [ 2.,0.,0.
-                         , 0.,2./ratio,0.
-                         , 0.,0.,1.];
     }
     inline
     function drawStarOutline( useTexture: Bool, size: Float, color: Int ): IteratorRange {
@@ -110,10 +165,12 @@ class Main extends PlyMix {
                 drawStar( sketch, size );
                 outlineStarRange = posMin...Std.int( penTexture.pos - 1 );
             case false:
-                penColor.currentColor = 0xFFffccff;
+                penColor.currentColor = color;//0xFFffccff;
                 posMin = Std.int( penColor.pos );
                 drawStar( sketch, size );
                 outlineStarRange = posMin...Std.int( penColor.pos - 1 );
+                trace( 'outlineStarRange ' + outlineStarRange );
+                outlineStarRange= posMin...Std.int( penColor.pos - 1 );
         }
     }
     var theta = 0.;
@@ -146,27 +203,6 @@ class Main extends PlyMix {
     inline
     function showImageOnCanvas( img: Image, wid: Int, hi: Int ){
         mainSheet.cx.drawImage( img, 0, 0, wid, hi );
-    }
-    inline
-    function setupDrawingPens(){
-        setupNoduleBuffers();
-        penInits();
-    }
-    // connects data buffers to pen drawing.
-    inline
-    function setupNoduleBuffers(){
-        dataGLcolor   = { get_data: penNoduleColor.get_data
-                        , get_size: penNoduleColor.get_size };
-        dataGLtexture = { get_data: penNoduleTexture.get_data
-                        , get_size: penNoduleTexture.get_size };
-    }
-    inline
-    function penInits(){
-        penColor = penNoduleColor.pen;
-        penColor.currentColor = 0xFFFFFFFF;
-        penTexture = penNoduleTexture.pen;
-        penTexture.useTexture   = true;
-        penTexture.currentColor = 0xffFFFFFF;
     }
     public function drawStar( sketch: Sketch, size: Float ){
         var s = size;

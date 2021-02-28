@@ -8800,21 +8800,22 @@ hyperKitGL_io_FloatColorTrianglesUV.moveDeltaUV = function(this1,du,dv) {
 	this1[(this1[0] | 0) * 27 + 26 + 2] = v;
 };
 var hyperKitGLsamples_galapagos_Galapagos = function(width,height) {
-	this.penNoduleTexture = new trilateral3_nodule_PenPaint();
-	this.penNoduleColor = new trilateral3_nodule_PenNodule();
 	this.y = 0;
 	this.x = 0;
 	this._newPath = false;
+	this.draw_Shape = [];
+	this.penNoduleTexture = new trilateral3_nodule_PenTexture();
+	this.penNoduleColor = new trilateral3_nodule_PenColor();
 	hyperKitGL_PlyMix.call(this,width,height);
-	haxe_Log.trace("draw",{ fileName : "../../../src/hyperKitGLsamples/galapagos/Galapagos.hx", lineNumber : 72, className : "hyperKitGLsamples.galapagos.Galapagos", methodName : "new"});
+	haxe_Log.trace("draw",{ fileName : "../../../src/hyperKitGLsamples/galapagos/Galapagos.hx", lineNumber : 100, className : "hyperKitGLsamples.galapagos.Galapagos", methodName : "new"});
 	this.imageLoader.loadEncoded(["galapagosBW.png","galapagosColor.png"],["galapagosBW","galapagosColor"]);
 };
 hyperKitGLsamples_galapagos_Galapagos.__name__ = true;
 hyperKitGLsamples_galapagos_Galapagos.__super__ = hyperKitGL_PlyMix;
 hyperKitGLsamples_galapagos_Galapagos.prototype = $extend(hyperKitGL_PlyMix.prototype,{
 	draw: function() {
-		haxe_Log.trace(this.imageLoader.imageArr[0],{ fileName : "../../../src/hyperKitGLsamples/galapagos/Galapagos.hx", lineNumber : 78, className : "hyperKitGLsamples.galapagos.Galapagos", methodName : "draw"});
-		haxe_Log.trace(this.imageLoader.imageArr[1],{ fileName : "../../../src/hyperKitGLsamples/galapagos/Galapagos.hx", lineNumber : 79, className : "hyperKitGLsamples.galapagos.Galapagos", methodName : "draw"});
+		haxe_Log.trace(this.imageLoader.imageArr[0],{ fileName : "../../../src/hyperKitGLsamples/galapagos/Galapagos.hx", lineNumber : 110, className : "hyperKitGLsamples.galapagos.Galapagos", methodName : "draw"});
+		haxe_Log.trace(this.imageLoader.imageArr[1],{ fileName : "../../../src/hyperKitGLsamples/galapagos/Galapagos.hx", lineNumber : 111, className : "hyperKitGLsamples.galapagos.Galapagos", methodName : "draw"});
 		this.img = this.imageLoader.imageArr[1];
 		var imgBW = this.imageLoader.imageArr[0];
 		var w_bw = imgBW.width;
@@ -8822,11 +8823,12 @@ hyperKitGLsamples_galapagos_Galapagos.prototype = $extend(hyperKitGL_PlyMix.prot
 		var imgColor = this.imageLoader.imageArr[1];
 		var w_color = imgColor.width;
 		var h_color = imgColor.height;
+		var ratio = 1.;
+		this.transformUVArr = [2.,0.,0.,0.,2. / ratio,0.,0.,0.,1.];
 		this.mainSheet.mouseDownXY = $bind(this,this.mouseDownXY);
 		this.mainSheet.mouseUpXY = $bind(this,this.mouseUpXY);
 		this.mainSheet.mouseMoveXY = $bind(this,this.mouseMoveXY);
 		var surface = this.mainSheet.cx;
-		surface.drawImage(imgBW,0,0,w_bw,h_bw);
 		this.dataGLcolor = { get_data : ($_=this.penNoduleColor,$bind($_,$_.get_data)), get_size : ($_=this.penNoduleColor,$bind($_,$_.get_size))};
 		this.dataGLtexture = { get_data : ($_=this.penNoduleTexture,$bind($_,$_.get_data)), get_size : ($_=this.penNoduleTexture,$bind($_,$_.get_size))};
 		this.penColor = this.penNoduleColor.pen;
@@ -8836,6 +8838,9 @@ hyperKitGLsamples_galapagos_Galapagos.prototype = $extend(hyperKitGL_PlyMix.prot
 		this.penTexture.currentColor = -1;
 		this._view = new hyperKitGLsamples_galapagos_View(this.penNoduleColor);
 		var pixels = hxPixels_Pixels.fromImageData(surface.getImageData(0,0,w_bw,h_bw));
+		this.buildPathFinder(pixels);
+	}
+	,buildPathFinder: function(pixels) {
 		this._mesh = hxDaedalus_factories_RectMesh.buildRectangle(1024,780);
 		var object = hxDaedalus_factories_BitmapObject.buildFromBmpData(pixels,1.8);
 		object.set_x(0);
@@ -8872,129 +8877,56 @@ hyperKitGLsamples_galapagos_Galapagos.prototype = $extend(hyperKitGL_PlyMix.prot
 	}
 	,renderDraw: function() {
 		this.penColor.paintType.set_pos(0);
-		this._view.drawMesh(this._mesh);
-		if(this._newPath) {
-			this._pathfinder.findPath(this.x,this.y,this._path);
-			this._view.drawPath(this._path);
-			this._view.drawEntity(this._entityAI);
-			this._pathSampler.reset();
+		this.posMin = this.penColor.paintType.get_pos() | 0;
+		this._view.lineStyle(40,-65536,1.);
+		this._view.drawDot(100.,100.,30.);
+		haxe_Log.trace(hyperKitGL_io_Float32Flat.get_size(this.penNoduleColor.colorTriangles) * 3 | 0,{ fileName : "../../../src/hyperKitGLsamples/galapagos/Galapagos.hx", lineNumber : 236, className : "hyperKitGLsamples.galapagos.Galapagos", methodName : "testDot"});
+		var tmp = this.draw_Shape;
+		var tmp1 = this.draw_Shape.length;
+		var ii_min = this.posMin;
+		var ii_max = this.penColor.paintType.get_pos() | 0;
+		var this1 = new trilateral3_shape_IntIterStart(ii_min,ii_max);
+		tmp[tmp1] = new trilateral3_structure_RangeEntity(false,this1,-1);
+		haxe_Log.trace("draw_Shape.range " + Std.string(this.draw_Shape[this.draw_Shape.length - 1].range),{ fileName : "../../../src/hyperKitGLsamples/galapagos/Galapagos.hx", lineNumber : 241, className : "hyperKitGLsamples.galapagos.Galapagos", methodName : "testDot"});
+		var count = 0;
+		var _g = 0;
+		var _g1 = this.draw_Shape;
+		while(_g < _g1.length) {
+			var a_shape = _g1[_g];
+			++_g;
+			if(a_shape.textured) {
+				haxe_Log.trace("texture draw " + count,{ fileName : "../../../src/hyperKitGLsamples/galapagos/Galapagos.hx", lineNumber : 219, className : "hyperKitGLsamples.galapagos.Galapagos", methodName : "renderDraw"});
+				++count;
+				this.drawTextureShape(a_shape.range.start,a_shape.range.max,a_shape.bgColor);
+			} else {
+				haxe_Log.trace("color draw " + count,{ fileName : "../../../src/hyperKitGLsamples/galapagos/Galapagos.hx", lineNumber : 223, className : "hyperKitGLsamples.galapagos.Galapagos", methodName : "renderDraw"});
+				++count;
+				this.drawColorShape(a_shape.range.start,a_shape.range.max);
+			}
 		}
-		if(this._pathSampler.get_hasNext()) {
-			this._pathSampler.next();
-		}
-		this._view.drawEntity(this._entityAI);
-		this.drawColorShape(0,this.penColor.paintType.get_pos() - 1 | 0);
-		this.tempHackFix();
-	}
-	,tempHackFix: function() {
 		this.drawTextureShape(0,0,0);
 	}
 });
 function hyperKitGLsamples_galapagos_Galapagos_main() {
 	new hyperKitGLsamples_galapagos_Galapagos(1000,1000);
 	var divertTrace = new hyperKitGL_DivertTrace();
-	haxe_Log.trace("Galapagos example",{ fileName : "../../../src/hyperKitGLsamples/galapagos/Galapagos.hx", lineNumber : 49, className : "hyperKitGLsamples.galapagos._Galapagos.Galapagos_Fields_", methodName : "main"});
+	haxe_Log.trace("Galapagos example",{ fileName : "../../../src/hyperKitGLsamples/galapagos/Galapagos.hx", lineNumber : 50, className : "hyperKitGLsamples.galapagos._Galapagos.Galapagos_Fields_", methodName : "main"});
 }
 var hyperKitGLsamples_galapagos_View = function(nodulePen) {
 	this._inFillingMode = false;
-	this._prevY = 0;
-	this._prevX = 0;
-	this.entitiesAlpha = .75;
-	this.entitiesWidth = 1;
-	this.entitiesColor = 65280;
-	this.pathsWidth = 1.5;
-	this.pathsColor = 16711935;
-	this.verticesAlpha = .25;
-	this.verticesRadius = .5;
-	this.verticesColor = 255;
-	this.constraintsAlpha = 1.0;
-	this.constraintsWidth = 2;
-	this.constraintsColor = 16711680;
-	this.edgesAlpha = .25;
-	this.edgesWidth = 1;
-	this.edgesColor = 10066329;
 	this.pen = nodulePen.pen;
 	this.regular = trilateral3_shape_Regular._new(this.pen);
 	this.lineSketch();
 };
 hyperKitGLsamples_galapagos_View.__name__ = true;
 hyperKitGLsamples_galapagos_View.prototype = {
-	lineStyle: function(thickness,color,alpha) {
-		if(alpha == null) {
-			alpha = 1;
-		}
-		this.sketch.width = thickness;
-		this._lineColor = color;
-		if(!this._inFillingMode) {
-			this.pen.currentColor = color;
-		}
-	}
-	,moveTo: function(x,y) {
-		this._prevX = x;
-		this._prevY = y;
-		this.sketch.moveTo(x,y);
-	}
-	,beginFill: function(color,alpha) {
-		if(alpha == null) {
-			alpha = 1;
-		}
-		this._fillColor = color;
-		this.pen.currentColor = this._fillColor;
-		this._inFillingMode = true;
-		this.fillSketch();
-	}
-	,fillSketch: function() {
-		if(this.sketch != null) {
-			this.sketch.reset();
-		}
-		this.sketch = new trilateral3_drawing_Sketch(this.pen,3,0);
-	}
-	,lineSketch: function() {
+	lineSketch: function() {
 		if(this.sketch != null) {
 			this.sketch.reset();
 		}
 		this.sketch = new trilateral3_drawing_Sketch(this.pen,2,0);
 	}
-	,endFill: function() {
-		this._inFillingMode = false;
-		this.pen.currentColor = this._lineColor;
-		this.lineSketch();
-	}
-	,lineTo: function(x,y) {
-		var _this = this.sketch;
-		var repeat = _this.x == x && _this.y == y;
-		if(!repeat) {
-			if(_this.widthFunction != null) {
-				_this.width = _this.widthFunction(_this.width,_this.x,_this.y,x,y);
-			}
-			if(_this.colourFunction != null) {
-				_this.pen.currentColor = _this.colourFunction(_this.pen.currentColor,_this.x,_this.y,x,y);
-			}
-			_this.line(x,y);
-			var l = _this.points.length;
-			var p = _this.points[l - 1];
-			var l2 = p.length;
-			p[l2] = x;
-			p[l2 + 1] = y;
-			var d = _this.dim[_this.dim.length - 1];
-			if(x < d.minX) {
-				d.minX = x;
-			}
-			if(x > d.maxX) {
-				d.maxX = x;
-			}
-			if(y < d.minY) {
-				d.minY = y;
-			}
-			if(y > d.maxY) {
-				d.maxY = y;
-			}
-			_this.x = x;
-			_this.y = y;
-		}
-	}
-	,drawCircle: function(cx,cy,radius) {
-		this.pen.currentColor = this._fillColor;
+	,drawDot: function(cx,cy,radius) {
 		var paintType = this.pen.paintType;
 		var pi = Math.PI;
 		var theta = pi / 2;
@@ -9019,70 +8951,15 @@ hyperKitGLsamples_galapagos_View.prototype = {
 			}
 			paintType.next();
 		}
-		this.pen.currentColor = this._lineColor;
 	}
-	,drawVertex: function(vertex) {
-		var p = vertex.get_pos();
-		var radius = this.verticesRadius;
-		var color = this.verticesColor;
-		var alpha = this.verticesAlpha;
-		this.lineStyle(this.entitiesWidth,this.entitiesColor,this.entitiesAlpha);
-		this.beginFill(this.entitiesColor,this.entitiesAlpha);
-		this.drawCircle(p.x,p.y,radius);
-		this.endFill();
-	}
-	,drawEdge: function(edge) {
-		var p0 = edge.get_originVertex().get_pos();
-		var p1 = edge.get_destinationVertex().get_pos();
-		if(edge.get_isConstrained()) {
-			this.lineStyle(this.constraintsWidth,this.constraintsColor,this.constraintsAlpha);
-			this.moveTo(p0.x,p0.y);
-			this.lineTo(p1.x,p1.y);
-		} else {
-			this.lineStyle(this.edgesWidth,this.edgesColor,this.edgesAlpha);
-			this.moveTo(p0.x,p0.y);
-			this.lineTo(p1.x,p1.y);
+	,lineStyle: function(thickness,color,alpha) {
+		if(alpha == null) {
+			alpha = 1;
 		}
-	}
-	,drawMesh: function(mesh) {
-		var all = mesh.getVerticesAndEdges();
-		var _g = 0;
-		var _g1 = all.vertices;
-		while(_g < _g1.length) {
-			var v = _g1[_g];
-			++_g;
-			this.drawVertex(v);
-		}
-		var _g = 0;
-		var _g1 = all.edges;
-		while(_g < _g1.length) {
-			var e = _g1[_g];
-			++_g;
-			this.drawEdge(e);
-		}
-	}
-	,drawEntity: function(entity) {
-		var radius = entity.get_radius();
-		var color = this.entitiesColor;
-		var alpha = this.entitiesAlpha;
-		this.lineStyle(this.entitiesWidth,this.entitiesColor,this.entitiesAlpha);
-		this.beginFill(this.entitiesColor,this.entitiesAlpha);
-		this.drawCircle(entity.x,entity.y,radius);
-		this.endFill();
-	}
-	,drawPath: function(path,cleanBefore) {
-		if(cleanBefore == null) {
-			cleanBefore = false;
-		}
-		if(path.length == 0) {
-			return;
-		}
-		this.lineStyle(this.pathsWidth,this.pathsColor,this.pathsWidth);
-		this.moveTo(path[0],path[1]);
-		var i = 2;
-		while(i < path.length) {
-			this.lineTo(path[i],path[i + 1]);
-			i += 2;
+		this.sketch.width = thickness;
+		this._lineColor = color;
+		if(!this._inFillingMode) {
+			this.pen.currentColor = color;
 		}
 	}
 };
@@ -9194,43 +9071,7 @@ var trilateral3_drawing_Contour = function(pen_,endLine_) {
 };
 trilateral3_drawing_Contour.__name__ = true;
 trilateral3_drawing_Contour.prototype = {
-	reset: function() {
-		this.angleA = 0;
-		this.count = 0;
-		this.kax = 0;
-		this.kay = 0;
-		this.kbx = 0;
-		this.kby = 0;
-		this.kcx = 0;
-		this.kcy = 0;
-		this.ncx = 0;
-		this.ncy = 0;
-		this.ax = 0;
-		this.ay = 0;
-		this.bx = 0;
-		this.by = 0;
-		this.cx = 0;
-		this.cy = 0;
-		this.dx = null;
-		this.dy = null;
-		this.ex = null;
-		this.ey = null;
-		this.pointsClock.length = 0;
-		this.pointsAnti.length = 0;
-	}
-	,endEdges: function() {
-		var pC = this.pointsClock.length;
-		var pA = this.pointsAnti.length;
-		this.pointsClock[pC++] = this.penultimateCX;
-		this.pointsClock[pC++] = this.penultimateCY;
-		this.pointsClock[pC++] = this.lastClockX;
-		this.pointsClock[pC++] = this.lastClockY;
-		this.pointsAnti[pA++] = this.penultimateAX;
-		this.pointsAnti[pA++] = this.penultimateAY;
-		this.pointsAnti[pA++] = this.lastAntiX;
-		this.pointsAnti[pA++] = this.lastAntiY;
-	}
-	,addQuads: function(clockWise,width_) {
+	addQuads: function(clockWise,width_) {
 		var currQuadIndex = this.pen.paintType.get_pos();
 		var pC = 0;
 		var pA = 0;
@@ -11749,7 +11590,7 @@ trilateral3_drawing_Sketch.prototype = {
 		}
 		if(curveEnds) {
 			if(clockWise) {
-				var paintType = _this.pen.paintType;
+				var _this1 = _this.pen;
 				var radius = width_ / 2;
 				var edgePoly = _this.pointsClock;
 				var pi = Math.PI;
@@ -11772,26 +11613,39 @@ trilateral3_drawing_Sketch.prototype = {
 					edgePoly[p2++] = cx;
 					edgePoly[p2++] = cy;
 					if(i != 0) {
-						paintType.triangle(ax_,ay_,0,bx,by,0,cx,cy,0);
-						var m = trilateral3_Trilateral.transformMatrix;
-						if(m != null) {
-							paintType.transform(m);
+						var color = -1;
+						if(color == -1) {
+							color = _this1.currentColor;
 						}
-						paintType.next();
+						var ax = ax_;
+						var ay = ay_;
+						var bx1 = bx;
+						var by1 = by;
+						var cx1 = cx;
+						var cy1 = cy;
+						var windAdjust = _this1.paintType.triangle(ax,ay,_this1.z2D,bx1,by1,_this1.z2D,cx1,cy1,_this1.z2D);
+						if(trilateral3_Trilateral.transformMatrix != null) {
+							_this1.paintType.transform(trilateral3_Trilateral.transformMatrix);
+						}
+						if(_this1.useTexture) {
+							ax /= 2000;
+							ay /= 2000;
+							bx1 /= 2000;
+							by1 /= 2000;
+							cx1 /= 2000;
+							cy1 /= 2000;
+							_this1.paintType.triangleUV(ax,ay,bx1,by1,cx1,cy1,windAdjust);
+						}
+						_this1.paintType.cornerColors(color,color,color);
+						_this1.paintType.next();
 					}
 					angle += step;
 					bx = cx;
 					by = cy;
 				}
 				var len = totalSteps;
-				var _this1 = _this.pen;
-				var color = -1;
-				if(color == -1) {
-					color = _this1.currentColor;
-				}
-				_this1.paintType.colorTriangles(color,len);
 			} else {
-				var paintType = _this.pen.paintType;
+				var _this1 = _this.pen;
 				var radius = width_ / 2;
 				var edgePoly = _this.pointsAnti;
 				var pi = Math.PI;
@@ -11814,24 +11668,37 @@ trilateral3_drawing_Sketch.prototype = {
 					edgePoly[p2++] = cx;
 					edgePoly[p2++] = cy;
 					if(i != 0) {
-						paintType.triangle(ax_,ay_,0,bx,by,0,cx,cy,0);
-						var m = trilateral3_Trilateral.transformMatrix;
-						if(m != null) {
-							paintType.transform(m);
+						var color = -1;
+						if(color == -1) {
+							color = _this1.currentColor;
 						}
-						paintType.next();
+						var ax = ax_;
+						var ay = ay_;
+						var bx1 = bx;
+						var by1 = by;
+						var cx1 = cx;
+						var cy1 = cy;
+						var windAdjust = _this1.paintType.triangle(ax,ay,_this1.z2D,bx1,by1,_this1.z2D,cx1,cy1,_this1.z2D);
+						if(trilateral3_Trilateral.transformMatrix != null) {
+							_this1.paintType.transform(trilateral3_Trilateral.transformMatrix);
+						}
+						if(_this1.useTexture) {
+							ax /= 2000;
+							ay /= 2000;
+							bx1 /= 2000;
+							by1 /= 2000;
+							cx1 /= 2000;
+							cy1 /= 2000;
+							_this1.paintType.triangleUV(ax,ay,bx1,by1,cx1,cy1,windAdjust);
+						}
+						_this1.paintType.cornerColors(color,color,color);
+						_this1.paintType.next();
 					}
 					angle += step;
 					bx = cx;
 					by = cy;
 				}
 				var len = totalSteps;
-				var _this1 = _this.pen;
-				var color = -1;
-				if(color == -1) {
-					color = _this1.currentColor;
-				}
-				_this1.paintType.colorTriangles(color,len);
 			}
 		} else if(_this.count != 0) {
 			if(clockWise) {
@@ -12867,7 +12734,7 @@ trilateral3_drawing_Sketch.prototype = {
 		}
 		if(curveEnds) {
 			if(clockWise) {
-				var paintType = _this.pen.paintType;
+				var _this1 = _this.pen;
 				var radius = width_ / 2;
 				var edgePoly = _this.pointsClock;
 				var pi = Math.PI;
@@ -12890,26 +12757,39 @@ trilateral3_drawing_Sketch.prototype = {
 					edgePoly[p2++] = cx;
 					edgePoly[p2++] = cy;
 					if(i != 0) {
-						paintType.triangle(ax_,ay_,0,bx,by,0,cx,cy,0);
-						var m = trilateral3_Trilateral.transformMatrix;
-						if(m != null) {
-							paintType.transform(m);
+						var color = -1;
+						if(color == -1) {
+							color = _this1.currentColor;
 						}
-						paintType.next();
+						var ax = ax_;
+						var ay = ay_;
+						var bx1 = bx;
+						var by1 = by;
+						var cx1 = cx;
+						var cy1 = cy;
+						var windAdjust = _this1.paintType.triangle(ax,ay,_this1.z2D,bx1,by1,_this1.z2D,cx1,cy1,_this1.z2D);
+						if(trilateral3_Trilateral.transformMatrix != null) {
+							_this1.paintType.transform(trilateral3_Trilateral.transformMatrix);
+						}
+						if(_this1.useTexture) {
+							ax /= 2000;
+							ay /= 2000;
+							bx1 /= 2000;
+							by1 /= 2000;
+							cx1 /= 2000;
+							cy1 /= 2000;
+							_this1.paintType.triangleUV(ax,ay,bx1,by1,cx1,cy1,windAdjust);
+						}
+						_this1.paintType.cornerColors(color,color,color);
+						_this1.paintType.next();
 					}
 					angle += step;
 					bx = cx;
 					by = cy;
 				}
 				var len = totalSteps;
-				var _this1 = _this.pen;
-				var color = -1;
-				if(color == -1) {
-					color = _this1.currentColor;
-				}
-				_this1.paintType.colorTriangles(color,len);
 			} else {
-				var paintType = _this.pen.paintType;
+				var _this1 = _this.pen;
 				var radius = width_ / 2;
 				var edgePoly = _this.pointsAnti;
 				var pi = Math.PI;
@@ -12932,24 +12812,37 @@ trilateral3_drawing_Sketch.prototype = {
 					edgePoly[p2++] = cx;
 					edgePoly[p2++] = cy;
 					if(i != 0) {
-						paintType.triangle(ax_,ay_,0,bx,by,0,cx,cy,0);
-						var m = trilateral3_Trilateral.transformMatrix;
-						if(m != null) {
-							paintType.transform(m);
+						var color = -1;
+						if(color == -1) {
+							color = _this1.currentColor;
 						}
-						paintType.next();
+						var ax = ax_;
+						var ay = ay_;
+						var bx1 = bx;
+						var by1 = by;
+						var cx1 = cx;
+						var cy1 = cy;
+						var windAdjust = _this1.paintType.triangle(ax,ay,_this1.z2D,bx1,by1,_this1.z2D,cx1,cy1,_this1.z2D);
+						if(trilateral3_Trilateral.transformMatrix != null) {
+							_this1.paintType.transform(trilateral3_Trilateral.transformMatrix);
+						}
+						if(_this1.useTexture) {
+							ax /= 2000;
+							ay /= 2000;
+							bx1 /= 2000;
+							by1 /= 2000;
+							cx1 /= 2000;
+							cy1 /= 2000;
+							_this1.paintType.triangleUV(ax,ay,bx1,by1,cx1,cy1,windAdjust);
+						}
+						_this1.paintType.cornerColors(color,color,color);
+						_this1.paintType.next();
 					}
 					angle += step;
 					bx = cx;
 					by = cy;
 				}
 				var len = totalSteps;
-				var _this1 = _this.pen;
-				var color = -1;
-				if(color == -1) {
-					color = _this1.currentColor;
-				}
-				_this1.paintType.colorTriangles(color,len);
 			}
 		} else if(_this.count != 0) {
 			if(overlap) {
@@ -13988,7 +13881,7 @@ trilateral3_drawing_Sketch.prototype = {
 		}
 		if(curveEnds) {
 			if(clockWise) {
-				var paintType = _this.pen.paintType;
+				var _this1 = _this.pen;
 				var radius = width_ / 2;
 				var edgePoly = _this.pointsClock;
 				var pi = Math.PI;
@@ -14011,26 +13904,39 @@ trilateral3_drawing_Sketch.prototype = {
 					edgePoly[p2++] = cx;
 					edgePoly[p2++] = cy;
 					if(i != 0) {
-						paintType.triangle(ax_,ay_,0,bx,by,0,cx,cy,0);
-						var m = trilateral3_Trilateral.transformMatrix;
-						if(m != null) {
-							paintType.transform(m);
+						var color = -1;
+						if(color == -1) {
+							color = _this1.currentColor;
 						}
-						paintType.next();
+						var ax = ax_;
+						var ay = ay_;
+						var bx1 = bx;
+						var by1 = by;
+						var cx1 = cx;
+						var cy1 = cy;
+						var windAdjust = _this1.paintType.triangle(ax,ay,_this1.z2D,bx1,by1,_this1.z2D,cx1,cy1,_this1.z2D);
+						if(trilateral3_Trilateral.transformMatrix != null) {
+							_this1.paintType.transform(trilateral3_Trilateral.transformMatrix);
+						}
+						if(_this1.useTexture) {
+							ax /= 2000;
+							ay /= 2000;
+							bx1 /= 2000;
+							by1 /= 2000;
+							cx1 /= 2000;
+							cy1 /= 2000;
+							_this1.paintType.triangleUV(ax,ay,bx1,by1,cx1,cy1,windAdjust);
+						}
+						_this1.paintType.cornerColors(color,color,color);
+						_this1.paintType.next();
 					}
 					angle += step;
 					bx = cx;
 					by = cy;
 				}
 				var len = totalSteps;
-				var _this1 = _this.pen;
-				var color = -1;
-				if(color == -1) {
-					color = _this1.currentColor;
-				}
-				_this1.paintType.colorTriangles(color,len);
 			} else {
-				var paintType = _this.pen.paintType;
+				var _this1 = _this.pen;
 				var radius = width_ / 2;
 				var edgePoly = _this.pointsAnti;
 				var pi = Math.PI;
@@ -14053,24 +13959,37 @@ trilateral3_drawing_Sketch.prototype = {
 					edgePoly[p2++] = cx;
 					edgePoly[p2++] = cy;
 					if(i != 0) {
-						paintType.triangle(ax_,ay_,0,bx,by,0,cx,cy,0);
-						var m = trilateral3_Trilateral.transformMatrix;
-						if(m != null) {
-							paintType.transform(m);
+						var color = -1;
+						if(color == -1) {
+							color = _this1.currentColor;
 						}
-						paintType.next();
+						var ax = ax_;
+						var ay = ay_;
+						var bx1 = bx;
+						var by1 = by;
+						var cx1 = cx;
+						var cy1 = cy;
+						var windAdjust = _this1.paintType.triangle(ax,ay,_this1.z2D,bx1,by1,_this1.z2D,cx1,cy1,_this1.z2D);
+						if(trilateral3_Trilateral.transformMatrix != null) {
+							_this1.paintType.transform(trilateral3_Trilateral.transformMatrix);
+						}
+						if(_this1.useTexture) {
+							ax /= 2000;
+							ay /= 2000;
+							bx1 /= 2000;
+							by1 /= 2000;
+							cx1 /= 2000;
+							cy1 /= 2000;
+							_this1.paintType.triangleUV(ax,ay,bx1,by1,cx1,cy1,windAdjust);
+						}
+						_this1.paintType.cornerColors(color,color,color);
+						_this1.paintType.next();
 					}
 					angle += step;
 					bx = cx;
 					by = cy;
 				}
 				var len = totalSteps;
-				var _this1 = _this.pen;
-				var color = -1;
-				if(color == -1) {
-					color = _this1.currentColor;
-				}
-				_this1.paintType.colorTriangles(color,len);
 			}
 		} else if(_this.count != 0) {
 			if(clockWise) {
@@ -15106,7 +15025,7 @@ trilateral3_drawing_Sketch.prototype = {
 		}
 		if(curveEnds) {
 			if(clockWise) {
-				var paintType = _this.pen.paintType;
+				var _this1 = _this.pen;
 				var radius = width_ / 2;
 				var edgePoly = _this.pointsClock;
 				var pi = Math.PI;
@@ -15129,26 +15048,39 @@ trilateral3_drawing_Sketch.prototype = {
 					edgePoly[p2++] = cx;
 					edgePoly[p2++] = cy;
 					if(i != 0) {
-						paintType.triangle(ax_,ay_,0,bx,by,0,cx,cy,0);
-						var m = trilateral3_Trilateral.transformMatrix;
-						if(m != null) {
-							paintType.transform(m);
+						var color = -1;
+						if(color == -1) {
+							color = _this1.currentColor;
 						}
-						paintType.next();
+						var ax = ax_;
+						var ay = ay_;
+						var bx1 = bx;
+						var by1 = by;
+						var cx1 = cx;
+						var cy1 = cy;
+						var windAdjust = _this1.paintType.triangle(ax,ay,_this1.z2D,bx1,by1,_this1.z2D,cx1,cy1,_this1.z2D);
+						if(trilateral3_Trilateral.transformMatrix != null) {
+							_this1.paintType.transform(trilateral3_Trilateral.transformMatrix);
+						}
+						if(_this1.useTexture) {
+							ax /= 2000;
+							ay /= 2000;
+							bx1 /= 2000;
+							by1 /= 2000;
+							cx1 /= 2000;
+							cy1 /= 2000;
+							_this1.paintType.triangleUV(ax,ay,bx1,by1,cx1,cy1,windAdjust);
+						}
+						_this1.paintType.cornerColors(color,color,color);
+						_this1.paintType.next();
 					}
 					angle += step;
 					bx = cx;
 					by = cy;
 				}
 				var len = totalSteps;
-				var _this1 = _this.pen;
-				var color = -1;
-				if(color == -1) {
-					color = _this1.currentColor;
-				}
-				_this1.paintType.colorTriangles(color,len);
 			} else {
-				var paintType = _this.pen.paintType;
+				var _this1 = _this.pen;
 				var radius = width_ / 2;
 				var edgePoly = _this.pointsAnti;
 				var pi = Math.PI;
@@ -15171,24 +15103,37 @@ trilateral3_drawing_Sketch.prototype = {
 					edgePoly[p2++] = cx;
 					edgePoly[p2++] = cy;
 					if(i != 0) {
-						paintType.triangle(ax_,ay_,0,bx,by,0,cx,cy,0);
-						var m = trilateral3_Trilateral.transformMatrix;
-						if(m != null) {
-							paintType.transform(m);
+						var color = -1;
+						if(color == -1) {
+							color = _this1.currentColor;
 						}
-						paintType.next();
+						var ax = ax_;
+						var ay = ay_;
+						var bx1 = bx;
+						var by1 = by;
+						var cx1 = cx;
+						var cy1 = cy;
+						var windAdjust = _this1.paintType.triangle(ax,ay,_this1.z2D,bx1,by1,_this1.z2D,cx1,cy1,_this1.z2D);
+						if(trilateral3_Trilateral.transformMatrix != null) {
+							_this1.paintType.transform(trilateral3_Trilateral.transformMatrix);
+						}
+						if(_this1.useTexture) {
+							ax /= 2000;
+							ay /= 2000;
+							bx1 /= 2000;
+							by1 /= 2000;
+							cx1 /= 2000;
+							cy1 /= 2000;
+							_this1.paintType.triangleUV(ax,ay,bx1,by1,cx1,cy1,windAdjust);
+						}
+						_this1.paintType.cornerColors(color,color,color);
+						_this1.paintType.next();
 					}
 					angle += step;
 					bx = cx;
 					by = cy;
 				}
 				var len = totalSteps;
-				var _this1 = _this.pen;
-				var color = -1;
-				if(color == -1) {
-					color = _this1.currentColor;
-				}
-				_this1.paintType.colorTriangles(color,len);
 			}
 		} else if(_this.count != 0) {
 			if(overlap) {
@@ -15457,216 +15402,6 @@ trilateral3_drawing_Sketch.prototype = {
 		this.points[0] = [];
 		this.dim = [];
 	}
-	,moveTo: function(x_,y_) {
-		if(this.endLine == 2 || this.endLine == 3) {
-			var _this = this.contour;
-			var width_ = this.width;
-			_this.endEdges();
-			if(_this.count != 0) {
-				var ax = _this.bx;
-				var ay = _this.by;
-				var radius = width_ / 2;
-				var beta = -_this.angle1 - Math.PI / 2;
-				var gamma = -_this.angle1 - Math.PI / 2 - Math.PI;
-				var temp = [];
-				var paintType = _this.pen.paintType;
-				var sides = 36;
-				if(sides == null) {
-					sides = 36;
-				}
-				var pi = Math.PI;
-				var step = pi * 2 / sides;
-				var dif;
-				switch(fracs_DifferencePreference.SMALL._hx_index) {
-				case 0:
-					var f;
-					if(beta >= 0 && beta > Math.PI) {
-						f = beta;
-					} else {
-						var a = beta % (2 * Math.PI);
-						f = a >= 0 ? a : a + 2 * Math.PI;
-					}
-					var this1 = f;
-					var za = this1;
-					var f;
-					if(gamma >= 0 && gamma > Math.PI) {
-						f = gamma;
-					} else {
-						var a = gamma % (2 * Math.PI);
-						f = a >= 0 ? a : a + 2 * Math.PI;
-					}
-					var this1 = f;
-					var zb = this1;
-					var fa = za;
-					var fb = zb;
-					var theta = Math.abs(fa - fb);
-					var clockwise = fa < fb;
-					var dif1 = clockwise ? theta : -theta;
-					dif = dif1 > 0 ? dif1 : 2 * Math.PI + dif1;
-					break;
-				case 1:
-					var f;
-					if(beta >= 0 && beta > Math.PI) {
-						f = beta;
-					} else {
-						var a = beta % (2 * Math.PI);
-						f = a >= 0 ? a : a + 2 * Math.PI;
-					}
-					var this1 = f;
-					var za = this1;
-					var f;
-					if(gamma >= 0 && gamma > Math.PI) {
-						f = gamma;
-					} else {
-						var a = gamma % (2 * Math.PI);
-						f = a >= 0 ? a : a + 2 * Math.PI;
-					}
-					var this1 = f;
-					var zb = this1;
-					var fa = za;
-					var fb = zb;
-					var theta = Math.abs(fa - fb);
-					var clockwise = fa < fb;
-					var dif1 = clockwise ? theta : -theta;
-					dif = dif1 < 0 ? dif1 : -2 * Math.PI + dif1;
-					break;
-				case 2:
-					var f;
-					if(beta >= 0 && beta > Math.PI) {
-						f = beta;
-					} else {
-						var a = beta % (2 * Math.PI);
-						f = a >= 0 ? a : a + 2 * Math.PI;
-					}
-					var this1 = f;
-					var za = this1;
-					var f;
-					if(gamma >= 0 && gamma > Math.PI) {
-						f = gamma;
-					} else {
-						var a = gamma % (2 * Math.PI);
-						f = a >= 0 ? a : a + 2 * Math.PI;
-					}
-					var this1 = f;
-					var zb = this1;
-					var fa = za;
-					var fb = zb;
-					var theta = Math.abs(fa - fb);
-					var smallest = theta <= Math.PI;
-					var clockwise = fa < fb;
-					var dif1 = clockwise ? theta : -theta;
-					dif = smallest ? dif1 : clockwise ? -(2 * Math.PI - theta) : 2 * Math.PI - theta;
-					break;
-				case 3:
-					var f;
-					if(beta >= 0 && beta > Math.PI) {
-						f = beta;
-					} else {
-						var a = beta % (2 * Math.PI);
-						f = a >= 0 ? a : a + 2 * Math.PI;
-					}
-					var this1 = f;
-					var za = this1;
-					var f;
-					if(gamma >= 0 && gamma > Math.PI) {
-						f = gamma;
-					} else {
-						var a = gamma % (2 * Math.PI);
-						f = a >= 0 ? a : a + 2 * Math.PI;
-					}
-					var this1 = f;
-					var zb = this1;
-					var fa = za;
-					var fb = zb;
-					var theta = Math.abs(fa - fb);
-					var largest = theta > Math.PI;
-					var clockwise = fa < fb;
-					var dif1 = clockwise ? theta : -theta;
-					dif = largest ? dif1 : clockwise ? -(2 * Math.PI - theta) : 2 * Math.PI - theta;
-					break;
-				}
-				var positive = dif >= 0;
-				var totalSteps = Math.ceil(Math.abs(dif) / step);
-				var step = dif / totalSteps;
-				var angle = beta;
-				var cx;
-				var cy;
-				var bx = 0;
-				var by = 0;
-				var p2 = temp.length;
-				var _g = 0;
-				var _g1 = totalSteps + 1;
-				while(_g < _g1) {
-					var i = _g++;
-					cx = ax + radius * Math.sin(angle);
-					cy = ay + radius * Math.cos(angle);
-					temp[p2++] = cx;
-					temp[p2++] = cy;
-					if(i != 0) {
-						paintType.triangle(ax,ay,0,bx,by,0,cx,cy,0);
-						var m = trilateral3_Trilateral.transformMatrix;
-						if(m != null) {
-							paintType.transform(m);
-						}
-						paintType.next();
-					}
-					angle += step;
-					bx = cx;
-					by = cy;
-				}
-				var len = totalSteps;
-				var fh = _this.pen;
-				var this1 = fh.paintType;
-				var v = fh.paintType.get_pos() - len;
-				this1.set_pos(v);
-				var _this1 = _this.pen;
-				var color = 0;
-				if(color == -1) {
-					color = _this1.currentColor;
-				}
-				_this1.paintType.colorTriangles(color,len);
-				var pA = _this.pointsAnti.length;
-				var len = temp.length / 2 | 0;
-				var _g = 0;
-				var _g1 = len + 2;
-				while(_g < _g1) {
-					var i = _g++;
-					_this.pointsAnti[pA++] = temp[i];
-				}
-				var pC = _this.pointsClock.length;
-				var _g = 1;
-				var _g1 = len / 2 + 1 | 0;
-				while(_g < _g1) {
-					var i = _g++;
-					_this.pointsClock[pC++] = temp[temp.length - 2 * i];
-					_this.pointsClock[pC++] = temp[temp.length - 2 * i - 1];
-				}
-			}
-		}
-		this.x = x_;
-		this.y = y_;
-		var l = this.points.length;
-		this.points[l] = [];
-		this.points[l][0] = x_;
-		this.points[l][1] = y_;
-		this.pointsClock[this.pointsClock.length] = this.contour.pointsClock.slice();
-		this.pointsAnti[this.pointsAnti.length] = this.contour.pointsAnti.slice();
-		this.dim[this.dim.length] = { minX : Infinity, maxX : -Infinity, minY : Infinity, maxY : -Infinity};
-		var d = this.dim[this.dim.length - 1];
-		if(x_ < d.minX) {
-			d.minX = x_;
-		}
-		if(x_ > d.maxX) {
-			d.maxX = x_;
-		}
-		if(y_ < d.minY) {
-			d.minY = y_;
-		}
-		if(y_ > d.maxY) {
-			d.maxY = y_;
-		}
-		this.contour.reset();
-	}
 };
 var trilateral3_geom_FlatColorTriangles = {};
 trilateral3_geom_FlatColorTriangles.transform = function(this1,m) {
@@ -15806,10 +15541,6 @@ var trilateral3_nodule_PenNodule = function(useGLScale) {
 	if(useGLScale == null) {
 		useGLScale = true;
 	}
-	var this1 = new Float32Array(trilateral3_nodule_PenNodule.largeEnough + 2);
-	this1[0] = 0.;
-	this1[1] = 0.;
-	this.colorTriangles = this1;
 	if(useGLScale) {
 		var transform1000 = new trilateral3_matrix_MatrixDozen(0.001,0,0,-1,0,-0.001,0,1,0,0,0.001,0);
 		trilateral3_Trilateral.transformMatrix = transform1000;
@@ -15817,7 +15548,19 @@ var trilateral3_nodule_PenNodule = function(useGLScale) {
 	this.createPen();
 };
 trilateral3_nodule_PenNodule.__name__ = true;
-trilateral3_nodule_PenNodule.prototype = {
+var trilateral3_nodule_PenColor = function(useGLScale) {
+	if(useGLScale == null) {
+		useGLScale = true;
+	}
+	var this1 = new Float32Array(trilateral3_nodule_PenNodule.largeEnough + 2);
+	this1[0] = 0.;
+	this1[1] = 0.;
+	this.colorTriangles = this1;
+	trilateral3_nodule_PenNodule.call(this,useGLScale);
+};
+trilateral3_nodule_PenColor.__name__ = true;
+trilateral3_nodule_PenColor.__super__ = trilateral3_nodule_PenNodule;
+trilateral3_nodule_PenColor.prototype = $extend(trilateral3_nodule_PenNodule.prototype,{
 	createPen: function() {
 		var t = this.colorTriangles;
 		var _e = t;
@@ -16179,23 +15922,20 @@ trilateral3_nodule_PenNodule.prototype = {
 	,get_size: function() {
 		return hyperKitGL_io_Float32Flat.get_size(this.colorTriangles) * 3 | 0;
 	}
-};
-var trilateral3_nodule_PenPaint = function(useGLScale) {
+});
+var trilateral3_nodule_PenTexture = function(useGLScale) {
 	if(useGLScale == null) {
 		useGLScale = true;
 	}
-	var this1 = new Float32Array(trilateral3_nodule_PenPaint.largeEnough + 2);
+	var this1 = new Float32Array(trilateral3_nodule_PenNodule.largeEnough + 2);
 	this1[0] = 0.;
 	this1[1] = 0.;
 	this.colorTriangles = this1;
-	if(useGLScale) {
-		var transform1000 = new trilateral3_matrix_MatrixDozen(0.001,0,0,-1,0,-0.001,0,1,0,0,0.001,0);
-		trilateral3_Trilateral.transformMatrix = transform1000;
-	}
-	this.createPen();
+	trilateral3_nodule_PenNodule.call(this,useGLScale);
 };
-trilateral3_nodule_PenPaint.__name__ = true;
-trilateral3_nodule_PenPaint.prototype = {
+trilateral3_nodule_PenTexture.__name__ = true;
+trilateral3_nodule_PenTexture.__super__ = trilateral3_nodule_PenNodule;
+trilateral3_nodule_PenTexture.prototype = $extend(trilateral3_nodule_PenNodule.prototype,{
 	createPen: function() {
 		var t = this.colorTriangles;
 		var _e = t;
@@ -16597,6 +16337,7 @@ trilateral3_nodule_PenPaint.prototype = {
 			}
 		}, triangleCurrent : triangleAbstract, triangleCurrentUV : triangleAbstractUV, color3current : color3Abstract};
 		this.pen = new trilateral3_drawing_Pen(paintAbstract);
+		return this.pen;
 	}
 	,get_data: function() {
 		var this1 = this.colorTriangles;
@@ -16605,12 +16346,27 @@ trilateral3_nodule_PenPaint.prototype = {
 	,get_size: function() {
 		return hyperKitGL_io_Float32Flat.get_size(this.colorTriangles) * 3 | 0;
 	}
+});
+var trilateral3_shape_IntIterStart = function(min_,max_) {
+	this.start = min_;
+	this.max = max_;
 };
+trilateral3_shape_IntIterStart.__name__ = true;
 var trilateral3_shape_Regular = {};
 trilateral3_shape_Regular._new = function(pen_) {
 	var this1 = pen_;
 	return this1;
 };
+var trilateral3_structure_RangeEntity = function(textured,range,bgColor) {
+	if(bgColor == null) {
+		bgColor = -1;
+	}
+	this.bgColor = -1;
+	this.textured = textured;
+	this.range = range;
+	this.bgColor = bgColor;
+};
+trilateral3_structure_RangeEntity.__name__ = true;
 var trilateral3_structure_StartEnd = function(start,end) {
 	this.start = start;
 	this.end = end;
@@ -16850,6 +16606,5 @@ hxGeomAlgo_PolyTools.EPSILON = .00000001;
 hxPixels_Pixels.CHANNEL_MASK = 3;
 hyperKitGL_AnimateTimer.counter = 0;
 trilateral3_nodule_PenNodule.largeEnough = 20000000;
-trilateral3_nodule_PenPaint.largeEnough = 20000000;
 hyperKitGLsamples_galapagos_Galapagos_main();
 })(typeof exports != "undefined" ? exports : typeof window != "undefined" ? window : typeof self != "undefined" ? self : this, typeof window != "undefined" ? window : typeof global != "undefined" ? global : typeof self != "undefined" ? self : this);
