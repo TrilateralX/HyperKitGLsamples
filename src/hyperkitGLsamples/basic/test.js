@@ -4101,6 +4101,33 @@ hyperKitGLsamples_basic_Main.prototype = $extend(hyperKitGL_PlyMix.prototype,{
 		var val1 = val.y;
 		var val_ = -(val1 - _this1.wid) / _this1.wid;
 		_this1.curr.set_y(val_);
+		var _this = this.starRangeShaper;
+		var _this1 = this.starRangeShaper;
+		var _g = new hyperKitGL_XY(_this1.px,_this1.py).x + Math.sin(this.theta);
+		var _this1 = this.starRangeShaper;
+		var xy = new hyperKitGL_XY(_g,new hyperKitGL_XY(_this1.px,_this1.py).y);
+		_this.lastXY = new hyperKitGL_XY(_this.px,_this.py);
+		var dx = _this.px - xy.x;
+		var dy = _this.py - xy.y;
+		var this1 = _this.range;
+		var _g_min = this1.start;
+		var _g_max = this1.max;
+		while(_g_min < _g_max) {
+			var i = _g_min++;
+			_this.pen.paintType.set_pos(i);
+			var _this1 = _this.tri;
+			var _this2 = _this.tri;
+			var val = _this2.curr.get_x() * _this2.wid + _this2.wid + dx;
+			var val_ = (val - _this1.wid) / _this1.wid;
+			_this1.curr.set_x(val_);
+			var _this3 = _this.tri;
+			var _this4 = _this.tri;
+			var val1 = -(_this4.curr.get_y() * _this4.hi - _this4.hi) + dy;
+			var val_1 = -(val1 - _this3.wid) / _this3.wid;
+			_this3.curr.set_y(val_1);
+		}
+		_this.px = xy.x;
+		_this.py = xy.y;
 		this.theta += 0.1;
 		var _g = 0;
 		var _g1 = this.draw_Shape;
@@ -13584,6 +13611,7 @@ var trilateral3_reShape_RangeShaper = function(pen,iteratorRange,wid,hi) {
 	this.px = 10000000000;
 	this.pen = pen;
 	this.range = iteratorRange;
+	this.start = iteratorRange.start;
 	this.tri = new trilateral3_reShape_TrianglesShaper(pen,wid,hi);
 	var this1 = this.range;
 	var _g_min = this1.start;

@@ -179,9 +179,12 @@ class Main extends PlyMix {
         var haveTextures: Bool = false;
         var haveColors:   Bool = false;
         // how to animate a quad shape.
-        quadShaper.xy = { x: quadShaper.xy.x + Math.sin( theta ), y: quadShaper.xy.y };
+        quadShaper.xy = { x: quadShaper.xy.x + Math.sin( theta )
+                        , y: quadShaper.xy.y };
         // rangeshaper animation needs more work in trilateral.
         //starRangeShaper.setXY( {x: 0, y: 0 } );//0.1*Math.sin( theta ) } );
+        starRangeShaper.xy = { x: starRangeShaper.xy.x + Math.sin( theta )
+                             , y: starRangeShaper.xy.y };
         theta += 0.1;
         for( a_shape in draw_Shape ){
             switch( a_shape.textured ){

@@ -8839,6 +8839,17 @@ hyperKitGLsamples_galapagos_Galapagos.prototype = $extend(hyperKitGL_PlyMix.prot
 		this._view = new hyperKitGLsamples_galapagos_View(this.penNoduleColor);
 		var pixels = hxPixels_Pixels.fromImageData(surface.getImageData(0,0,w_bw,h_bw));
 		this.buildPathFinder(pixels);
+		this.posMin = this.penColor.paintType.get_pos() | 0;
+		this._view.lineStyle(40,-65536,1.);
+		this._view.drawDot(100.,100.,30.);
+		haxe_Log.trace(hyperKitGL_io_Float32Flat.get_size(this.penNoduleColor.colorTriangles) * 3 | 0,{ fileName : "../../../src/hyperKitGLsamples/galapagos/Galapagos.hx", lineNumber : 238, className : "hyperKitGLsamples.galapagos.Galapagos", methodName : "testDot"});
+		var tmp = this.draw_Shape;
+		var tmp1 = this.draw_Shape.length;
+		var ii_min = this.posMin;
+		var ii_max = this.penColor.paintType.get_pos() | 0;
+		var this1 = new trilateral3_shape_IntIterStart(ii_min,ii_max);
+		tmp[tmp1] = new trilateral3_structure_RangeEntity(false,this1,-1);
+		haxe_Log.trace("draw_Shape.range " + Std.string(this.draw_Shape[this.draw_Shape.length - 1].range),{ fileName : "../../../src/hyperKitGLsamples/galapagos/Galapagos.hx", lineNumber : 243, className : "hyperKitGLsamples.galapagos.Galapagos", methodName : "testDot"});
 	}
 	,buildPathFinder: function(pixels) {
 		this._mesh = hxDaedalus_factories_RectMesh.buildRectangle(1024,780);
@@ -8877,17 +8888,6 @@ hyperKitGLsamples_galapagos_Galapagos.prototype = $extend(hyperKitGL_PlyMix.prot
 	}
 	,renderDraw: function() {
 		this.penColor.paintType.set_pos(0);
-		this.posMin = this.penColor.paintType.get_pos() | 0;
-		this._view.lineStyle(40,-65536,1.);
-		this._view.drawDot(100.,100.,30.);
-		haxe_Log.trace(hyperKitGL_io_Float32Flat.get_size(this.penNoduleColor.colorTriangles) * 3 | 0,{ fileName : "../../../src/hyperKitGLsamples/galapagos/Galapagos.hx", lineNumber : 236, className : "hyperKitGLsamples.galapagos.Galapagos", methodName : "testDot"});
-		var tmp = this.draw_Shape;
-		var tmp1 = this.draw_Shape.length;
-		var ii_min = this.posMin;
-		var ii_max = this.penColor.paintType.get_pos() | 0;
-		var this1 = new trilateral3_shape_IntIterStart(ii_min,ii_max);
-		tmp[tmp1] = new trilateral3_structure_RangeEntity(false,this1,-1);
-		haxe_Log.trace("draw_Shape.range " + Std.string(this.draw_Shape[this.draw_Shape.length - 1].range),{ fileName : "../../../src/hyperKitGLsamples/galapagos/Galapagos.hx", lineNumber : 241, className : "hyperKitGLsamples.galapagos.Galapagos", methodName : "testDot"});
 		var count = 0;
 		var _g = 0;
 		var _g1 = this.draw_Shape;
@@ -8895,11 +8895,11 @@ hyperKitGLsamples_galapagos_Galapagos.prototype = $extend(hyperKitGL_PlyMix.prot
 			var a_shape = _g1[_g];
 			++_g;
 			if(a_shape.textured) {
-				haxe_Log.trace("texture draw " + count,{ fileName : "../../../src/hyperKitGLsamples/galapagos/Galapagos.hx", lineNumber : 219, className : "hyperKitGLsamples.galapagos.Galapagos", methodName : "renderDraw"});
+				haxe_Log.trace("texture draw " + count,{ fileName : "../../../src/hyperKitGLsamples/galapagos/Galapagos.hx", lineNumber : 220, className : "hyperKitGLsamples.galapagos.Galapagos", methodName : "renderDraw"});
 				++count;
 				this.drawTextureShape(a_shape.range.start,a_shape.range.max,a_shape.bgColor);
 			} else {
-				haxe_Log.trace("color draw " + count,{ fileName : "../../../src/hyperKitGLsamples/galapagos/Galapagos.hx", lineNumber : 223, className : "hyperKitGLsamples.galapagos.Galapagos", methodName : "renderDraw"});
+				haxe_Log.trace("color draw " + count,{ fileName : "../../../src/hyperKitGLsamples/galapagos/Galapagos.hx", lineNumber : 224, className : "hyperKitGLsamples.galapagos.Galapagos", methodName : "renderDraw"});
 				++count;
 				this.drawColorShape(a_shape.range.start,a_shape.range.max);
 			}
@@ -8950,6 +8950,7 @@ hyperKitGLsamples_galapagos_View.prototype = {
 				paintType.transform(m);
 			}
 			paintType.next();
+			haxe_Log.trace("circle add dot ",{ fileName : "trilateral3/shape/Shaper.hx", lineNumber : 282, className : "trilateral3.shape._Shaper.Shaper_Fields_", methodName : "circle"});
 		}
 	}
 	,lineStyle: function(thickness,color,alpha) {

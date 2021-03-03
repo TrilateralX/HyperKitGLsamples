@@ -141,6 +141,7 @@ class Galapagos extends PlyMix {
         
         var pixels = Pixels.fromImageData( surface.getImageData(0, 0, w_bw, h_bw ) );
         buildPathFinder( pixels );
+        testDot();
     }
     public function buildPathFinder( pixels ){
         // build a rectangular 2 polygons mesh
@@ -210,7 +211,7 @@ class Galapagos extends PlyMix {
     public function renderDraw(){
         penColor.pos = 0;
         //renderDaedalus();
-        testDot();
+        
         //drawColorShape( 0, Std.int( penColor.pos -1) );
         var count = 0;
         for( a_shape in draw_Shape ){
@@ -232,7 +233,8 @@ class Galapagos extends PlyMix {
         posMin = Std.int( penColor.pos );
         _view.lineStyle( 40, 0xFFFF0000, 1. );
         _view.drawDot( 100., 100., 30. );
-        
+        //_view.moveTo( 0, 0 );
+        //_view.lineTo( 300, 300 );
         trace( penNoduleColor.get_size() );
         draw_Shape[ draw_Shape.length ] = 
             { textured: false
