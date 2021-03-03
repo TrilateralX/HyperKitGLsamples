@@ -60,7 +60,7 @@ class Main extends PlyMix {
     public var imgW:                Int;
     public var imgH:                Int;
     
-    var colors = [ Violet, Indigo, Blue, Green, Yellow, Orange, Red, Red ];
+    var colors = [ Violet, Indigo, Blue, Green, Yellow, Orange, Red ];
     
     inline
     function setupDrawingPens(){
@@ -132,7 +132,7 @@ class Main extends PlyMix {
         posMin = Std.int( penTexture.pos );
         // create a quad and populate it with an image
         quadShaper       = new QuadShaper( penTexture, 0 );
-        quadShaper.drawQuad( 0., 0., 1000., 1000. );
+        quadShaper.drawQuadColors( 0., 0., 1000., 1000., Blue, Green, Yellow, Red );
         quadRange = posMin...Std.int( penTexture.pos );
         // store for render
         draw_Shape[ draw_Shape.length ] = { textured: true, range: quadRange, bgColor: bgQuadFill };
@@ -169,7 +169,6 @@ class Main extends PlyMix {
                 posMin = Std.int( penColor.pos );
                 drawStar( sketch, size );
                 outlineStarRange = posMin...Std.int( penColor.pos - 1 );
-                trace( 'outlineStarRange ' + outlineStarRange );
                 outlineStarRange= posMin...Std.int( penColor.pos - 1 );
         }
     }
@@ -181,8 +180,6 @@ class Main extends PlyMix {
         // how to animate a quad shape.
         quadShaper.xy = { x: quadShaper.xy.x + Math.sin( theta )
                         , y: quadShaper.xy.y };
-        // rangeshaper animation needs more work in trilateral.
-        //starRangeShaper.setXY( {x: 0, y: 0 } );//0.1*Math.sin( theta ) } );
         starRangeShaper.xy = { x: starRangeShaper.xy.x + Math.sin( theta )
                              , y: starRangeShaper.xy.y };
         theta += 0.1;

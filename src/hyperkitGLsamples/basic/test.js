@@ -4015,7 +4015,7 @@ hyperKitGLsamples_basic_Main.prototype = $extend(hyperKitGL_PlyMix.prototype,{
 		this.sketch.width = 40;
 		this.posMin = this.penTexture.paintType.get_pos() | 0;
 		this.quadShaper = new trilateral3_reShape_QuadShaper(this.penTexture,0);
-		this.quadShaper.drawQuad(0.,0.,1000.,1000.);
+		this.quadShaper.drawQuadColors(0.,0.,1000.,1000.,-16776961,-16711936,-256,-65536);
 		var ii_min = this.posMin;
 		var ii_max = this.penTexture.paintType.get_pos() | 0;
 		var this1 = new trilateral3_shape_IntIterStart(ii_min,ii_max);
@@ -4038,7 +4038,6 @@ hyperKitGLsamples_basic_Main.prototype = $extend(hyperKitGL_PlyMix.prototype,{
 			var ii_max = this.penColor.paintType.get_pos() - 1 | 0;
 			var this1 = new trilateral3_shape_IntIterStart(ii_min,ii_max);
 			this.outlineStarRange = this1;
-			haxe_Log.trace("outlineStarRange " + Std.string(this.outlineStarRange),{ fileName : "../../../src/hyperKitGLsamples/basic/Main.hx", lineNumber : 172, className : "hyperKitGLsamples.basic.Main", methodName : "drawStarOutline"});
 			var ii_min = this.posMin;
 			var ii_max = this.penColor.paintType.get_pos() - 1 | 0;
 			var this1 = new trilateral3_shape_IntIterStart(ii_min,ii_max);
@@ -13532,20 +13531,74 @@ var trilateral3_reShape_QuadShaper = function(pen,start,wid,hi) {
 };
 trilateral3_reShape_QuadShaper.__name__ = true;
 trilateral3_reShape_QuadShaper.prototype = {
-	drawQuad: function(u,v,w,h) {
+	drawQuadColors: function(u,v,w,h,colorA,colorB,colorC,colorD) {
+		if(colorD == null) {
+			colorD = -1;
+		}
+		if(colorC == null) {
+			colorC = -1;
+		}
+		if(colorB == null) {
+			colorB = -1;
+		}
+		if(colorA == null) {
+			colorA = -1;
+		}
 		var _this = this.pen;
+		var colorA1 = colorA;
+		var colorB1 = colorB;
+		var colorC1 = colorC;
+		var colorD1 = colorD;
+		if(colorD1 == null) {
+			colorD1 = -1;
+		}
+		if(colorC1 == null) {
+			colorC1 = -1;
+		}
+		if(colorB1 == null) {
+			colorB1 = -1;
+		}
+		if(colorA1 == null) {
+			colorA1 = -1;
+		}
 		var bx = u + w;
 		var dy = v + h;
-		var color = -1;
-		if(color == null) {
-			color = -1;
+		var colorA = colorA1;
+		var colorB = colorB1;
+		var colorC = colorC1;
+		var colorD = colorD1;
+		if(colorD == null) {
+			colorD = -1;
 		}
-		var color1 = color;
-		if(color1 == null) {
-			color1 = -1;
+		if(colorC == null) {
+			colorC = -1;
 		}
-		if(color1 == -1) {
-			color1 = _this.currentColor;
+		if(colorB == null) {
+			colorB = -1;
+		}
+		if(colorA == null) {
+			colorA = -1;
+		}
+		var colorA1 = colorA;
+		var colorB1 = colorD;
+		var colorC1 = colorB;
+		if(colorC1 == null) {
+			colorC1 = -1;
+		}
+		if(colorB1 == null) {
+			colorB1 = -1;
+		}
+		if(colorA1 == null) {
+			colorA1 = -1;
+		}
+		if(colorA1 == -1) {
+			colorA1 = _this.currentColor;
+		}
+		if(colorB1 == -1) {
+			colorB1 = _this.currentColor;
+		}
+		if(colorC1 == -1) {
+			colorC1 = _this.currentColor;
 		}
 		var ax = u;
 		var ay = v;
@@ -13566,14 +13619,28 @@ trilateral3_reShape_QuadShaper.prototype = {
 			cy /= 2000;
 			_this.paintType.triangleUV(ax,ay,bx1,by,cx,cy,windAdjust);
 		}
-		_this.paintType.cornerColors(color1,color1,color1);
+		_this.paintType.cornerColors(colorA1,colorB1,colorC1);
 		_this.paintType.next();
-		var color1 = color;
-		if(color1 == null) {
-			color1 = -1;
+		var colorA = colorB;
+		var colorB = colorD;
+		var colorC1 = colorC;
+		if(colorC1 == null) {
+			colorC1 = -1;
 		}
-		if(color1 == -1) {
-			color1 = _this.currentColor;
+		if(colorB == null) {
+			colorB = -1;
+		}
+		if(colorA == null) {
+			colorA = -1;
+		}
+		if(colorA == -1) {
+			colorA = _this.currentColor;
+		}
+		if(colorB == -1) {
+			colorB = _this.currentColor;
+		}
+		if(colorC1 == -1) {
+			colorC1 = _this.currentColor;
 		}
 		var ax = bx;
 		var ay = v;
@@ -13594,8 +13661,9 @@ trilateral3_reShape_QuadShaper.prototype = {
 			cy /= 2000;
 			_this.paintType.triangleUV(ax,ay,bx,by,cx,cy,windAdjust);
 		}
-		_this.paintType.cornerColors(color1,color1,color1);
+		_this.paintType.cornerColors(colorA,colorB,colorC1);
 		_this.paintType.next();
+		return 2;
 	}
 };
 var trilateral3_reShape_RangeShaper = function(pen,iteratorRange,wid,hi) {
