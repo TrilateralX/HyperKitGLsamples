@@ -60,6 +60,10 @@ class Galapagos extends PlyMix {
     public var posMin:              Int;
     public var draw_Shape           = new Array<RangeEntity>();
     
+    public var quadRange:           IteratorRange;
+    public var bgQuadFill           = 0xFFFFFFFF; 
+    
+    
     // example parameters
     var _mesh:         Mesh;
     var _view:         View;
@@ -102,9 +106,10 @@ class Galapagos extends PlyMix {
     }
     inline
     function loadIslandImages(){
-        imageLoader.loadEncoded( [ 'galapagosBW.png','galapagosColor.png' ]
+        imageLoader.loadEncoded( [ GalapagosBW.png, GalapagosColor.png ]
                                , [ 'galapagosBW',    'galapagosColor'     ] );
     }
+    public var quadShaper:          QuadShaper;
     override
     public function draw(){
         trace( imageLoader.imageArr[ 0 ] );
@@ -135,13 +140,16 @@ class Galapagos extends PlyMix {
         
         setupDrawingPens();
         
+        
         _view = new View( penNoduleColor );
         // create pixels from imgBW
         //var pixels          = hxPixels.Pixels.fromBytes( pixs.bytes, pixs.width, pixs.height );
         
         var pixels = Pixels.fromImageData( surface.getImageData(0, 0, w_bw, h_bw ) );
         buildPathFinder( pixels );
+        
         testDot();
+        //drawQuadBg();
     }
     public function buildPathFinder( pixels ){
         // build a rectangular 2 polygons mesh
@@ -217,22 +225,30 @@ class Galapagos extends PlyMix {
         for( a_shape in draw_Shape ){
             switch( a_shape.textured ){
                 case true:
-                trace( 'texture draw ' + count );
+                //trace( 'texture draw ' + count );
                 count++;
                     drawTextureShape( a_shape.range.start, a_shape.range.max, a_shape.bgColor );
                 case false:
-                trace( 'color draw ' + count );
+                //trace( 'color range ' + a_shape.range );
                 count++;
                     drawColorShape( a_shape.range.start, a_shape.range.max );
             }
         }
         tempHackFix();
     }
+    inline function drawQuadBg(){
+        posMin = Std.int( penTexture.pos );
+        quadShaper       = new QuadShaper( penTexture, 0 );
+        quadShaper.drawQuadColors( 0., 0., 1000., 1000., Blue, Green, Yellow, Red );
+        quadRange = posMin...Std.int( penTexture.pos );
+        draw_Shape[ draw_Shape.length ] = { textured: true, range: quadRange, bgColor: bgQuadFill };
+    }
+    
     inline
     function testDot(){
         posMin = Std.int( penColor.pos );
         _view.lineStyle( 40, 0xFFFF0000, 1. );
-        _view.drawDot( 100., 100., 30. );
+        _view.drawCircle( 100., 100., 30. );
         //_view.moveTo( 0, 0 );
         //_view.lineTo( 300, 300 );
         trace( penNoduleColor.get_size() );
@@ -240,7 +256,7 @@ class Galapagos extends PlyMix {
             { textured: false
             , range:    posMin...Std.int( penColor.pos )
             };
-            trace( 'draw_Shape.range ' + draw_Shape[ draw_Shape.length - 1].range );
+        trace( 'draw_Shape.range ' + draw_Shape[ draw_Shape.length - 1].range );
     }
     inline
     function tempHackFix(){

@@ -8,7 +8,7 @@ import trilateral3.drawing.Fill;
 import trilateral3.drawing.Pen;
 import trilateral3.geom.FlatColorTriangles;
 import trilateral3.nodule.PenNodule;
-import trilateral3.shape.Shaper;
+import trilateral3.shape.ShaperPen;
 import trilateral3.shape.Regular;
 import trilateral3.structure.RegularShape;
 
@@ -68,6 +68,7 @@ class View {
     function lineSketch(){
         if( sketch != null ) sketch.reset();
         sketch = new Sketch( pen, StyleSketch.Crude, StyleEndLine.no );
+        sketch.width     = 8;
     }
     function fillSketch(){
         if( sketch != null ) sketch.reset();
@@ -98,7 +99,7 @@ class View {
         }*/
     }
     public function drawDot( cx:Float, cy:Float, radius: Float ):Void { 
-        circle( pen.paintType, cx, cy, radius );
+        circle( pen, cx, cy, radius );
     }
     // line style setup and fills
     public function lineStyle( thickness: Float, color: Int, ?alpha: Float = 1 ): Void {
