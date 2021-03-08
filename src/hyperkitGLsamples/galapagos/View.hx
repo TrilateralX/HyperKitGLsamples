@@ -8,6 +8,8 @@ import trilateral3.drawing.Fill;
 import trilateral3.drawing.Pen;
 import trilateral3.geom.FlatColorTriangles;
 import trilateral3.nodule.PenNodule;
+import trilateral3.nodule.PenTexture;
+import trilateral3.nodule.PenColor;
 import trilateral3.shape.ShaperPen;
 import trilateral3.shape.Regular;
 import trilateral3.structure.RegularShape;
@@ -51,16 +53,17 @@ class View {
     
     var _prevX:                  Float  = 0;
     var _prevY:                  Float  = 0;
-    var _lineColor:              Int;
-    var _fillColor:              Int;
+    var _lineColor:              Int = 0xff0000ff;
+    var _fillColor:              Int = 0xff00ff00;
     var _inFillingMode:          Bool   = false;
     var sketch:                  Sketch;
     var pen:                     Pen;
     var regular:                 Regular;
     
-    public function new( nodulePen: PenNodule ){//paintPen: PaintPen ) {
+    public function new( penColor: PenColor ){//paintPen: PenTextue ) {
         //pen = paintPen.pen;
-        pen = nodulePen.pen;
+        pen = penColor.pen;
+        trace( 'new view ' + pen.currentColor );
         regular = new Regular( pen );
         lineSketch();
     }
@@ -99,15 +102,17 @@ class View {
         }*/
     }
     public function drawDot( cx:Float, cy:Float, radius: Float ):Void { 
+        trace( 'drawDot ' + pen );
         circle( pen, cx, cy, radius );
     }
     // line style setup and fills
     public function lineStyle( thickness: Float, color: Int, ?alpha: Float = 1 ): Void {
         sketch.width = thickness;
         _lineColor = color;
+        pen.currentColor = color;
         if( !_inFillingMode ) pen.currentColor = color;
     }
-    public function beginFill(color:Int, ?alpha:Float = 1):Void {
+    public function beginFill( color: Int, ?alpha: Float = 1 ): Void {
         _fillColor = color;
         pen.currentColor = _fillColor;
         // alpha to implement
@@ -115,7 +120,7 @@ class View {
         _inFillingMode = true;
         fillSketch();
     }
-    public function endFill():Void {
+    public function endFill(): Void {
         _inFillingMode = false;
         pen.currentColor = _lineColor;
         lineSketch();

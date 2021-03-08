@@ -52,10 +52,10 @@ function main(){
 //Galapagos based on the example I created for hxDaedalus
 class Galapagos extends PlyMix {
     // general setup
-    public var penColor:            Pen;
-    public var penNoduleColor       = new PenColor();
-    public var penTexture:          Pen;
-    public var penNoduleTexture     = new PenTexture();
+    public var penC:                Pen;
+    public var penColor             = new PenColor();
+    public var penT:                Pen;
+    public var penTexture           = new PenTexture();
     
     public var posMin:              Int;
     public var draw_Shape           = new Array<RangeEntity>();
@@ -84,18 +84,18 @@ class Galapagos extends PlyMix {
     }
     inline
     function setupNoduleBuffers(){
-        dataGLcolor   = { get_data: penNoduleColor.get_data
-                        , get_size: penNoduleColor.get_size };
-        dataGLtexture = { get_data: penNoduleTexture.get_data
-                        , get_size: penNoduleTexture.get_size };
+        dataGLcolor   = { get_data: penColor.get_data
+                        , get_size: penColor.get_size };
+        dataGLtexture = { get_data: penTexture.get_data
+                        , get_size: penTexture.get_size };
     }
     inline
     function penInits(){
-        penColor = penNoduleColor.pen;
-        penColor.currentColor = 0xFFFFFFFF;
-        penTexture = penNoduleTexture.pen;
-        penTexture.useTexture   = true;
-        penTexture.currentColor = 0xffFFFFFF;
+        penC = penColor.pen;
+        penC.currentColor = 0xFFFF00FF;
+        penT = penTexture.pen;
+        penT.useTexture   = true;
+        penT.currentColor = 0xffFFFFFF;
     }
     
     public
@@ -140,8 +140,9 @@ class Galapagos extends PlyMix {
         
         setupDrawingPens();
         
+        trace( 'draw, ' + penC );
+        _view = new View( penColor );
         
-        _view = new View( penNoduleColor );
         // create pixels from imgBW
         //var pixels          = hxPixels.Pixels.fromBytes( pixs.bytes, pixs.width, pixs.height );
         
@@ -197,6 +198,7 @@ class Galapagos extends PlyMix {
     inline function renderDaedalus(){
         // show result mesh on screen
         _view.drawMesh( _mesh );
+        /*
         if( _newPath ){
             // find path !
             _pathfinder.findPath( x, y, _path );
@@ -214,11 +216,12 @@ class Galapagos extends PlyMix {
         }
         // show entity position on screen
         _view.drawEntity( _entityAI );
+        */
     }
     override
     public function renderDraw(){
-        penColor.pos = 0;
-        //renderDaedalus();
+        penC.pos = 0;
+        renderDaedalus();
         
         //drawColorShape( 0, Std.int( penColor.pos -1) );
         var count = 0;
@@ -237,24 +240,24 @@ class Galapagos extends PlyMix {
         tempHackFix();
     }
     inline function drawQuadBg(){
-        posMin = Std.int( penTexture.pos );
-        quadShaper       = new QuadShaper( penTexture, 0 );
+        posMin = Std.int( penT.pos );
+        quadShaper       = new QuadShaper( penT, 0 );
         quadShaper.drawQuadColors( 0., 0., 1000., 1000., Blue, Green, Yellow, Red );
-        quadRange = posMin...Std.int( penTexture.pos );
+        quadRange = posMin...Std.int( penT.pos );
         draw_Shape[ draw_Shape.length ] = { textured: true, range: quadRange, bgColor: bgQuadFill };
     }
     
     inline
     function testDot(){
-        posMin = Std.int( penColor.pos );
+        posMin = Std.int( penC.pos );
         _view.lineStyle( 40, 0xFFFF0000, 1. );
         _view.drawCircle( 100., 100., 30. );
         //_view.moveTo( 0, 0 );
         //_view.lineTo( 300, 300 );
-        trace( penNoduleColor.get_size() );
+        trace( penColor.get_size() );
         draw_Shape[ draw_Shape.length ] = 
             { textured: false
-            , range:    posMin...Std.int( penColor.pos )
+            , range:    posMin...Std.int( penC.pos )
             };
         trace( 'draw_Shape.range ' + draw_Shape[ draw_Shape.length - 1].range );
     }
