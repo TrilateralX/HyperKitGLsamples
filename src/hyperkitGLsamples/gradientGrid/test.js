@@ -4125,6 +4125,7 @@ hyperKitGL_io_FloatColorTrianglesUV.adjustWinding = function(this1) {
 	return hyperKitGL_io_FloatColorTrianglesUV.get_ax(this1) * hyperKitGL_io_FloatColorTrianglesUV.get_by(this1) - hyperKitGL_io_FloatColorTrianglesUV.get_bx(this1) * hyperKitGL_io_FloatColorTrianglesUV.get_ay(this1) + (hyperKitGL_io_FloatColorTrianglesUV.get_bx(this1) * hyperKitGL_io_FloatColorTrianglesUV.get_cy(this1) - hyperKitGL_io_FloatColorTrianglesUV.get_cx(this1) * hyperKitGL_io_FloatColorTrianglesUV.get_by(this1)) + (hyperKitGL_io_FloatColorTrianglesUV.get_cx(this1) * hyperKitGL_io_FloatColorTrianglesUV.get_ay(this1) - hyperKitGL_io_FloatColorTrianglesUV.get_ax(this1) * hyperKitGL_io_FloatColorTrianglesUV.get_cy(this1)) > 0;
 };
 var hyperKitGLsamples_gradientGrid_Main = function(width_,height_,hasImage,animate) {
+	this.theta = 0.1;
 	this.draw_Shape = [];
 	this.penNoduleColor = new trilateral3_nodule_PenColor();
 	hyperKitGL_PlyMix.call(this,width_,height_,hasImage,animate);
@@ -4136,97 +4137,23 @@ hyperKitGLsamples_gradientGrid_Main.prototype = $extend(hyperKitGL_PlyMix.protot
 		this.dataGLcolor = { get_data : ($_=this.penNoduleColor,$bind($_,$_.get_data)), get_size : ($_=this.penNoduleColor,$bind($_,$_.get_size))};
 		this.penColor = this.penNoduleColor.pen;
 		this.penColor.currentColor = -1;
-		this.posMin = this.penColor.paintType.get_pos() | 0;
-		var sx = 100;
-		var sy = 100;
-		var px = sx;
-		var py = sy;
-		var dx = 10;
-		var dy = 10;
-		var ds = 0;
+		this.gradientGrid = new trilateral3_reShape_GradientGrid(this.penColor);
+		var radAdj = trilateral3_reShape_GradientGrid.radAdj;
+		var sin01 = trilateral3_reShape_GradientGrid.sin01;
+		var cos01 = trilateral3_reShape_GradientGrid.cos01;
 		var fRed = function(x,y) {
-			var rx = x * Math.PI / 50;
-			return 0.5 + Math.sin(rx - Math.PI / 2) / 2;
+			var rx = radAdj(x);
+			return sin01(rx - Math.PI / 2);
 		};
 		var fGreen = function(x,y) {
-			var rx = x * Math.PI / 50;
-			var ry = y * Math.PI / 50;
-			return (0.5 + Math.sin(rx) / 2 + (0.5 + Math.cos((ry * rx - Math.PI / 2 - 0.1) * 20) / 2)) / 2;
+			var rx = radAdj(x);
+			var ry = radAdj(y);
+			return (sin01(rx) + cos01((ry * rx - Math.PI / 2 - 0.1) * 20)) / 2;
 		};
 		var fBlue = function(x,y) {
 			return 0.6;
 		};
-		var _g = 0;
-		while(_g < 100) {
-			var iy = _g++;
-			var _g1 = 0;
-			while(_g1 < 100) {
-				var ix = _g1++;
-				var quadShaper = new trilateral3_reShape_QuadShaper(this.penColor,ds);
-				ds += 2;
-				var delta = 0.1;
-				var x = ix * delta;
-				var y = iy * delta;
-				var col = -16777216;
-				var v = fRed(x,y);
-				var this1 = Math.round((col >> 24 & 255) / 255 * 255) << 24 | Math.round(v * 255) << 16 | Math.round((col >> 8 & 255) / 255 * 255) << 8 | Math.round((col & 255) / 255 * 255);
-				col = this1;
-				var v1 = fGreen(x,y);
-				var this2 = Math.round((col >> 24 & 255) / 255 * 255) << 24 | Math.round((col >> 16 & 255) / 255 * 255) << 16 | Math.round(v1 * 255) << 8 | Math.round((col & 255) / 255 * 255);
-				col = this2;
-				var v2 = fBlue(x,y);
-				var this3 = Math.round((col >> 24 & 255) / 255 * 255) << 24 | Math.round((col >> 16 & 255) / 255 * 255) << 16 | Math.round((col >> 8 & 255) / 255 * 255) << 8 | Math.round(v2 * 255);
-				col = this3;
-				var colorA = col;
-				var x1 = (ix + 1) * delta;
-				var y1 = iy * delta;
-				var col1 = -16777216;
-				var v3 = fRed(x1,y1);
-				var this4 = Math.round((col1 >> 24 & 255) / 255 * 255) << 24 | Math.round(v3 * 255) << 16 | Math.round((col1 >> 8 & 255) / 255 * 255) << 8 | Math.round((col1 & 255) / 255 * 255);
-				col1 = this4;
-				var v4 = fGreen(x1,y1);
-				var this5 = Math.round((col1 >> 24 & 255) / 255 * 255) << 24 | Math.round((col1 >> 16 & 255) / 255 * 255) << 16 | Math.round(v4 * 255) << 8 | Math.round((col1 & 255) / 255 * 255);
-				col1 = this5;
-				var v5 = fBlue(x1,y1);
-				var this6 = Math.round((col1 >> 24 & 255) / 255 * 255) << 24 | Math.round((col1 >> 16 & 255) / 255 * 255) << 16 | Math.round((col1 >> 8 & 255) / 255 * 255) << 8 | Math.round(v5 * 255);
-				col1 = this6;
-				var colorB = col1;
-				var x2 = (ix + 1) * delta;
-				var y2 = (iy + 1) * delta;
-				var col2 = -16777216;
-				var v6 = fRed(x2,y2);
-				var this7 = Math.round((col2 >> 24 & 255) / 255 * 255) << 24 | Math.round(v6 * 255) << 16 | Math.round((col2 >> 8 & 255) / 255 * 255) << 8 | Math.round((col2 & 255) / 255 * 255);
-				col2 = this7;
-				var v7 = fGreen(x2,y2);
-				var this8 = Math.round((col2 >> 24 & 255) / 255 * 255) << 24 | Math.round((col2 >> 16 & 255) / 255 * 255) << 16 | Math.round(v7 * 255) << 8 | Math.round((col2 & 255) / 255 * 255);
-				col2 = this8;
-				var v8 = fBlue(x2,y2);
-				var this9 = Math.round((col2 >> 24 & 255) / 255 * 255) << 24 | Math.round((col2 >> 16 & 255) / 255 * 255) << 16 | Math.round((col2 >> 8 & 255) / 255 * 255) << 8 | Math.round(v8 * 255);
-				col2 = this9;
-				var colorC = col2;
-				var x3 = ix * delta;
-				var y3 = (iy + 1) * delta;
-				var col3 = -16777216;
-				var v9 = fRed(x3,y3);
-				var this10 = Math.round((col3 >> 24 & 255) / 255 * 255) << 24 | Math.round(v9 * 255) << 16 | Math.round((col3 >> 8 & 255) / 255 * 255) << 8 | Math.round((col3 & 255) / 255 * 255);
-				col3 = this10;
-				var v10 = fGreen(x3,y3);
-				var this11 = Math.round((col3 >> 24 & 255) / 255 * 255) << 24 | Math.round((col3 >> 16 & 255) / 255 * 255) << 16 | Math.round(v10 * 255) << 8 | Math.round((col3 & 255) / 255 * 255);
-				col3 = this11;
-				var v11 = fBlue(x3,y3);
-				var this12 = Math.round((col3 >> 24 & 255) / 255 * 255) << 24 | Math.round((col3 >> 16 & 255) / 255 * 255) << 16 | Math.round((col3 >> 8 & 255) / 255 * 255) << 8 | Math.round(v11 * 255);
-				col3 = this12;
-				var colorD = col3;
-				quadShaper.drawQuadColors(px * 1.1,py * 1.1,dx,dy,colorA,colorB,colorC,colorD);
-				px += dx;
-			}
-			px = sx;
-			py += dy;
-		}
-		var ii_min = this.posMin;
-		var ii_max = this.penColor.paintType.get_pos() | 0;
-		var this1 = new trilateral3_shape_IntIterStart(ii_min,ii_max);
-		this.quadRange = this1;
+		this.quadRange = this.gradientGrid.addGrid(100,100,1000,1000,60,60,0.1,0.1,fRed,fGreen,fBlue);
 		this.draw_Shape[this.draw_Shape.length] = new trilateral3_structure_RangeEntity(false,this.quadRange,-1);
 		var _gthis = this;
 		if(hyperKitGL_AnimateTimer.s == null) {
@@ -4251,6 +4178,24 @@ hyperKitGLsamples_gradientGrid_Main.prototype = $extend(hyperKitGL_PlyMix.protot
 		};
 	}
 	,renderDraw: function() {
+		var _gthis = this;
+		var radAdj = trilateral3_reShape_GradientGrid.radAdj;
+		var sin01 = trilateral3_reShape_GradientGrid.sin01;
+		var cos01 = trilateral3_reShape_GradientGrid.cos01;
+		var fRed = function(x,y) {
+			var rx = radAdj(x);
+			return sin01(rx - Math.PI / 2);
+		};
+		var fGreen = function(x,y) {
+			var rx = radAdj(x) + _gthis.theta;
+			var ry = radAdj(y) + _gthis.theta;
+			return (sin01(rx) + cos01((ry * rx - Math.PI / 2 - 0.1) * 20)) / 2;
+		};
+		var fBlue = function(x,y) {
+			return 0.6;
+		};
+		this.gradientGrid.modifyColor(0.1,0.1,fRed,fGreen,fBlue);
+		this.theta += 0.002;
 		var _g = 0;
 		var _g1 = this.draw_Shape;
 		while(_g < _g1.length) {
@@ -4842,6 +4787,183 @@ trilateral3_nodule_PenColor.prototype = $extend(trilateral3_nodule_PenNodule.pro
 		return hyperKitGL_io_Float32Flat.get_size(this.colorTriangles) * 3 | 0;
 	}
 });
+var trilateral3_reShape_GradientGrid = function(pen_) {
+	this.pen = pen_;
+};
+trilateral3_reShape_GradientGrid.__name__ = true;
+trilateral3_reShape_GradientGrid.radAdj = function(r) {
+	return r * Math.PI / 50;
+};
+trilateral3_reShape_GradientGrid.sin01 = function(r) {
+	return 0.5 + Math.sin(r) / 2;
+};
+trilateral3_reShape_GradientGrid.cos01 = function(r) {
+	return 0.5 + Math.cos(r) / 2;
+};
+trilateral3_reShape_GradientGrid.prototype = {
+	addGrid: function(x,y,wid,hi,col,row,dX,dY,fRed,fGreen,fBlue) {
+		this.posMin = this.pen.paintType.get_pos() | 0;
+		this.x = x;
+		this.y = y;
+		this.wid = wid;
+		this.hi = hi;
+		this.col = col;
+		this.row = row;
+		var sx = x;
+		var sy = y;
+		var px = sx;
+		var py = sy;
+		var dx = wid / (col - 1);
+		var dy = hi / (row - 1);
+		var ds = 0;
+		var iy = 0;
+		var ix = 0;
+		this.arrShaper = [];
+		var count = 0;
+		var _g = 0;
+		var _g1 = row;
+		while(_g < _g1) {
+			var iy = _g++;
+			var _g2 = 0;
+			var _g3 = col;
+			while(_g2 < _g3) {
+				var ix = _g2++;
+				var quadShaper = new trilateral3_reShape_QuadShaper(this.pen,ds);
+				this.arrShaper[this.arrShaper.length] = quadShaper;
+				ds += 2;
+				var x = ix * dX;
+				var y = iy * dY;
+				var col1 = -16777216;
+				var v = fRed(x,y);
+				var this1 = Math.round((col1 >> 24 & 255) / 255 * 255) << 24 | Math.round(v * 255) << 16 | Math.round((col1 >> 8 & 255) / 255 * 255) << 8 | Math.round((col1 & 255) / 255 * 255);
+				col1 = this1;
+				var v1 = fGreen(x,y);
+				var this2 = Math.round((col1 >> 24 & 255) / 255 * 255) << 24 | Math.round((col1 >> 16 & 255) / 255 * 255) << 16 | Math.round(v1 * 255) << 8 | Math.round((col1 & 255) / 255 * 255);
+				col1 = this2;
+				var v2 = fBlue(x,y);
+				var this3 = Math.round((col1 >> 24 & 255) / 255 * 255) << 24 | Math.round((col1 >> 16 & 255) / 255 * 255) << 16 | Math.round((col1 >> 8 & 255) / 255 * 255) << 8 | Math.round(v2 * 255);
+				col1 = this3;
+				var colorA = col1;
+				var x1 = (ix + 1) * dX;
+				var y1 = iy * dY;
+				var col2 = -16777216;
+				var v3 = fRed(x1,y1);
+				var this4 = Math.round((col2 >> 24 & 255) / 255 * 255) << 24 | Math.round(v3 * 255) << 16 | Math.round((col2 >> 8 & 255) / 255 * 255) << 8 | Math.round((col2 & 255) / 255 * 255);
+				col2 = this4;
+				var v4 = fGreen(x1,y1);
+				var this5 = Math.round((col2 >> 24 & 255) / 255 * 255) << 24 | Math.round((col2 >> 16 & 255) / 255 * 255) << 16 | Math.round(v4 * 255) << 8 | Math.round((col2 & 255) / 255 * 255);
+				col2 = this5;
+				var v5 = fBlue(x1,y1);
+				var this6 = Math.round((col2 >> 24 & 255) / 255 * 255) << 24 | Math.round((col2 >> 16 & 255) / 255 * 255) << 16 | Math.round((col2 >> 8 & 255) / 255 * 255) << 8 | Math.round(v5 * 255);
+				col2 = this6;
+				var colorB = col2;
+				var x2 = (ix + 1) * dX;
+				var y2 = (iy + 1) * dY;
+				var col3 = -16777216;
+				var v6 = fRed(x2,y2);
+				var this7 = Math.round((col3 >> 24 & 255) / 255 * 255) << 24 | Math.round(v6 * 255) << 16 | Math.round((col3 >> 8 & 255) / 255 * 255) << 8 | Math.round((col3 & 255) / 255 * 255);
+				col3 = this7;
+				var v7 = fGreen(x2,y2);
+				var this8 = Math.round((col3 >> 24 & 255) / 255 * 255) << 24 | Math.round((col3 >> 16 & 255) / 255 * 255) << 16 | Math.round(v7 * 255) << 8 | Math.round((col3 & 255) / 255 * 255);
+				col3 = this8;
+				var v8 = fBlue(x2,y2);
+				var this9 = Math.round((col3 >> 24 & 255) / 255 * 255) << 24 | Math.round((col3 >> 16 & 255) / 255 * 255) << 16 | Math.round((col3 >> 8 & 255) / 255 * 255) << 8 | Math.round(v8 * 255);
+				col3 = this9;
+				var colorC = col3;
+				var x3 = ix * dX;
+				var y3 = (iy + 1) * dY;
+				var col4 = -16777216;
+				var v9 = fRed(x3,y3);
+				var this10 = Math.round((col4 >> 24 & 255) / 255 * 255) << 24 | Math.round(v9 * 255) << 16 | Math.round((col4 >> 8 & 255) / 255 * 255) << 8 | Math.round((col4 & 255) / 255 * 255);
+				col4 = this10;
+				var v10 = fGreen(x3,y3);
+				var this11 = Math.round((col4 >> 24 & 255) / 255 * 255) << 24 | Math.round((col4 >> 16 & 255) / 255 * 255) << 16 | Math.round(v10 * 255) << 8 | Math.round((col4 & 255) / 255 * 255);
+				col4 = this11;
+				var v11 = fBlue(x3,y3);
+				var this12 = Math.round((col4 >> 24 & 255) / 255 * 255) << 24 | Math.round((col4 >> 16 & 255) / 255 * 255) << 16 | Math.round((col4 >> 8 & 255) / 255 * 255) << 8 | Math.round(v11 * 255);
+				col4 = this12;
+				var colorD = col4;
+				quadShaper.drawQuadColors(px,py,dx,dy,colorA,colorB,colorC,colorD);
+				px += dx;
+			}
+			px = sx;
+			py += dy;
+		}
+		var ii_min = this.posMin;
+		var ii_max = this.pen.paintType.get_pos() | 0;
+		var this1 = new trilateral3_shape_IntIterStart(ii_min,ii_max);
+		this.quadRange = this1;
+		return this.quadRange;
+	}
+	,modifyColor: function(dX,dY,fRed,fGreen,fBlue) {
+		var count = 0;
+		var _g = 0;
+		var _g1 = this.row;
+		while(_g < _g1) {
+			var iy = _g++;
+			var _g2 = 0;
+			var _g3 = this.col;
+			while(_g2 < _g3) {
+				var ix = _g2++;
+				var quadShape = this.arrShaper[count];
+				++count;
+				var x = ix * dX;
+				var y = iy * dY;
+				var col = -16777216;
+				var v = fRed(x,y);
+				var this1 = Math.round((col >> 24 & 255) / 255 * 255) << 24 | Math.round(v * 255) << 16 | Math.round((col >> 8 & 255) / 255 * 255) << 8 | Math.round((col & 255) / 255 * 255);
+				col = this1;
+				var v1 = fGreen(x,y);
+				var this2 = Math.round((col >> 24 & 255) / 255 * 255) << 24 | Math.round((col >> 16 & 255) / 255 * 255) << 16 | Math.round(v1 * 255) << 8 | Math.round((col & 255) / 255 * 255);
+				col = this2;
+				var v2 = fBlue(x,y);
+				var this3 = Math.round((col >> 24 & 255) / 255 * 255) << 24 | Math.round((col >> 16 & 255) / 255 * 255) << 16 | Math.round((col >> 8 & 255) / 255 * 255) << 8 | Math.round(v2 * 255);
+				col = this3;
+				var colorA = col;
+				var x1 = (ix + 1) * dX;
+				var y1 = iy * dY;
+				var col1 = -16777216;
+				var v3 = fRed(x1,y1);
+				var this4 = Math.round((col1 >> 24 & 255) / 255 * 255) << 24 | Math.round(v3 * 255) << 16 | Math.round((col1 >> 8 & 255) / 255 * 255) << 8 | Math.round((col1 & 255) / 255 * 255);
+				col1 = this4;
+				var v4 = fGreen(x1,y1);
+				var this5 = Math.round((col1 >> 24 & 255) / 255 * 255) << 24 | Math.round((col1 >> 16 & 255) / 255 * 255) << 16 | Math.round(v4 * 255) << 8 | Math.round((col1 & 255) / 255 * 255);
+				col1 = this5;
+				var v5 = fBlue(x1,y1);
+				var this6 = Math.round((col1 >> 24 & 255) / 255 * 255) << 24 | Math.round((col1 >> 16 & 255) / 255 * 255) << 16 | Math.round((col1 >> 8 & 255) / 255 * 255) << 8 | Math.round(v5 * 255);
+				col1 = this6;
+				var colorB = col1;
+				var x2 = (ix + 1) * dX;
+				var y2 = (iy + 1) * dY;
+				var col2 = -16777216;
+				var v6 = fRed(x2,y2);
+				var this7 = Math.round((col2 >> 24 & 255) / 255 * 255) << 24 | Math.round(v6 * 255) << 16 | Math.round((col2 >> 8 & 255) / 255 * 255) << 8 | Math.round((col2 & 255) / 255 * 255);
+				col2 = this7;
+				var v7 = fGreen(x2,y2);
+				var this8 = Math.round((col2 >> 24 & 255) / 255 * 255) << 24 | Math.round((col2 >> 16 & 255) / 255 * 255) << 16 | Math.round(v7 * 255) << 8 | Math.round((col2 & 255) / 255 * 255);
+				col2 = this8;
+				var v8 = fBlue(x2,y2);
+				var this9 = Math.round((col2 >> 24 & 255) / 255 * 255) << 24 | Math.round((col2 >> 16 & 255) / 255 * 255) << 16 | Math.round((col2 >> 8 & 255) / 255 * 255) << 8 | Math.round(v8 * 255);
+				col2 = this9;
+				var colorC = col2;
+				var x3 = ix * dX;
+				var y3 = (iy + 1) * dY;
+				var col3 = -16777216;
+				var v9 = fRed(x3,y3);
+				var this10 = Math.round((col3 >> 24 & 255) / 255 * 255) << 24 | Math.round(v9 * 255) << 16 | Math.round((col3 >> 8 & 255) / 255 * 255) << 8 | Math.round((col3 & 255) / 255 * 255);
+				col3 = this10;
+				var v10 = fGreen(x3,y3);
+				var this11 = Math.round((col3 >> 24 & 255) / 255 * 255) << 24 | Math.round((col3 >> 16 & 255) / 255 * 255) << 16 | Math.round(v10 * 255) << 8 | Math.round((col3 & 255) / 255 * 255);
+				col3 = this11;
+				var v11 = fBlue(x3,y3);
+				var this12 = Math.round((col3 >> 24 & 255) / 255 * 255) << 24 | Math.round((col3 >> 16 & 255) / 255 * 255) << 16 | Math.round((col3 >> 8 & 255) / 255 * 255) << 8 | Math.round(v11 * 255);
+				col3 = this12;
+				var colorD = col3;
+				quadShape.modifyQuadColors(colorA,colorB,colorC,colorD);
+			}
+		}
+	}
+};
 var trilateral3_reShape_QuadShaper = function(pen,start,wid,hi) {
 	if(hi == null) {
 		hi = 1000;
@@ -4988,6 +5110,26 @@ trilateral3_reShape_QuadShaper.prototype = {
 		_this.paintType.cornerColors(colorA,colorB,colorC1);
 		_this.paintType.next();
 		return 2;
+	}
+	,modifyQuadColors: function(colorA,colorB,colorC,colorD) {
+		if(colorD == null) {
+			colorD = -1;
+		}
+		if(colorC == null) {
+			colorC = -1;
+		}
+		if(colorB == null) {
+			colorB = -1;
+		}
+		if(colorA == null) {
+			colorA = -1;
+		}
+		var v = this.start;
+		this.pen.paintType.set_pos(v);
+		this.pen.paintType.cornerColors(colorA,colorD,colorB);
+		var v = this.start + 1;
+		this.pen.paintType.set_pos(v);
+		this.pen.paintType.cornerColors(colorB,colorD,colorC);
 	}
 };
 var trilateral3_reShape_TrianglesShaper = function(pen,wid,hi) {

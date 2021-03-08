@@ -31,7 +31,7 @@ import trilateral3.geom.Transformer;
 import trilateral3.matrix.Vertex;
 import trilateral3.Trilateral;
 import trilateral3.structure.RangeEntity;
-
+import trilateral3.reShape.GradientGrid;
 // To trace on screen
 import hyperKitGL.DivertTrace;
 function main(){
@@ -47,6 +47,7 @@ class Main extends PlyMix {
     public var posMin:              Int;
     public var quadRange:           IteratorRange;
     public var draw_Shape           = new Array<RangeEntity>();
+    public var gradientGrid:        GradientGrid;
     inline
     function setupDrawingPens(){
         setupNoduleBuffers();
@@ -72,18 +73,11 @@ class Main extends PlyMix {
     }
     inline
     function drawQuad(){
-        posMin = Std.int( penColor.pos );
-        // create a grid of quad and populate it with an image
-        var sx = 100;
-        var sy = 100;
-        var px = sx;
-        var py = sy;
-        var dx = 10;
-        var dy = 10;
-        var ds = 0;
-        var iy = 0;
-        var ix = 0;
+        gradientGrid = new GradientGrid( penColor );
         // make sure functions don't output more than 0 to 1.
+        var radAdj = GradientGrid.radAdj;
+        var sin01  = GradientGrid.sin01;
+        var cos01  = GradientGrid.cos01;
         var fRed = function( x: Float, y: Float ): Float {
             var rx = radAdj( x );
             return sin01( rx - Math.PI/2 );
@@ -96,53 +90,32 @@ class Main extends PlyMix {
         var fBlue = function( x: Float, y: Float ): Float {
             return 0.6;
         }
-        for( iy in 0...100 ){
-            for( ix in 0...100 ){
-                // creates four color gradient square
-                var quadShaper       = new QuadShaper( penColor, ds );
-                ds+=2;
-                var delta = 1/10;
-                var colorA = genColors( ix * delta, iy * delta, fRed, fGreen, fBlue );
-                var colorB = genColors( (ix + 1 )* delta, iy * delta, fRed, fGreen, fBlue );
-                var colorC = genColors( ( ix + 1 ) * delta, ( iy + 1 ) * delta, fRed, fGreen, fBlue );
-                var colorD = genColors( ix * delta, ( iy + 1 ) * delta, fRed, fGreen, fBlue );
-                quadShaper.drawQuadColors( px *1.1, py* 1.1, dx, dy
-                                         , colorA, colorB, colorC, colorD );
-                px += dx;
-            }
-            px = sx;
-            py += dy;
-        }
-        quadRange = posMin...Std.int( penColor.pos );
-        // store for render
+        quadRange = gradientGrid.addGrid( 100, 100, 1000, 1000, 60, 60, 0.1, 0.1, fRed, fGreen, fBlue );
         draw_Shape[ draw_Shape.length ] = { textured: false
                                           , range: quadRange };
         // this should not be needed!!
         setAnimate();
     }
-    inline function radAdj( r: Float ){
-        return r*Math.PI/50;
-    }
-    inline function sin01( r: Float ){
-        return 0.5+(Math.sin( r )/2);
-    }
-    inline function cos01( r: Float ){
-        return 0.5+(Math.cos( r )/2);
-    }
-    inline
-    public function genColors( x: Float, y: Float
-                             , fRed:   ( x: Float , y: Float ) -> Float
-                             , fGreen: ( x: Float, y: Float )-> Float
-                             , fBlue:  ( x: Float, y: Float )-> Float ): ColorInt {
-        var col: ColorInt = 0xFF000000;
-        col.red   = fRed( x, y );
-        col.green = fGreen( x, y );
-        col.blue  = fBlue( x, y );
-        return col;
-    }
-    var theta = 0.;
+    var theta = 0.1;
     override
     public function renderDraw(){
+        var radAdj = GradientGrid.radAdj;
+        var sin01  = GradientGrid.sin01;
+        var cos01  = GradientGrid.cos01;
+        var fRed = function( x: Float, y: Float ): Float {
+            var rx = radAdj( x );
+            return sin01( rx - Math.PI/2 );
+        }
+        var fGreen = function( x: Float, y: Float ): Float {
+            var rx = radAdj( x ) + theta;
+            var ry = radAdj( y ) + theta;
+            return ( sin01( rx ) + cos01( ( ry * rx - Math.PI/2 - 0.1 ) * 20 ))/2;
+        }
+        var fBlue = function( x: Float, y: Float ): Float {
+            return 0.6;
+        }
+        gradientGrid.modifyColor( 0.1, 0.1, fRed, fGreen, fBlue );
+        theta += 0.002;
         for( a_shape in draw_Shape ){
             switch( a_shape.textured ){
                 case true:
