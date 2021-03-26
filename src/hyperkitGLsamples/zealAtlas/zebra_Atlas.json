@@ -88,7 +88,7 @@
         "trimmed": false,
         "spriteSourceSize": {"x":0,"y":0,"w":230,"h":100},
         "sourceSize": {"w":230,"h":100 }
-     },
+     }
  },  
    "meta": {
         "app": "http://www.codeandweb.com/texturepacker",

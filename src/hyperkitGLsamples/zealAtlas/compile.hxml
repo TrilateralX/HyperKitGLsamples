@@ -1,5 +1,5 @@
 -js test.js
--cp ../../src
+-cp ../../../src
 -lib fracs
 -lib justPath
 -lib trilateral3
@@ -8,9 +8,14 @@
 -lib poly2trihx 
 -lib hxGeomAlgo
 -lib hyperKitGL
-
--main hyperkitGLsamples.zealAtlas.ZealAtlas
+-lib htmlHelper
+-lib hxRectPack2D
+-lib geom
+-resource zebra_Atlas.json@atlasJson
+-resource zebra_Leaf.json@leafJson
+-main hyperKitGLsamples.zealAtlas.ZealAtlas
 -D js-flatten 
+-D nanjizal_geom 
 -D useHyperKitGL
 #-D trilateral_debug
 #-D trilateral_debugPoints
@@ -18,7 +23,17 @@
 #--no-traces
 --next
 
-
+#--macro nullSafety("trilateral", Strict)
+#--macro nullSafety("fracs", Strict)
+#--macro nullSafety("justPath", Strict)
+#--macro nullSafety("pallette", Strict)
+#--macro nullSafety("hxPolyK", Strict)
+#--macro nullSafety("poly2trihx", Strict)
+#--macro nullSafety("hxGeomAlgo", Strict)
+#--macro nullSafety("hyperKitGL", Strict)
+#--macro nullSafety("htmlHelper", Strict)
+#--macro nullSafety("hxRectPack2D", Strict)
+#--macro nullSafety("geom", Strict)
 
 -cmd echo '<!DOCTYPE html><meta charset="UTF-8"><html><body><script src="test.js"></script></body></html>' >index.html
 # open html on mac os.

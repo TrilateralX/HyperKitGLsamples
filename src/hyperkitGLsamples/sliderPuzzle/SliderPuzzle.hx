@@ -13,6 +13,8 @@ import haxe.Timer;
 import trilateral3.drawing.Pen;
 import trilateral3.nodule.PenTexture;
 import trilateral3.nodule.PenColor;
+import trilateral3.nodule.PenArrTexture;
+import trilateral3.nodule.PenArrColor;
 import trilateral3.shape.IteratorRange;
 import hyperKitGL.ImageGL;
 import hyperKitGL.BufferGL;
@@ -30,7 +32,7 @@ import trilateral3.geom.Transformer;
 import trilateral3.matrix.Vertex;
 import trilateral3.Trilateral;
 import hyperKitGLsamples.sliderPuzzle.TableCloth;
-
+import hyperKitGLsamples.sliderPuzzle.ZealImage;
 // To trace on screen
 import hyperKitGL.DivertTrace;
 import hyperKitGLsamples.sliderPuzzle.NextTo;
@@ -41,9 +43,9 @@ function main(){
 }
 class SliderPuzzle extends PlyMix {
     public var penColor:            Pen;
-    public var penNoduleColor       = new PenColor();
+    public var penNoduleColor       = new PenArrColor();
     public var penTexture:          Pen;
-    public var penNoduleTexture     = new PenTexture();
+    public var penNoduleTexture     = new PenArrTexture();
     public var theta                = 0.;
     public var quadDepth:           QuadDepth;
     public var firstRange:          IteratorRange;
@@ -72,6 +74,7 @@ class SliderPuzzle extends PlyMix {
         super( width, height );
         trace( 'draw' );
         imageLoader.loadEncoded( [ TableCloth.png ],[ 'tableCloth' ] );
+        //imageLoader.loadEncoded( [ ZealImage.png ],[ 'zealImage' ] );
     }
     inline
     function showImageOnCanvas( img: Image, wid: Int, hi: Int ){
@@ -130,6 +133,7 @@ class SliderPuzzle extends PlyMix {
         alphaLast();
         //hideLast();
         quadDepth.toTop( last );//, 2*nH*nW-2 );
+        trace( penNoduleTexture.get_size() );
         transformUVArr = [ 2.,0.,0.
                          , 0.,2./ratio,0.
                          , 0.,0.,1.];

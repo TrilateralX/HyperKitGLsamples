@@ -9,12 +9,127 @@ function $extend(from, fields) {
 	if( fields.toString !== Object.prototype.toString ) proto.toString = fields.toString;
 	return proto;
 }
+var HxOverrides = function() { };
+HxOverrides.__name__ = true;
+HxOverrides.cca = function(s,index) {
+	var x = s.charCodeAt(index);
+	if(x != x) {
+		return undefined;
+	}
+	return x;
+};
+HxOverrides.substr = function(s,pos,len) {
+	if(len == null) {
+		len = s.length;
+	} else if(len < 0) {
+		if(pos == 0) {
+			len = s.length + len;
+		} else {
+			return "";
+		}
+	}
+	return s.substr(pos,len);
+};
+HxOverrides.now = function() {
+	return Date.now();
+};
 Math.__name__ = true;
+var Reflect = function() { };
+Reflect.__name__ = true;
+Reflect.field = function(o,field) {
+	try {
+		return o[field];
+	} catch( _g ) {
+		return null;
+	}
+};
+Reflect.getProperty = function(o,field) {
+	var tmp;
+	if(o == null) {
+		return null;
+	} else {
+		var tmp1;
+		if(o.__properties__) {
+			tmp = o.__properties__["get_" + field];
+			tmp1 = tmp;
+		} else {
+			tmp1 = false;
+		}
+		if(tmp1) {
+			return o[tmp]();
+		} else {
+			return o[field];
+		}
+	}
+};
+Reflect.fields = function(o) {
+	var a = [];
+	if(o != null) {
+		var hasOwnProperty = Object.prototype.hasOwnProperty;
+		for( var f in o ) {
+		if(f != "__id__" && f != "hx__closures__" && hasOwnProperty.call(o,f)) {
+			a.push(f);
+		}
+		}
+	}
+	return a;
+};
 var Std = function() { };
 Std.__name__ = true;
 Std.string = function(s) {
 	return js_Boot.__string_rec(s,"");
 };
+Std.int = function(x) {
+	return x | 0;
+};
+var geom_structure_Mat1x2 = function(x,y) {
+	this.y = 0.;
+	this.x = 0.;
+	this.x = x;
+	this.y = y;
+};
+geom_structure_Mat1x2.__name__ = true;
+var geom_structure_Mat1x4 = function(x,y,z,w) {
+	if(w == null) {
+		w = 1.;
+	}
+	this.w = 1.;
+	this.z = 0.;
+	this.y = 0.;
+	this.x = 0.;
+	this.x = x;
+	this.y = y;
+	this.z = z;
+	this.w = w;
+};
+geom_structure_Mat1x4.__name__ = true;
+var geom_structure_Mat4x3 = function(a,b,c,d,e,f,g,h,i,j,k,l) {
+	this.l = 0.;
+	this.k = 0.;
+	this.j = 0.;
+	this.i = 0.;
+	this.h = 0.;
+	this.g = 0.;
+	this.f = 0.;
+	this.e = 0.;
+	this.d = 0.;
+	this.c = 0.;
+	this.b = 0.;
+	this.a = 0.;
+	this.a = a;
+	this.b = b;
+	this.c = c;
+	this.d = d;
+	this.e = e;
+	this.f = f;
+	this.g = g;
+	this.h = h;
+	this.i = i;
+	this.j = j;
+	this.k = k;
+	this.l = l;
+};
+geom_structure_Mat4x3.__name__ = true;
 var haxe_Exception = function(message,previous,native) {
 	Error.call(this,message);
 	this.message = message;
@@ -34,9 +149,16 @@ haxe_Exception.thrown = function(value) {
 };
 haxe_Exception.__super__ = Error;
 haxe_Exception.prototype = $extend(Error.prototype,{
-	get_native: function() {
+	toString: function() {
+		return this.get_message();
+	}
+	,get_message: function() {
+		return this.message;
+	}
+	,get_native: function() {
 		return this.__nativeException;
 	}
+	,__properties__: {get_native:"get_native",get_message:"get_message"}
 });
 var haxe_Log = function() { };
 haxe_Log.__name__ = true;
@@ -63,6 +185,24 @@ haxe_Log.trace = function(v,infos) {
 		console.log(str);
 	}
 };
+var haxe_Resource = function() { };
+haxe_Resource.__name__ = true;
+haxe_Resource.getString = function(name) {
+	var _g = 0;
+	var _g1 = haxe_Resource.content;
+	while(_g < _g1.length) {
+		var x = _g1[_g];
+		++_g;
+		if(x.name == name) {
+			if(x.str != null) {
+				return x.str;
+			}
+			var b = haxe_crypto_Base64.decode(x.data);
+			return b.toString();
+		}
+	}
+	return null;
+};
 var haxe_ValueException = function(value,previous,native) {
 	haxe_Exception.call(this,String(value),previous,native);
 	this.value = value;
@@ -71,6 +211,174 @@ haxe_ValueException.__name__ = true;
 haxe_ValueException.__super__ = haxe_Exception;
 haxe_ValueException.prototype = $extend(haxe_Exception.prototype,{
 });
+var haxe_io_Bytes = function(data) {
+	this.length = data.byteLength;
+	this.b = new Uint8Array(data);
+	this.b.bufferValue = data;
+	data.hxBytes = this;
+	data.bytes = this.b;
+};
+haxe_io_Bytes.__name__ = true;
+haxe_io_Bytes.ofString = function(s,encoding) {
+	if(encoding == haxe_io_Encoding.RawNative) {
+		var buf = new Uint8Array(s.length << 1);
+		var _g = 0;
+		var _g1 = s.length;
+		while(_g < _g1) {
+			var i = _g++;
+			var c = s.charCodeAt(i);
+			buf[i << 1] = c & 255;
+			buf[i << 1 | 1] = c >> 8;
+		}
+		return new haxe_io_Bytes(buf.buffer);
+	}
+	var a = [];
+	var i = 0;
+	while(i < s.length) {
+		var c = s.charCodeAt(i++);
+		if(55296 <= c && c <= 56319) {
+			c = c - 55232 << 10 | s.charCodeAt(i++) & 1023;
+		}
+		if(c <= 127) {
+			a.push(c);
+		} else if(c <= 2047) {
+			a.push(192 | c >> 6);
+			a.push(128 | c & 63);
+		} else if(c <= 65535) {
+			a.push(224 | c >> 12);
+			a.push(128 | c >> 6 & 63);
+			a.push(128 | c & 63);
+		} else {
+			a.push(240 | c >> 18);
+			a.push(128 | c >> 12 & 63);
+			a.push(128 | c >> 6 & 63);
+			a.push(128 | c & 63);
+		}
+	}
+	return new haxe_io_Bytes(new Uint8Array(a).buffer);
+};
+haxe_io_Bytes.prototype = {
+	getString: function(pos,len,encoding) {
+		if(pos < 0 || len < 0 || pos + len > this.length) {
+			throw haxe_Exception.thrown(haxe_io_Error.OutsideBounds);
+		}
+		if(encoding == null) {
+			encoding = haxe_io_Encoding.UTF8;
+		}
+		var s = "";
+		var b = this.b;
+		var i = pos;
+		var max = pos + len;
+		switch(encoding._hx_index) {
+		case 0:
+			var debug = pos > 0;
+			while(i < max) {
+				var c = b[i++];
+				if(c < 128) {
+					if(c == 0) {
+						break;
+					}
+					s += String.fromCodePoint(c);
+				} else if(c < 224) {
+					var code = (c & 63) << 6 | b[i++] & 127;
+					s += String.fromCodePoint(code);
+				} else if(c < 240) {
+					var c2 = b[i++];
+					var code1 = (c & 31) << 12 | (c2 & 127) << 6 | b[i++] & 127;
+					s += String.fromCodePoint(code1);
+				} else {
+					var c21 = b[i++];
+					var c3 = b[i++];
+					var u = (c & 15) << 18 | (c21 & 127) << 12 | (c3 & 127) << 6 | b[i++] & 127;
+					s += String.fromCodePoint(u);
+				}
+			}
+			break;
+		case 1:
+			while(i < max) {
+				var c = b[i++] | b[i++] << 8;
+				s += String.fromCodePoint(c);
+			}
+			break;
+		}
+		return s;
+	}
+	,toString: function() {
+		return this.getString(0,this.length);
+	}
+};
+var haxe_io_Encoding = $hxEnums["haxe.io.Encoding"] = { __ename__:"haxe.io.Encoding",__constructs__:null
+	,UTF8: {_hx_name:"UTF8",_hx_index:0,__enum__:"haxe.io.Encoding",toString:$estr}
+	,RawNative: {_hx_name:"RawNative",_hx_index:1,__enum__:"haxe.io.Encoding",toString:$estr}
+};
+haxe_io_Encoding.__constructs__ = [haxe_io_Encoding.UTF8,haxe_io_Encoding.RawNative];
+var haxe_crypto_Base64 = function() { };
+haxe_crypto_Base64.__name__ = true;
+haxe_crypto_Base64.decode = function(str,complement) {
+	if(complement == null) {
+		complement = true;
+	}
+	if(complement) {
+		while(HxOverrides.cca(str,str.length - 1) == 61) str = HxOverrides.substr(str,0,-1);
+	}
+	return new haxe_crypto_BaseCode(haxe_crypto_Base64.BYTES).decodeBytes(haxe_io_Bytes.ofString(str));
+};
+var haxe_crypto_BaseCode = function(base) {
+	var len = base.length;
+	var nbits = 1;
+	while(len > 1 << nbits) ++nbits;
+	if(nbits > 8 || len != 1 << nbits) {
+		throw haxe_Exception.thrown("BaseCode : base length must be a power of two.");
+	}
+	this.base = base;
+	this.nbits = nbits;
+};
+haxe_crypto_BaseCode.__name__ = true;
+haxe_crypto_BaseCode.prototype = {
+	initTable: function() {
+		var tbl = [];
+		var _g = 0;
+		while(_g < 256) {
+			var i = _g++;
+			tbl[i] = -1;
+		}
+		var _g = 0;
+		var _g1 = this.base.length;
+		while(_g < _g1) {
+			var i = _g++;
+			tbl[this.base.b[i]] = i;
+		}
+		this.tbl = tbl;
+	}
+	,decodeBytes: function(b) {
+		var nbits = this.nbits;
+		var base = this.base;
+		if(this.tbl == null) {
+			this.initTable();
+		}
+		var tbl = this.tbl;
+		var size = b.length * nbits >> 3;
+		var out = new haxe_io_Bytes(new ArrayBuffer(size));
+		var buf = 0;
+		var curbits = 0;
+		var pin = 0;
+		var pout = 0;
+		while(pout < size) {
+			while(curbits < 8) {
+				curbits += nbits;
+				buf <<= nbits;
+				var i = tbl[b.b[pin++]];
+				if(i == -1) {
+					throw haxe_Exception.thrown("BaseCode : invalid encoded char");
+				}
+				buf |= i;
+			}
+			curbits -= 8;
+			out.b[pout++] = buf >> curbits & 255;
+		}
+		return out;
+	}
+};
 var haxe_ds_Either = $hxEnums["haxe.ds.Either"] = { __ename__:"haxe.ds.Either",__constructs__:null
 	,Left: ($_=function(v) { return {_hx_index:0,v:v,__enum__:"haxe.ds.Either",toString:$estr}; },$_._hx_name="Left",$_.__params__ = ["v"],$_)
 	,Right: ($_=function(v) { return {_hx_index:1,v:v,__enum__:"haxe.ds.Either",toString:$estr}; },$_._hx_name="Right",$_.__params__ = ["v"],$_)
@@ -80,6 +388,13 @@ var haxe_ds_StringMap = function() {
 	this.h = Object.create(null);
 };
 haxe_ds_StringMap.__name__ = true;
+var haxe_io_Error = $hxEnums["haxe.io.Error"] = { __ename__:"haxe.io.Error",__constructs__:null
+	,Blocked: {_hx_name:"Blocked",_hx_index:0,__enum__:"haxe.io.Error",toString:$estr}
+	,Overflow: {_hx_name:"Overflow",_hx_index:1,__enum__:"haxe.io.Error",toString:$estr}
+	,OutsideBounds: {_hx_name:"OutsideBounds",_hx_index:2,__enum__:"haxe.io.Error",toString:$estr}
+	,Custom: ($_=function(e) { return {_hx_index:3,e:e,__enum__:"haxe.io.Error",toString:$estr}; },$_._hx_name="Custom",$_.__params__ = ["e"],$_)
+};
+haxe_io_Error.__constructs__ = [haxe_io_Error.Blocked,haxe_io_Error.Overflow,haxe_io_Error.OutsideBounds,haxe_io_Error.Custom];
 var haxe_iterators_ArrayIterator = function(array) {
 	this.current = 0;
 	this.array = array;
@@ -120,6 +435,7 @@ var hxGeomAlgo_HxPointData = function(x,y) {
 };
 hxGeomAlgo_HxPointData.__name__ = true;
 var hxGeomAlgo_HxPoint = $hx_exports["hxGeomAlgo"]["HxPoint"] = {};
+hxGeomAlgo_HxPoint.__properties__ = {set_y:"set_y",get_y:"get_y",set_x:"set_x",get_x:"get_x"};
 hxGeomAlgo_HxPoint.get_x = function(this1) {
 	return this1.x;
 };
@@ -898,6 +1214,7 @@ hxGeomAlgo__$Tess2_TessHalfEdge.prototype = {
 	,get_Dnext: function() {
 		return this.Sym.Onext.Sym;
 	}
+	,__properties__: {get_Dnext:"get_Dnext",get_Rprev:"get_Rprev",get_Lprev:"get_Lprev",get_Oprev:"get_Oprev",set_Dst:"set_Dst",get_Dst:"get_Dst",set_Rface:"set_Rface",get_Rface:"get_Rface"}
 };
 var hxGeomAlgo__$Tess2_TessMesh = function() {
 	this.eSym = new hxGeomAlgo__$Tess2_TessHalfEdge(1);
@@ -3024,6 +3341,111 @@ hxGeomAlgo_Tesselator.prototype = {
 		return true;
 	}
 };
+var hxRectPack2D_output_BodyFrames = function(strJson) {
+	this.limbs = [];
+	this.framesHolder = hxRectPack2D_output_TP.reconstruct(strJson);
+	var limb;
+	var _g = 0;
+	var _g1 = this.framesHolder.frames;
+	while(_g < _g1.length) {
+		var f = _g1[_g];
+		++_g;
+		limb = new hxRectPack2D_output_LimbFrame(f);
+		this.limbs.push(limb);
+	}
+};
+hxRectPack2D_output_BodyFrames.__name__ = true;
+hxRectPack2D_output_BodyFrames.prototype = {
+	limbByName: function(name) {
+		var out = null;
+		var _g = 0;
+		var _g1 = this.limbs;
+		while(_g < _g1.length) {
+			var limb = _g1[_g];
+			++_g;
+			if(limb.name == name) {
+				out = limb;
+				break;
+			}
+		}
+		return out;
+	}
+};
+var hxRectPack2D_output_LimbFrame = function(frame_) {
+	this.name = frame_.imageName;
+	var frameContent = frame_.frameContent;
+	var frame = frameContent.frame;
+	this.x = frame.x;
+	this.y = frame.y;
+	this.flipped = frameContent.rotated;
+	if(this.flipped) {
+		this.w = frame.h;
+		this.h = frame.w;
+	} else {
+		this.w = frame.w;
+		this.h = frame.h;
+	}
+	this.realW = frame.w;
+	this.realH = frame.h;
+};
+hxRectPack2D_output_LimbFrame.__name__ = true;
+var hxRectPack2D_output_TP = function() { };
+hxRectPack2D_output_TP.__name__ = true;
+hxRectPack2D_output_TP.reconstruct = function(atlasJson) {
+	var data = JSON.parse(atlasJson);
+	var frameStuff;
+	var temp;
+	var framesHolder = { metaDetails : null, frames : []};
+	var frameCount = 0;
+	var aFrame = Reflect.field(data,"frames");
+	var _g = 0;
+	var _g1 = Reflect.fields(aFrame);
+	while(_g < _g1.length) {
+		var imageName = _g1[_g];
+		++_g;
+		frameStuff = Reflect.getProperty(aFrame,imageName);
+		temp = JSON.stringify(frameStuff);
+		var frameContent = JSON.parse(temp);
+		framesHolder.frames[frameCount] = { imageName : imageName, frameContent : frameContent};
+		++frameCount;
+	}
+	aFrame = Reflect.field(data,"meta");
+	var metaDetails = JSON.parse(JSON.stringify(aFrame));
+	framesHolder.metaDetails = metaDetails;
+	return framesHolder;
+};
+var hxRectPack2D_rectangle_WH = function(w_,h_) {
+	if(h_ == null) {
+		h_ = 0;
+	}
+	if(w_ == null) {
+		w_ = 0;
+	}
+	this.h = 0;
+	this.w = 0;
+	this.w = w_;
+	this.h = h_;
+};
+hxRectPack2D_rectangle_WH.__name__ = true;
+var hxRectPack2D_rectangle_XYWH = function(x_,y_,w_,h_) {
+	this.y = 0;
+	this.x = 0;
+	hxRectPack2D_rectangle_WH.call(this,w_,h_);
+	this.x = x_;
+	this.y = y_;
+};
+hxRectPack2D_rectangle_XYWH.__name__ = true;
+hxRectPack2D_rectangle_XYWH.__super__ = hxRectPack2D_rectangle_WH;
+hxRectPack2D_rectangle_XYWH.prototype = $extend(hxRectPack2D_rectangle_WH.prototype,{
+});
+var hxRectPack2D_rectangle_XYWHF = function(id_,x_,y_,w_,h_) {
+	hxRectPack2D_rectangle_XYWH.call(this,x_,y_,w_,h_);
+	this.id = id_;
+};
+hxRectPack2D_rectangle_XYWHF.__name__ = true;
+hxRectPack2D_rectangle_XYWHF.__super__ = hxRectPack2D_rectangle_XYWH;
+hxRectPack2D_rectangle_XYWHF.prototype = $extend(hxRectPack2D_rectangle_XYWH.prototype,{
+});
 var hyperKitGL_AnimateTimer = function() { };
 hyperKitGL_AnimateTimer.__name__ = true;
 hyperKitGL_AnimateTimer.loop = function(tim) {
@@ -3119,6 +3541,30 @@ hyperKitGL_ImageLoader.prototype = {
 			_g(image1,name,index,e);
 		};
 		image.src = img;
+	}
+	,loadEncoded: function(imageEncoded,imageNames) {
+		this.count = imageNames.length;
+		var _g = 0;
+		var _g1 = this.count;
+		while(_g < _g1) {
+			var i = _g++;
+			haxe_Log.trace("loadEncoded " + i + "imageNames " + imageNames[i],{ fileName : "hyperKitGL/ImageLoader.js.hx", lineNumber : 50, className : "hyperKitGL.ImageLoader", methodName : "loadEncoded"});
+			this.encodedLoad(imageEncoded[i],imageNames[i],i);
+		}
+	}
+	,encodedLoad: function(imgStr,name,index) {
+		haxe_Log.trace(" load encode ",{ fileName : "hyperKitGL/ImageLoader.js.hx", lineNumber : 56, className : "hyperKitGL.ImageLoader", methodName : "encodedLoad"});
+		var image = new Image();
+		this.topLeft(image);
+		var _g = $bind(this,this.store);
+		var image1 = image;
+		var name1 = name;
+		var index1 = index;
+		image.onload = function(e) {
+			_g(image1,name1,index1,e);
+		};
+		image.src = imgStr;
+		haxe_Log.trace(image,{ fileName : "hyperKitGL/ImageLoader.js.hx", lineNumber : 62, className : "hyperKitGL.ImageLoader", methodName : "encodedLoad"});
 	}
 	,topLeft: function(image) {
 		var imgStyle = image.style;
@@ -3344,12 +3790,20 @@ var hyperKitGL_PlyMix = function(width_,height_,hasImage,animate) {
 			}
 			var gl = this.gl;
 			var indices = this.indicesTexture;
+			var isDynamic = true;
+			if(isDynamic == null) {
+				isDynamic = false;
+			}
 			var buf = gl.createBuffer();
 			var staticDraw = 35044;
 			var dynamicDraw = 35048;
 			var arrBuffer = 34963;
 			gl.bindBuffer(arrBuffer,buf);
-			gl.bufferData(arrBuffer,new Uint16Array(indices),staticDraw);
+			if(isDynamic) {
+				gl.bufferData(arrBuffer,new Uint16Array(indices),dynamicDraw);
+			} else {
+				gl.bufferData(arrBuffer,new Uint16Array(indices),staticDraw);
+			}
 			gl.bindBuffer(arrBuffer,null);
 			this.bufIndices = buf;
 		}
@@ -3454,7 +3908,6 @@ hyperKitGL_PlyMix.prototype = {
 			case 2:
 				this.gl.useProgram(this.programTexture);
 				this.gl.bindBuffer(34962,this.bufTexture);
-				this.gl.bindBuffer(34962,this.bufIndices);
 				var gl = this.gl;
 				var program = this.programTexture;
 				var rgbaName = this.vertexColor;
@@ -3663,12 +4116,20 @@ hyperKitGL_PlyMix.prototype = {
 			}
 			var gl = this.gl;
 			var indices = this.indicesTexture;
+			var isDynamic = true;
+			if(isDynamic == null) {
+				isDynamic = false;
+			}
 			var buf = gl.createBuffer();
 			var staticDraw = 35044;
 			var dynamicDraw = 35048;
 			var arrBuffer = 34963;
 			gl.bindBuffer(arrBuffer,buf);
-			gl.bufferData(arrBuffer,new Uint16Array(indices),staticDraw);
+			if(isDynamic) {
+				gl.bufferData(arrBuffer,new Uint16Array(indices),dynamicDraw);
+			} else {
+				gl.bufferData(arrBuffer,new Uint16Array(indices),staticDraw);
+			}
 			gl.bindBuffer(arrBuffer,null);
 			this.bufIndices = buf;
 		}
@@ -3783,7 +4244,6 @@ hyperKitGL_PlyMix.prototype = {
 			indicesTexture.push(count++);
 			indicesTexture.push(count++);
 		}
-		this.gl.bufferData(34963,new Uint16Array(this.indicesTexture),dynamicDraw);
 		this.drawData(this.programTexture,this.dataGLtexture,start,end,27);
 	}
 	,drawColorShape: function(start,end) {
@@ -3877,7 +4337,15 @@ hyperKitGL_Sheet.prototype = {
 		this.cx = this.canvas2D.getContext("2d");
 	}
 };
+var hyperKitGL_XY = function(x,y) {
+	this.y = 0.;
+	this.x = 0.;
+	this.x = x;
+	this.y = y;
+};
+hyperKitGL_XY.__name__ = true;
 var hyperKitGL_io_ArrayColorTriangles = {};
+hyperKitGL_io_ArrayColorTriangles.__properties__ = {set_redC:"set_redC",get_redC:"get_redC",set_cz:"set_cz",get_cz:"get_cz",set_cy:"set_cy",get_cy:"get_cy",set_cx:"set_cx",get_cx:"get_cx",set_redB:"set_redB",get_redB:"get_redB",set_bz:"set_bz",get_bz:"get_bz",set_by:"set_by",get_by:"get_by",set_bx:"set_bx",get_bx:"get_bx",set_redA:"set_redA",get_redA:"get_redA",set_az:"set_az",get_az:"get_az",set_ay:"set_ay",get_ay:"get_ay",set_ax:"set_ax",get_ax:"get_ax"};
 hyperKitGL_io_ArrayColorTriangles.get_ax = function(this1) {
 	return this1[(this1[0] | 0) * 21 + 1];
 };
@@ -3995,7 +4463,7 @@ hyperKitGL_io_ArrayColorTriangles.moveDelta = function(this1,dx,dy) {
 	hyperKitGL_io_ArrayColorTriangles.set_cy(this1,hyperKitGL_io_ArrayColorTriangles.get_cy(this1) + dy);
 };
 hyperKitGL_io_ArrayColorTriangles.fullHit = function(this1,px,py) {
-	if(px > Math.min(Math.min(hyperKitGL_io_ArrayColorTriangles.get_ax(this1),hyperKitGL_io_ArrayColorTriangles.get_bx(this1)),hyperKitGL_io_ArrayColorTriangles.get_cx(this1)) && px < Math.max(Math.max(hyperKitGL_io_ArrayColorTriangles.get_ax(this1),hyperKitGL_io_ArrayColorTriangles.get_bx(this1)),hyperKitGL_io_ArrayColorTriangles.get_cx(this1)) && py > Math.min(Math.min(hyperKitGL_io_ArrayColorTriangles.get_ay(this1),hyperKitGL_io_ArrayColorTriangles.get_by(this1)),hyperKitGL_io_ArrayColorTriangles.get_cy(this1)) && py < Math.max(Math.max(hyperKitGL_io_ArrayColorTriangles.get_ay(this1),hyperKitGL_io_ArrayColorTriangles.get_by(this1)),hyperKitGL_io_ArrayColorTriangles.get_cy(this1))) {
+	if(px > Math.min(Math.min(hyperKitGL_io_ArrayColorTriangles.get_ax(this1),hyperKitGL_io_ArrayColorTriangles.get_bx(this1)),hyperKitGL_io_ArrayColorTriangles.get_cx(this1)) && px < Math.max(Math.max(hyperKitGL_io_ArrayColorTriangles.get_ax(this1),hyperKitGL_io_ArrayColorTriangles.get_bx(this1)),hyperKitGL_io_ArrayColorTriangles.get_cx(this1)) && py > Math.max(Math.max(hyperKitGL_io_ArrayColorTriangles.get_ay(this1),hyperKitGL_io_ArrayColorTriangles.get_by(this1)),hyperKitGL_io_ArrayColorTriangles.get_cy(this1)) && py < Math.max(Math.max(hyperKitGL_io_ArrayColorTriangles.get_ay(this1),hyperKitGL_io_ArrayColorTriangles.get_by(this1)),hyperKitGL_io_ArrayColorTriangles.get_cy(this1))) {
 		return true;
 	}
 	var planeAB = (hyperKitGL_io_ArrayColorTriangles.get_ax(this1) - px) * (hyperKitGL_io_ArrayColorTriangles.get_by(this1) - py) - (hyperKitGL_io_ArrayColorTriangles.get_bx(this1) - px) * (hyperKitGL_io_ArrayColorTriangles.get_ay(this1) - py);
@@ -4006,6 +4474,166 @@ hyperKitGL_io_ArrayColorTriangles.fullHit = function(this1,px,py) {
 	} else {
 		return false;
 	}
+};
+var hyperKitGL_io_ArrayColorTrianglesUV = {};
+hyperKitGL_io_ArrayColorTrianglesUV.__properties__ = {set_redC:"set_redC",get_redC:"get_redC",set_cz:"set_cz",get_cz:"get_cz",set_cy:"set_cy",get_cy:"get_cy",set_cx:"set_cx",get_cx:"get_cx",set_redB:"set_redB",get_redB:"get_redB",set_bz:"set_bz",get_bz:"get_bz",set_by:"set_by",get_by:"get_by",set_bx:"set_bx",get_bx:"get_bx",set_redA:"set_redA",get_redA:"get_redA",set_az:"set_az",get_az:"get_az",set_ay:"set_ay",get_ay:"get_ay",set_ax:"set_ax",get_ax:"get_ax"};
+hyperKitGL_io_ArrayColorTrianglesUV.get_ax = function(this1) {
+	return this1[(this1[0] | 0) * 27 + 1];
+};
+hyperKitGL_io_ArrayColorTrianglesUV.set_ax = function(this1,v) {
+	this1[(this1[0] | 0) * 27 + 1] = v;
+	return v;
+};
+hyperKitGL_io_ArrayColorTrianglesUV.get_ay = function(this1) {
+	return this1[(this1[0] | 0) * 27 + 1 + 1];
+};
+hyperKitGL_io_ArrayColorTrianglesUV.set_ay = function(this1,v) {
+	this1[(this1[0] | 0) * 27 + 1 + 1] = v;
+	return v;
+};
+hyperKitGL_io_ArrayColorTrianglesUV.get_az = function(this1) {
+	return this1[(this1[0] | 0) * 27 + 2 + 1];
+};
+hyperKitGL_io_ArrayColorTrianglesUV.set_az = function(this1,v) {
+	this1[(this1[0] | 0) * 27 + 2 + 1] = v;
+	return v;
+};
+hyperKitGL_io_ArrayColorTrianglesUV.get_redA = function(this1) {
+	return this1[(this1[0] | 0) * 27 + 3 + 1];
+};
+hyperKitGL_io_ArrayColorTrianglesUV.set_redA = function(this1,v) {
+	this1[(this1[0] | 0) * 27 + 3 + 1] = v;
+	return v;
+};
+hyperKitGL_io_ArrayColorTrianglesUV.get_bx = function(this1) {
+	return this1[(this1[0] | 0) * 27 + 9 + 1];
+};
+hyperKitGL_io_ArrayColorTrianglesUV.set_bx = function(this1,v) {
+	this1[(this1[0] | 0) * 27 + 9 + 1] = v;
+	return v;
+};
+hyperKitGL_io_ArrayColorTrianglesUV.get_by = function(this1) {
+	return this1[(this1[0] | 0) * 27 + 10 + 1];
+};
+hyperKitGL_io_ArrayColorTrianglesUV.set_by = function(this1,v) {
+	this1[(this1[0] | 0) * 27 + 10 + 1] = v;
+	return v;
+};
+hyperKitGL_io_ArrayColorTrianglesUV.get_bz = function(this1) {
+	return this1[(this1[0] | 0) * 27 + 11 + 1];
+};
+hyperKitGL_io_ArrayColorTrianglesUV.set_bz = function(this1,v) {
+	this1[(this1[0] | 0) * 27 + 11 + 1] = v;
+	return v;
+};
+hyperKitGL_io_ArrayColorTrianglesUV.get_redB = function(this1) {
+	return this1[(this1[0] | 0) * 27 + 12 + 1];
+};
+hyperKitGL_io_ArrayColorTrianglesUV.set_redB = function(this1,v) {
+	this1[(this1[0] | 0) * 27 + 12 + 1] = v;
+	return v;
+};
+hyperKitGL_io_ArrayColorTrianglesUV.get_cx = function(this1) {
+	return this1[(this1[0] | 0) * 27 + 18 + 1];
+};
+hyperKitGL_io_ArrayColorTrianglesUV.set_cx = function(this1,v) {
+	this1[(this1[0] | 0) * 27 + 18 + 1] = v;
+	return v;
+};
+hyperKitGL_io_ArrayColorTrianglesUV.get_cy = function(this1) {
+	return this1[(this1[0] | 0) * 27 + 19 + 1];
+};
+hyperKitGL_io_ArrayColorTrianglesUV.set_cy = function(this1,v) {
+	this1[(this1[0] | 0) * 27 + 19 + 1] = v;
+	return v;
+};
+hyperKitGL_io_ArrayColorTrianglesUV.get_cz = function(this1) {
+	return this1[(this1[0] | 0) * 27 + 20 + 1];
+};
+hyperKitGL_io_ArrayColorTrianglesUV.set_cz = function(this1,v) {
+	this1[(this1[0] | 0) * 27 + 20 + 1] = v;
+	return v;
+};
+hyperKitGL_io_ArrayColorTrianglesUV.get_redC = function(this1) {
+	return this1[(this1[0] | 0) * 27 + 21 + 1];
+};
+hyperKitGL_io_ArrayColorTrianglesUV.set_redC = function(this1,v) {
+	this1[(this1[0] | 0) * 27 + 21 + 1] = v;
+	return v;
+};
+hyperKitGL_io_ArrayColorTrianglesUV.triangle = function(this1,ax_,ay_,az_,bx_,by_,bz_,cx_,cy_,cz_) {
+	hyperKitGL_io_ArrayColorTrianglesUV.set_ax(this1,ax_);
+	hyperKitGL_io_ArrayColorTrianglesUV.set_ay(this1,ay_);
+	hyperKitGL_io_ArrayColorTrianglesUV.set_az(this1,az_);
+	hyperKitGL_io_ArrayColorTrianglesUV.set_bx(this1,bx_);
+	hyperKitGL_io_ArrayColorTrianglesUV.set_by(this1,by_);
+	hyperKitGL_io_ArrayColorTrianglesUV.set_bz(this1,bz_);
+	hyperKitGL_io_ArrayColorTrianglesUV.set_cx(this1,cx_);
+	hyperKitGL_io_ArrayColorTrianglesUV.set_cy(this1,cy_);
+	hyperKitGL_io_ArrayColorTrianglesUV.set_cz(this1,cz_);
+	var windingAdjusted = hyperKitGL_io_ArrayColorTrianglesUV.adjustWinding(this1);
+	if(windingAdjusted) {
+		hyperKitGL_io_ArrayColorTrianglesUV.set_bx(this1,cx_);
+		hyperKitGL_io_ArrayColorTrianglesUV.set_by(this1,cy_);
+		hyperKitGL_io_ArrayColorTrianglesUV.set_cx(this1,bx_);
+		hyperKitGL_io_ArrayColorTrianglesUV.set_cy(this1,by_);
+	}
+	return windingAdjusted;
+};
+hyperKitGL_io_ArrayColorTrianglesUV.triangleUV = function(this1,uA_,vA_,uB_,vB_,uC_,vC_,windAdjust_) {
+	var windAdjust = windAdjust_ == null ? hyperKitGL_io_ArrayColorTrianglesUV.adjustWinding(this1) : windAdjust_;
+	this1[(this1[0] | 0) * 27 + 7 + 1] = uA_;
+	this1[(this1[0] | 0) * 27 + 8 + 1] = vA_;
+	if(windAdjust) {
+		this1[(this1[0] | 0) * 27 + 16 + 1] = uC_;
+		this1[(this1[0] | 0) * 27 + 17 + 1] = vC_;
+		this1[(this1[0] | 0) * 27 + 25 + 1] = uB_;
+		this1[(this1[0] | 0) * 27 + 26 + 1] = vB_;
+	} else {
+		this1[(this1[0] | 0) * 27 + 16 + 1] = uB_;
+		this1[(this1[0] | 0) * 27 + 17 + 1] = vB_;
+		this1[(this1[0] | 0) * 27 + 25 + 1] = uC_;
+		this1[(this1[0] | 0) * 27 + 26 + 1] = vC_;
+	}
+	return windAdjust;
+};
+hyperKitGL_io_ArrayColorTrianglesUV.adjustWinding = function(this1) {
+	return hyperKitGL_io_ArrayColorTrianglesUV.get_ax(this1) * hyperKitGL_io_ArrayColorTrianglesUV.get_by(this1) - hyperKitGL_io_ArrayColorTrianglesUV.get_bx(this1) * hyperKitGL_io_ArrayColorTrianglesUV.get_ay(this1) + (hyperKitGL_io_ArrayColorTrianglesUV.get_bx(this1) * hyperKitGL_io_ArrayColorTrianglesUV.get_cy(this1) - hyperKitGL_io_ArrayColorTrianglesUV.get_cx(this1) * hyperKitGL_io_ArrayColorTrianglesUV.get_by(this1)) + (hyperKitGL_io_ArrayColorTrianglesUV.get_cx(this1) * hyperKitGL_io_ArrayColorTrianglesUV.get_ay(this1) - hyperKitGL_io_ArrayColorTrianglesUV.get_ax(this1) * hyperKitGL_io_ArrayColorTrianglesUV.get_cy(this1)) > 0;
+};
+hyperKitGL_io_ArrayColorTrianglesUV.moveDelta = function(this1,dx,dy) {
+	hyperKitGL_io_ArrayColorTrianglesUV.set_ax(this1,hyperKitGL_io_ArrayColorTrianglesUV.get_ax(this1) + dx);
+	hyperKitGL_io_ArrayColorTrianglesUV.set_ay(this1,hyperKitGL_io_ArrayColorTrianglesUV.get_ay(this1) + dy);
+	hyperKitGL_io_ArrayColorTrianglesUV.set_bx(this1,hyperKitGL_io_ArrayColorTrianglesUV.get_bx(this1) + dx);
+	hyperKitGL_io_ArrayColorTrianglesUV.set_by(this1,hyperKitGL_io_ArrayColorTrianglesUV.get_by(this1) + dy);
+	hyperKitGL_io_ArrayColorTrianglesUV.set_cx(this1,hyperKitGL_io_ArrayColorTrianglesUV.get_cx(this1) + dx);
+	hyperKitGL_io_ArrayColorTrianglesUV.set_cy(this1,hyperKitGL_io_ArrayColorTrianglesUV.get_cy(this1) + dy);
+};
+hyperKitGL_io_ArrayColorTrianglesUV.fullHit = function(this1,px,py) {
+	if(px > Math.min(Math.min(hyperKitGL_io_ArrayColorTrianglesUV.get_ax(this1),hyperKitGL_io_ArrayColorTrianglesUV.get_bx(this1)),hyperKitGL_io_ArrayColorTrianglesUV.get_cx(this1)) && px < Math.max(Math.max(hyperKitGL_io_ArrayColorTrianglesUV.get_ax(this1),hyperKitGL_io_ArrayColorTrianglesUV.get_bx(this1)),hyperKitGL_io_ArrayColorTrianglesUV.get_cx(this1)) && py > Math.max(Math.max(hyperKitGL_io_ArrayColorTrianglesUV.get_ay(this1),hyperKitGL_io_ArrayColorTrianglesUV.get_by(this1)),hyperKitGL_io_ArrayColorTrianglesUV.get_cy(this1)) && py < Math.max(Math.max(hyperKitGL_io_ArrayColorTrianglesUV.get_ay(this1),hyperKitGL_io_ArrayColorTrianglesUV.get_by(this1)),hyperKitGL_io_ArrayColorTrianglesUV.get_cy(this1))) {
+		return true;
+	}
+	var planeAB = (hyperKitGL_io_ArrayColorTrianglesUV.get_ax(this1) - px) * (hyperKitGL_io_ArrayColorTrianglesUV.get_by(this1) - py) - (hyperKitGL_io_ArrayColorTrianglesUV.get_bx(this1) - px) * (hyperKitGL_io_ArrayColorTrianglesUV.get_ay(this1) - py);
+	var planeBC = (hyperKitGL_io_ArrayColorTrianglesUV.get_bx(this1) - px) * (hyperKitGL_io_ArrayColorTrianglesUV.get_cy(this1) - py) - (hyperKitGL_io_ArrayColorTrianglesUV.get_cx(this1) - px) * (hyperKitGL_io_ArrayColorTrianglesUV.get_by(this1) - py);
+	var planeCA = (hyperKitGL_io_ArrayColorTrianglesUV.get_cx(this1) - px) * (hyperKitGL_io_ArrayColorTrianglesUV.get_ay(this1) - py) - (hyperKitGL_io_ArrayColorTrianglesUV.get_ax(this1) - px) * (hyperKitGL_io_ArrayColorTrianglesUV.get_cy(this1) - py);
+	if((Math.abs(planeAB) / planeAB | 0) == (Math.abs(planeBC) / planeBC | 0)) {
+		return (Math.abs(planeBC) / planeBC | 0) == (Math.abs(planeCA) / planeCA | 0);
+	} else {
+		return false;
+	}
+};
+hyperKitGL_io_ArrayColorTrianglesUV.moveDeltaUV = function(this1,du,dv) {
+	var v = this1[(this1[0] | 0) * 27 + 7 + 1] + du;
+	this1[(this1[0] | 0) * 27 + 7 + 1] = v;
+	var v = this1[(this1[0] | 0) * 27 + 8 + 1] + dv;
+	this1[(this1[0] | 0) * 27 + 8 + 1] = v;
+	var v = this1[(this1[0] | 0) * 27 + 16 + 1] + du;
+	this1[(this1[0] | 0) * 27 + 16 + 1] = v;
+	var v = this1[(this1[0] | 0) * 27 + 17 + 1] + dv;
+	this1[(this1[0] | 0) * 27 + 17 + 1] = v;
+	var v = this1[(this1[0] | 0) * 27 + 25 + 1] + du;
+	this1[(this1[0] | 0) * 27 + 25 + 1] = v;
+	var v = this1[(this1[0] | 0) * 27 + 26 + 1] + dv;
+	this1[(this1[0] | 0) * 27 + 26 + 1] = v;
 };
 var hyperKitGL_io_ArrayFlatDepth = {};
 hyperKitGL_io_ArrayFlatDepth.rangeToEnd = function(this1,starting,totalLen,section) {
@@ -4040,6 +4668,7 @@ hyperKitGL_io_ArrayFlatDepth.rangeToEnd = function(this1,starting,totalLen,secti
 	return true;
 };
 var hyperKitGL_io_FloatColorTriangles = {};
+hyperKitGL_io_FloatColorTriangles.__properties__ = {set_cz:"set_cz",set_cy:"set_cy",get_cy:"get_cy",set_cx:"set_cx",get_cx:"get_cx",set_bz:"set_bz",set_by:"set_by",get_by:"get_by",set_bx:"set_bx",get_bx:"get_bx",set_az:"set_az",set_ay:"set_ay",get_ay:"get_ay",set_ax:"set_ax",get_ax:"get_ax"};
 hyperKitGL_io_FloatColorTriangles.get_ax = function(this1) {
 	return this1[(this1[0] | 0) * 21 + 2];
 };
@@ -4119,6 +4748,7 @@ hyperKitGL_io_FloatColorTriangles.adjustWinding = function(this1) {
 	return hyperKitGL_io_FloatColorTriangles.get_ax(this1) * hyperKitGL_io_FloatColorTriangles.get_by(this1) - hyperKitGL_io_FloatColorTriangles.get_bx(this1) * hyperKitGL_io_FloatColorTriangles.get_ay(this1) + (hyperKitGL_io_FloatColorTriangles.get_bx(this1) * hyperKitGL_io_FloatColorTriangles.get_cy(this1) - hyperKitGL_io_FloatColorTriangles.get_cx(this1) * hyperKitGL_io_FloatColorTriangles.get_by(this1)) + (hyperKitGL_io_FloatColorTriangles.get_cx(this1) * hyperKitGL_io_FloatColorTriangles.get_ay(this1) - hyperKitGL_io_FloatColorTriangles.get_ax(this1) * hyperKitGL_io_FloatColorTriangles.get_cy(this1)) > 0;
 };
 var hyperKitGL_io_FloatColorTrianglesUV = {};
+hyperKitGL_io_FloatColorTrianglesUV.__properties__ = {set_cz:"set_cz",set_cy:"set_cy",get_cy:"get_cy",set_cx:"set_cx",get_cx:"get_cx",set_bz:"set_bz",set_by:"set_by",get_by:"get_by",set_bx:"set_bx",get_bx:"get_bx",set_az:"set_az",set_ay:"set_ay",get_ay:"get_ay",set_ax:"set_ax",get_ax:"get_ax"};
 hyperKitGL_io_FloatColorTrianglesUV.get_ax = function(this1) {
 	return this1[(this1[0] | 0) * 27 + 2];
 };
@@ -4212,95 +4842,160 @@ hyperKitGL_io_FloatColorTrianglesUV.triangleUV = function(this1,uA_,vA_,uB_,vB_,
 hyperKitGL_io_FloatColorTrianglesUV.adjustWinding = function(this1) {
 	return hyperKitGL_io_FloatColorTrianglesUV.get_ax(this1) * hyperKitGL_io_FloatColorTrianglesUV.get_by(this1) - hyperKitGL_io_FloatColorTrianglesUV.get_bx(this1) * hyperKitGL_io_FloatColorTrianglesUV.get_ay(this1) + (hyperKitGL_io_FloatColorTrianglesUV.get_bx(this1) * hyperKitGL_io_FloatColorTrianglesUV.get_cy(this1) - hyperKitGL_io_FloatColorTrianglesUV.get_cx(this1) * hyperKitGL_io_FloatColorTrianglesUV.get_by(this1)) + (hyperKitGL_io_FloatColorTrianglesUV.get_cx(this1) * hyperKitGL_io_FloatColorTrianglesUV.get_ay(this1) - hyperKitGL_io_FloatColorTrianglesUV.get_ax(this1) * hyperKitGL_io_FloatColorTrianglesUV.get_cy(this1)) > 0;
 };
-var hyperKitGLsamples_gradientGrid_Main = function(width_,height_,hasImage,animate) {
-	this.theta = 0.1;
+var hyperKitGLsamples_zealAtlas_ZealAtlas = function(width,height) {
+	this.theta = Math.PI / 100;
+	this.names = [];
+	this.blocks = [];
+	this.bgQuadFill = 16777215;
 	this.draw_Shape = [];
+	this.penNoduleTexture = new trilateral3_nodule_PenArrTexture();
 	this.penNoduleColor = new trilateral3_nodule_PenArrColor();
-	hyperKitGL_PlyMix.call(this,width_,height_,hasImage,animate);
+	hyperKitGL_PlyMix.call(this,width,height);
+	haxe_Log.trace("draw",{ fileName : "../../../src/hyperKitGLsamples/zealAtlas/ZealAtlas.hx", lineNumber : 110, className : "hyperKitGLsamples.zealAtlas.ZealAtlas", methodName : "new"});
+	this.imageLoader.loadEncoded(["data:image/png;base64,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pws+pf5qScTz46oBXQeEax4BSyMEIc1CbWZx1xcrWon1CxIPznNN8iUIgjhwfPHFA5E2pbCAAHor7EhqQKfu+twjYGxipPpVFCMvlZO0JSdh9RbUzqxyRRAEcQzoy1IOyh/tSfj6uBXQK3d84lXAkvQjkG9QIKNY99mWnCycg3m+BEEQR0Qqp/txjsMAcoK1OlnShkCaNfL1cohtycmoJDeE0xyrBEEQxHPesFzoYhslsVWm7WCCtBnvJQiCIAgRrokla1s7Qsksv7NxXFt8o0Lec7qcCYIgCEIB6UhSN1sEV3Aj18pG2t9HNbZp9RIEQRCEA1tHGyRsY7ueillXvwpUzreM9RIEQRBEiMc62l5aUVQ8QxOw+T3+dcHnShAEQRBlAn6oo+31BY5cy0LAKm4M4p3R3UwQBEEQSSAdyWuoUCigsSBgZR1fkXgJgiAIot0KntUqWnktCHvXNes4EwRBEMRYBFyyfnU6MMmXIAiCIEYk4EJakY75nvHZEQRBEMRwAj7X5CslKUm+BEEQBLFZAp54LQlJvgRBEASxYQLWKuhCTedbki9BEARBjIQ//ak7Q8xX8oCDHsBUOxMEQRDEqPZv153qBgte1hGfEkEQBEFshoRnUo6SvXsJgiAIYnsEfNIT7oPVS5czQRAEQWyHhKd9cQ1avQRBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEARBEEQb/h/Fuf12FNXzuAAAAABJRU5ErkJggg=="],["zealImage"]);
 };
-hyperKitGLsamples_gradientGrid_Main.__name__ = true;
-hyperKitGLsamples_gradientGrid_Main.__super__ = hyperKitGL_PlyMix;
-hyperKitGLsamples_gradientGrid_Main.prototype = $extend(hyperKitGL_PlyMix.prototype,{
+hyperKitGLsamples_zealAtlas_ZealAtlas.__name__ = true;
+hyperKitGLsamples_zealAtlas_ZealAtlas.__super__ = hyperKitGL_PlyMix;
+hyperKitGLsamples_zealAtlas_ZealAtlas.prototype = $extend(hyperKitGL_PlyMix.prototype,{
 	draw: function() {
+		haxe_Log.trace("__draw ",{ fileName : "../../../src/hyperKitGLsamples/zealAtlas/ZealAtlas.hx", lineNumber : 131, className : "hyperKitGLsamples.zealAtlas.ZealAtlas", methodName : "draw"});
+		haxe_Log.trace("setupImage",{ fileName : "../../../src/hyperKitGLsamples/zealAtlas/ZealAtlas.hx", lineNumber : 116, className : "hyperKitGLsamples.zealAtlas.ZealAtlas", methodName : "setupImage"});
+		this.img = this.imageLoader.imageArr[0];
+		this.imgW = this.img.width;
+		this.imgH = this.img.height;
+		var ratio = this.img.height / this.img.width;
+		this.transformUVArr = [2.,0.,0.,0.,2. / ratio,0.,0.,0.,1.];
+		this.mainSheet.cx.drawImage(this.img,0,0,this.imgW,this.imgH);
+		haxe_Log.trace("setupDrawingPens",{ fileName : "../../../src/hyperKitGLsamples/zealAtlas/ZealAtlas.hx", lineNumber : 88, className : "hyperKitGLsamples.zealAtlas.ZealAtlas", methodName : "setupDrawingPens"});
 		this.dataGLcolor = { get_data : ($_=this.penNoduleColor,$bind($_,$_.get_data)), get_size : ($_=this.penNoduleColor,$bind($_,$_.get_size))};
+		this.dataGLtexture = { get_data : ($_=this.penNoduleTexture,$bind($_,$_.get_data)), get_size : ($_=this.penNoduleTexture,$bind($_,$_.get_size))};
 		this.penColor = this.penNoduleColor.pen;
 		this.penColor.currentColor = -1;
-		this.gradientGrid = new trilateral3_reShape_GradientGrid(this.penColor);
-		var radAdj = trilateral3_reShape_GradientGrid.radAdj;
-		var sin01 = trilateral3_reShape_GradientGrid.sin01;
-		var cos01 = trilateral3_reShape_GradientGrid.cos01;
-		var fRed = function(x,y) {
-			var rx = radAdj(x);
-			return sin01(rx - Math.PI / 2);
-		};
-		var fGreen = function(x,y) {
-			var rx = radAdj(x);
-			var ry = radAdj(y);
-			return (sin01(rx) + cos01((ry * rx - Math.PI / 2 - 0.1) * 20)) / 2;
-		};
-		var fBlue = function(x,y) {
-			return 0.6;
-		};
-		this.quadRange = this.gradientGrid.addGrid(100,100,1000,1000,60,60,0.1,0.1,fRed,fGreen,fBlue);
-		this.draw_Shape[this.draw_Shape.length] = new trilateral3_structure_RangeEntity(false,this.quadRange,-1);
-		var _gthis = this;
-		if(hyperKitGL_AnimateTimer.s == null) {
-			hyperKitGL_AnimateTimer.s = window.document.createElement("style");
-			hyperKitGL_AnimateTimer.s.innerHTML = "@keyframes spin { from { transform:rotate( 0deg ); } to { transform:rotate( 360deg ); } }";
-			window.document.getElementsByTagName("head")[0].appendChild(hyperKitGL_AnimateTimer.s);
-			hyperKitGL_AnimateTimer.s.animation = "spin 1s linear infinite";
-			hyperKitGL_AnimateTimer.loop(60.0);
+		this.penTexture = this.penNoduleTexture.pen;
+		this.penTexture.useTexture = true;
+		this.penTexture.currentColor = -1;
+		this.jsonLoaded();
+	}
+	,jsonLoaded: function() {
+		var atlasJsonStr = haxe_Resource.getString("atlasJson");
+		this.bodyFrames = new hxRectPack2D_output_BodyFrames(atlasJsonStr);
+		var multi = JSON.parse(haxe_Resource.getString("leafJson"));
+		var leaves = multi.leaf.leaves;
+		this.inputLimbs = this.bodyFrames.limbs;
+		var i = 0;
+		var _ = Std.int;
+		var _g = 0;
+		var _g1 = this.inputLimbs;
+		while(_g < _g1.length) {
+			var limb = _g1[_g];
+			++_g;
+			this.names[i] = limb.name;
+			this.blocks[i] = new hxRectPack2D_rectangle_XYWHF(i,0,0,_(limb.w),_(limb.h));
+			++i;
 		}
-		hyperKitGL_AnimateTimer.onFrame = function(v) {
-			var gl = _gthis.gl;
-			var width = _gthis.width;
-			var height = _gthis.height;
-			gl.clearColor(0.5,0.0,0.5,0.9);
-			gl.enable(2929);
-			gl.clear(16384);
-			gl.viewport(0,0,width,height);
-			gl.enable(3042);
-			gl.blendFunc(1,771);
-			gl.enable(2929);
-			_gthis.renderDraw();
-		};
+		var limbGen;
+		var byName = ($_=this.bodyFrames,$bind($_,$_.limbByName));
+		var _g = 0;
+		var _g1 = this.names.length;
+		while(_g < _g1) {
+			var i = _g++;
+			limbGen = byName(this.names[i]);
+			var x = limbGen.x * 2;
+			var y = limbGen.y * 2;
+			var w = limbGen.realW * 2.2;
+			var h = limbGen.realH * 2.2;
+			var rotate = limbGen.flipped;
+			this.posMin = this.penTexture.paintType.get_pos() | 0;
+			var quadShaper = new trilateral3_reShape_QuadShaper(this.penTexture,this.penTexture.paintType.get_pos());
+			quadShaper.drawQuad(x,y,w,h);
+			var quadRange_min = this.posMin;
+			var quadRange_max = this.penTexture.paintType.get_pos() | 0;
+			if(rotate) {
+				quadShaper.rook_90();
+			}
+			var tmp = this.draw_Shape;
+			var tmp1 = this.draw_Shape.length;
+			var this1 = new trilateral3_shape_IntIterStart(quadRange_min,quadRange_max);
+			tmp[tmp1] = new trilateral3_structure_RangeEntity(true,this1,this.bgQuadFill);
+			var quadShaper1 = quadShaper;
+			var _g2 = 0;
+			while(_g2 < leaves.length) {
+				var l = leaves[_g2];
+				++_g2;
+				if(l.texture == this.names[i]) {
+					var val = new hyperKitGL_XY(l.ox,l.oy);
+					var p = quadShaper1.pen.paintType.get_pos();
+					var v = quadShaper1.start;
+					quadShaper1.pen.paintType.set_pos(v);
+					var tmp2;
+					var _this = quadShaper1.tri;
+					if(_this.curr.get_x() * _this.wid + _this.wid != null) {
+						var _this1 = quadShaper1.tri;
+						tmp2 = -(_this1.curr.get_y() * _this1.hi - _this1.hi) != null;
+					} else {
+						tmp2 = false;
+					}
+					if(tmp2) {
+						var _this2 = quadShaper1.tri;
+						var _g3 = _this2.curr.get_x() * _this2.wid + _this2.wid;
+						var _this3 = quadShaper1.tri;
+						quadShaper1.lastXY = new hyperKitGL_XY(_g3,-(_this3.curr.get_y() * _this3.hi - _this3.hi));
+					}
+					var _this4 = quadShaper1.tri;
+					var val1 = val.x;
+					var val_ = (val1 - _this4.wid) / _this4.wid;
+					_this4.curr.set_x(val_);
+					var val2 = val.y;
+					var val_1 = -(val2 - _this4.hi) / _this4.hi;
+					_this4.curr.set_y(val_1);
+					var v1 = quadShaper1.start + 1;
+					quadShaper1.pen.paintType.set_pos(v1);
+					var _this5 = quadShaper1.tri;
+					var val3 = val.x;
+					var val_2 = (val3 - _this5.wid) / _this5.wid;
+					_this5.curr.set_x(val_2);
+					var val4 = val.y;
+					var val_3 = -(val4 - _this5.hi) / _this5.hi;
+					_this5.curr.set_y(val_3);
+					quadShaper1.pen.paintType.set_pos(p);
+					quadShaper1.startU = l.ox;
+					quadShaper1.startV = l.oy;
+				}
+			}
+			if(this.names[i] == "body.png") {
+				this.bodyShaper = quadShaper1;
+			}
+		}
 	}
 	,renderDraw: function() {
-		var _gthis = this;
-		var radAdj = trilateral3_reShape_GradientGrid.radAdj;
-		var sin01 = trilateral3_reShape_GradientGrid.sin01;
-		var cos01 = trilateral3_reShape_GradientGrid.cos01;
-		var fRed = function(x,y) {
-			var rx = radAdj(x);
-			return sin01(rx - Math.PI / 2);
-		};
-		var fGreen = function(x,y) {
-			var rx = radAdj(x) + _gthis.theta;
-			var ry = radAdj(y) + _gthis.theta;
-			return (sin01(rx) + cos01((ry * rx - Math.PI / 2 - 0.1) * 20)) / 2;
-		};
-		var fBlue = function(x,y) {
-			return 0.6;
-		};
-		this.gradientGrid.modifyColor(0.1,0.1,fRed,fGreen,fBlue);
-		this.theta += 0.002;
+		var haveTextures = false;
+		var haveColors = false;
+		this.bodyShaper.rotateFromCentre(this.bodyShaper.width / 2,this.bodyShaper.height / 2,this.theta);
 		var _g = 0;
 		var _g1 = this.draw_Shape;
 		while(_g < _g1.length) {
 			var a_shape = _g1[_g];
 			++_g;
 			if(a_shape.textured) {
+				haveTextures = true;
 				this.drawTextureShape(a_shape.range.start,a_shape.range.max,a_shape.bgColor);
 			} else {
+				haveColors = true;
 				this.drawColorShape(a_shape.range.start,a_shape.range.max);
 			}
 		}
+		if(!haveColors) {
+			this.tempHackFix();
+		}
+	}
+	,tempHackFix: function() {
+		this.drawColorShape(0,0);
 	}
 });
-function hyperKitGLsamples_gradientGrid_Main_main() {
+function hyperKitGLsamples_zealAtlas_ZealAtlas_main() {
+	new hyperKitGLsamples_zealAtlas_ZealAtlas(1000,1000);
 	var divertTrace = new hyperKitGL_DivertTrace();
-	new hyperKitGLsamples_gradientGrid_Main(1000,1000,false,true);
-	haxe_Log.trace("Gradient Grid Test",{ fileName : "../../../src/hyperKitGLsamples/gradientGrid/Main.hx", lineNumber : 42, className : "hyperKitGLsamples.gradientGrid._Main.Main_Fields_", methodName : "main"});
+	haxe_Log.trace("Trilateral Zeal Atlas example",{ fileName : "../../../src/hyperKitGLsamples/zealAtlas/ZealAtlas.hx", lineNumber : 73, className : "hyperKitGLsamples.zealAtlas._ZealAtlas.ZealAtlas_Fields_", methodName : "main"});
 }
 var js_Boot = function() { };
 js_Boot.__name__ = true;
@@ -4407,14 +5102,14 @@ var trilateral3_drawing_Pen = function(paintType_) {
 trilateral3_drawing_Pen.__name__ = true;
 var trilateral3_geom_FlatArrayTriangles = {};
 trilateral3_geom_FlatArrayTriangles.transform = function(this1,m) {
-	var pa = new trilateral3_matrix_Vertex(hyperKitGL_io_ArrayColorTriangles.get_ax(this1),hyperKitGL_io_ArrayColorTriangles.get_ay(this1),hyperKitGL_io_ArrayColorTriangles.get_az(this1),1.);
-	var pb = new trilateral3_matrix_Vertex(hyperKitGL_io_ArrayColorTriangles.get_bx(this1),hyperKitGL_io_ArrayColorTriangles.get_by(this1),hyperKitGL_io_ArrayColorTriangles.get_bz(this1),1.);
-	var pc = new trilateral3_matrix_Vertex(hyperKitGL_io_ArrayColorTriangles.get_cx(this1),hyperKitGL_io_ArrayColorTriangles.get_cy(this1),hyperKitGL_io_ArrayColorTriangles.get_cz(this1),1.);
-	var v2 = new trilateral3_matrix_Vertex(m.a * pa.x + m.b * pa.y + m.c * pa.z + m.d,m.e * pa.x + m.f * pa.y + m.g * pa.z + m.h,m.i * pa.x + m.j * pa.y + m.k * pa.z + m.l,1.);
+	var pa = new geom_structure_Mat1x4(hyperKitGL_io_ArrayColorTriangles.get_ax(this1),hyperKitGL_io_ArrayColorTriangles.get_ay(this1),hyperKitGL_io_ArrayColorTriangles.get_az(this1),1.);
+	var pb = new geom_structure_Mat1x4(hyperKitGL_io_ArrayColorTriangles.get_bx(this1),hyperKitGL_io_ArrayColorTriangles.get_by(this1),hyperKitGL_io_ArrayColorTriangles.get_bz(this1),1.);
+	var pc = new geom_structure_Mat1x4(hyperKitGL_io_ArrayColorTriangles.get_cx(this1),hyperKitGL_io_ArrayColorTriangles.get_cy(this1),hyperKitGL_io_ArrayColorTriangles.get_cz(this1),1.);
+	var v2 = new geom_structure_Mat1x4(m.a * pa.x + m.b * pa.y + m.c * pa.z + m.d,m.e * pa.x + m.f * pa.y + m.g * pa.z + m.h,m.i * pa.x + m.j * pa.y + m.k * pa.z + m.l,1.);
 	pa = v2;
-	var v2 = new trilateral3_matrix_Vertex(m.a * pb.x + m.b * pb.y + m.c * pb.z + m.d,m.e * pb.x + m.f * pb.y + m.g * pb.z + m.h,m.i * pb.x + m.j * pb.y + m.k * pb.z + m.l,1.);
+	var v2 = new geom_structure_Mat1x4(m.a * pb.x + m.b * pb.y + m.c * pb.z + m.d,m.e * pb.x + m.f * pb.y + m.g * pb.z + m.h,m.i * pb.x + m.j * pb.y + m.k * pb.z + m.l,1.);
 	pb = v2;
-	var v2 = new trilateral3_matrix_Vertex(m.a * pc.x + m.b * pc.y + m.c * pc.z + m.d,m.e * pc.x + m.f * pc.y + m.g * pc.z + m.h,m.i * pc.x + m.j * pc.y + m.k * pc.z + m.l,1.);
+	var v2 = new geom_structure_Mat1x4(m.a * pc.x + m.b * pc.y + m.c * pc.z + m.d,m.e * pc.x + m.f * pc.y + m.g * pc.z + m.h,m.i * pc.x + m.j * pc.y + m.k * pc.z + m.l,1.);
 	pc = v2;
 	hyperKitGL_io_ArrayColorTriangles.set_ax(this1,pa.x);
 	hyperKitGL_io_ArrayColorTriangles.set_ay(this1,pa.y);
@@ -4440,53 +5135,52 @@ trilateral3_geom_FlatArrayTriangles.transformRange = function(this1,m,startEnd) 
 		this1[0] = pos_;
 	}
 };
-var trilateral3_matrix_MatrixDozen = function(a,b,c,d,e,f,g,h,i,j,k,l) {
-	this.l = 0.;
-	this.k = 0.;
-	this.j = 0.;
-	this.i = 0.;
-	this.h = 0.;
-	this.g = 0.;
-	this.f = 0.;
-	this.e = 0.;
-	this.d = 0.;
-	this.c = 0.;
-	this.b = 0.;
-	this.a = 0.;
-	this.a = a;
-	this.b = b;
-	this.c = c;
-	this.d = d;
-	this.e = e;
-	this.f = f;
-	this.g = g;
-	this.h = h;
-	this.i = i;
-	this.j = j;
-	this.k = k;
-	this.l = l;
+var trilateral3_geom_FlatArrayTrianglesUV = {};
+trilateral3_geom_FlatArrayTrianglesUV.transform = function(this1,m) {
+	var pa = new geom_structure_Mat1x4(hyperKitGL_io_ArrayColorTrianglesUV.get_ax(this1),hyperKitGL_io_ArrayColorTrianglesUV.get_ay(this1),hyperKitGL_io_ArrayColorTrianglesUV.get_az(this1),1.);
+	var pb = new geom_structure_Mat1x4(hyperKitGL_io_ArrayColorTrianglesUV.get_bx(this1),hyperKitGL_io_ArrayColorTrianglesUV.get_by(this1),hyperKitGL_io_ArrayColorTrianglesUV.get_bz(this1),1.);
+	var pc = new geom_structure_Mat1x4(hyperKitGL_io_ArrayColorTrianglesUV.get_cx(this1),hyperKitGL_io_ArrayColorTrianglesUV.get_cy(this1),hyperKitGL_io_ArrayColorTrianglesUV.get_cz(this1),1.);
+	var v2 = new geom_structure_Mat1x4(m.a * pa.x + m.b * pa.y + m.c * pa.z + m.d,m.e * pa.x + m.f * pa.y + m.g * pa.z + m.h,m.i * pa.x + m.j * pa.y + m.k * pa.z + m.l,1.);
+	pa = v2;
+	var v2 = new geom_structure_Mat1x4(m.a * pb.x + m.b * pb.y + m.c * pb.z + m.d,m.e * pb.x + m.f * pb.y + m.g * pb.z + m.h,m.i * pb.x + m.j * pb.y + m.k * pb.z + m.l,1.);
+	pb = v2;
+	var v2 = new geom_structure_Mat1x4(m.a * pc.x + m.b * pc.y + m.c * pc.z + m.d,m.e * pc.x + m.f * pc.y + m.g * pc.z + m.h,m.i * pc.x + m.j * pc.y + m.k * pc.z + m.l,1.);
+	pc = v2;
+	hyperKitGL_io_ArrayColorTrianglesUV.set_ax(this1,pa.x);
+	hyperKitGL_io_ArrayColorTrianglesUV.set_ay(this1,pa.y);
+	hyperKitGL_io_ArrayColorTrianglesUV.set_az(this1,pa.z);
+	hyperKitGL_io_ArrayColorTrianglesUV.set_bx(this1,pb.x);
+	hyperKitGL_io_ArrayColorTrianglesUV.set_by(this1,pb.y);
+	hyperKitGL_io_ArrayColorTrianglesUV.set_bz(this1,pb.z);
+	hyperKitGL_io_ArrayColorTrianglesUV.set_cx(this1,pc.x);
+	hyperKitGL_io_ArrayColorTrianglesUV.set_cy(this1,pc.y);
+	hyperKitGL_io_ArrayColorTrianglesUV.set_cz(this1,pc.z);
 };
-trilateral3_matrix_MatrixDozen.__name__ = true;
-var trilateral3_matrix_Vertex = function(x,y,z,w) {
-	if(w == null) {
-		w = 1.;
+trilateral3_geom_FlatArrayTrianglesUV.transformRange = function(this1,m,startEnd) {
+	var start = startEnd.start;
+	var end = startEnd.end;
+	this1[0] = start;
+	var tmp = end > this1.length - 1 - 1;
+	var _g = start;
+	var _g1 = end + 1;
+	while(_g < _g1) {
+		var i = _g++;
+		trilateral3_geom_FlatArrayTrianglesUV.transform(this1,m);
+		var pos_ = this1[0] + 1.;
+		this1[0] = pos_;
 	}
-	this.w = 1.;
-	this.z = 0.;
-	this.y = 0.;
-	this.x = 0.;
-	this.x = x;
-	this.y = y;
-	this.z = z;
-	this.w = w;
 };
-trilateral3_matrix_Vertex.__name__ = true;
+var trilateral3_matrix_UV = {};
+trilateral3_matrix_UV.fromUV = function(uv) {
+	var this1 = new geom_structure_Mat1x2(uv.u,uv.v);
+	return this1;
+};
 var trilateral3_nodule_PenNodule = function(useGLScale) {
 	if(useGLScale == null) {
 		useGLScale = true;
 	}
 	if(useGLScale) {
-		var transform1000 = new trilateral3_matrix_MatrixDozen(0.001,0,0,-1,0,-0.001,0,1,0,0,0.001,0);
+		var transform1000 = new geom_structure_Mat4x3(0.001,0,0,-1,0,-0.001,0,1,0,0,0.001,0);
 		trilateral3_Trilateral.transformMatrix = transform1000;
 	}
 	this.createPen();
@@ -4524,8 +5218,8 @@ trilateral3_nodule_PenArrColor.prototype = $extend(trilateral3_nodule_PenNodule.
 		var _e15 = t;
 		var _e16 = t;
 		var triangleAbstract = { rotate : function(x,y,theta) {
-			var cos = Math.cos(theta);
-			var sin = Math.sin(theta);
+			var cos = Math.cos(-theta);
+			var sin = Math.sin(-theta);
 			hyperKitGL_io_ArrayColorTriangles.set_ax(_e,hyperKitGL_io_ArrayColorTriangles.get_ax(_e) - x);
 			hyperKitGL_io_ArrayColorTriangles.set_ay(_e,hyperKitGL_io_ArrayColorTriangles.get_ay(_e) - y);
 			hyperKitGL_io_ArrayColorTriangles.set_bx(_e,hyperKitGL_io_ArrayColorTriangles.get_bx(_e) - x);
@@ -4603,9 +5297,9 @@ trilateral3_nodule_PenArrColor.prototype = $extend(trilateral3_nodule_PenNodule.
 			hyperKitGL_io_ArrayColorTriangles.set_cx(_e9,hyperKitGL_io_ArrayColorTriangles.get_cx(_e9) + dx);
 			return x;
 		}, get_y : function() {
-			return Math.min(Math.min(hyperKitGL_io_ArrayColorTriangles.get_ay(_e10),hyperKitGL_io_ArrayColorTriangles.get_by(_e10)),hyperKitGL_io_ArrayColorTriangles.get_cy(_e10));
+			return Math.max(Math.max(hyperKitGL_io_ArrayColorTriangles.get_ay(_e10),hyperKitGL_io_ArrayColorTriangles.get_by(_e10)),hyperKitGL_io_ArrayColorTriangles.get_cy(_e10));
 		}, set_y : function(y) {
-			var dy = y - Math.min(Math.min(hyperKitGL_io_ArrayColorTriangles.get_ay(_e11),hyperKitGL_io_ArrayColorTriangles.get_by(_e11)),hyperKitGL_io_ArrayColorTriangles.get_cy(_e11));
+			var dy = y - Math.max(Math.max(hyperKitGL_io_ArrayColorTriangles.get_ay(_e11),hyperKitGL_io_ArrayColorTriangles.get_by(_e11)),hyperKitGL_io_ArrayColorTriangles.get_cy(_e11));
 			hyperKitGL_io_ArrayColorTriangles.set_ay(_e11,hyperKitGL_io_ArrayColorTriangles.get_ay(_e11) + dy);
 			hyperKitGL_io_ArrayColorTriangles.set_by(_e11,hyperKitGL_io_ArrayColorTriangles.get_by(_e11) + dy);
 			hyperKitGL_io_ArrayColorTriangles.set_cy(_e11,hyperKitGL_io_ArrayColorTriangles.get_cy(_e11) + dy);
@@ -4621,9 +5315,9 @@ trilateral3_nodule_PenArrColor.prototype = $extend(trilateral3_nodule_PenNodule.
 		}, triangle : function(ax_,ay_,az_,bx_,by_,bz_,cx_,cy_,cz_) {
 			return hyperKitGL_io_ArrayColorTriangles.triangle(_e14,ax_,ay_,az_,bx_,by_,bz_,cx_,cy_,cz_);
 		}, getTriangle3D : function() {
-			var pa = new trilateral3_matrix_Vertex(hyperKitGL_io_ArrayColorTriangles.get_ax(_e15),hyperKitGL_io_ArrayColorTriangles.get_ay(_e15),hyperKitGL_io_ArrayColorTriangles.get_az(_e15),1.);
-			var pb = new trilateral3_matrix_Vertex(hyperKitGL_io_ArrayColorTriangles.get_bx(_e15),hyperKitGL_io_ArrayColorTriangles.get_by(_e15),hyperKitGL_io_ArrayColorTriangles.get_bz(_e15),1.);
-			var pc = new trilateral3_matrix_Vertex(hyperKitGL_io_ArrayColorTriangles.get_cx(_e15),hyperKitGL_io_ArrayColorTriangles.get_cy(_e15),hyperKitGL_io_ArrayColorTriangles.get_cz(_e15),1.);
+			var pa = new geom_structure_Mat1x4(hyperKitGL_io_ArrayColorTriangles.get_ax(_e15),hyperKitGL_io_ArrayColorTriangles.get_ay(_e15),hyperKitGL_io_ArrayColorTriangles.get_az(_e15),1.);
+			var pb = new geom_structure_Mat1x4(hyperKitGL_io_ArrayColorTriangles.get_bx(_e15),hyperKitGL_io_ArrayColorTriangles.get_by(_e15),hyperKitGL_io_ArrayColorTriangles.get_bz(_e15),1.);
+			var pc = new geom_structure_Mat1x4(hyperKitGL_io_ArrayColorTriangles.get_cx(_e15),hyperKitGL_io_ArrayColorTriangles.get_cy(_e15),hyperKitGL_io_ArrayColorTriangles.get_cz(_e15),1.);
 			return new trilateral3_structure_Triangle3D(pa,pb,pc);
 		}, transform : function(m) {
 			trilateral3_geom_FlatArrayTriangles.transform(_e16,m);
@@ -4767,9 +5461,9 @@ trilateral3_nodule_PenArrColor.prototype = $extend(trilateral3_nodule_PenNodule.
 		}, transformRange : function(m,startEnd) {
 			trilateral3_geom_FlatArrayTriangles.transformRange(_e29,m,startEnd);
 		}, getTriangle3D : function() {
-			var pa = new trilateral3_matrix_Vertex(hyperKitGL_io_ArrayColorTriangles.get_ax(_e30),hyperKitGL_io_ArrayColorTriangles.get_ay(_e30),hyperKitGL_io_ArrayColorTriangles.get_az(_e30),1.);
-			var pb = new trilateral3_matrix_Vertex(hyperKitGL_io_ArrayColorTriangles.get_bx(_e30),hyperKitGL_io_ArrayColorTriangles.get_by(_e30),hyperKitGL_io_ArrayColorTriangles.get_bz(_e30),1.);
-			var pc = new trilateral3_matrix_Vertex(hyperKitGL_io_ArrayColorTriangles.get_cx(_e30),hyperKitGL_io_ArrayColorTriangles.get_cy(_e30),hyperKitGL_io_ArrayColorTriangles.get_cz(_e30),1.);
+			var pa = new geom_structure_Mat1x4(hyperKitGL_io_ArrayColorTriangles.get_ax(_e30),hyperKitGL_io_ArrayColorTriangles.get_ay(_e30),hyperKitGL_io_ArrayColorTriangles.get_az(_e30),1.);
+			var pb = new geom_structure_Mat1x4(hyperKitGL_io_ArrayColorTriangles.get_bx(_e30),hyperKitGL_io_ArrayColorTriangles.get_by(_e30),hyperKitGL_io_ArrayColorTriangles.get_bz(_e30),1.);
+			var pc = new geom_structure_Mat1x4(hyperKitGL_io_ArrayColorTriangles.get_cx(_e30),hyperKitGL_io_ArrayColorTriangles.get_cy(_e30),hyperKitGL_io_ArrayColorTriangles.get_cz(_e30),1.);
 			return new trilateral3_structure_Triangle3D(pa,pb,pc);
 		}, next : function() {
 			var pos_ = _e31[0] + 1.;
@@ -4862,183 +5556,428 @@ trilateral3_nodule_PenArrColor.prototype = $extend(trilateral3_nodule_PenNodule.
 		return (this.colorTriangles.length - 1) * 3 | 0;
 	}
 });
-var trilateral3_reShape_GradientGrid = function(pen_) {
-	this.pen = pen_;
-};
-trilateral3_reShape_GradientGrid.__name__ = true;
-trilateral3_reShape_GradientGrid.radAdj = function(r) {
-	return r * Math.PI / 50;
-};
-trilateral3_reShape_GradientGrid.sin01 = function(r) {
-	return 0.5 + Math.sin(r) / 2;
-};
-trilateral3_reShape_GradientGrid.cos01 = function(r) {
-	return 0.5 + Math.cos(r) / 2;
-};
-trilateral3_reShape_GradientGrid.prototype = {
-	addGrid: function(x,y,wid,hi,col,row,dX,dY,fRed,fGreen,fBlue) {
-		this.posMin = this.pen.paintType.get_pos() | 0;
-		this.x = x;
-		this.y = y;
-		this.wid = wid;
-		this.hi = hi;
-		this.col = col;
-		this.row = row;
-		var sx = x;
-		var sy = y;
-		var px = sx;
-		var py = sy;
-		var dx = wid / (col - 1);
-		var dy = hi / (row - 1);
-		var ds = 0;
-		var iy = 0;
-		var ix = 0;
-		this.arrShaper = [];
-		var count = 0;
-		var _g = 0;
-		var _g1 = row;
-		while(_g < _g1) {
-			var iy = _g++;
-			var _g2 = 0;
-			var _g3 = col;
-			while(_g2 < _g3) {
-				var ix = _g2++;
-				var quadShaper = new trilateral3_reShape_QuadShaper(this.pen,ds);
-				this.arrShaper[this.arrShaper.length] = quadShaper;
-				ds += 2;
-				var x = ix * dX;
-				var y = iy * dY;
-				var col1 = -16777216;
-				var v = fRed(x,y);
-				var this1 = Math.round((col1 >> 24 & 255) / 255 * 255) << 24 | Math.round(v * 255) << 16 | Math.round((col1 >> 8 & 255) / 255 * 255) << 8 | Math.round((col1 & 255) / 255 * 255);
-				col1 = this1;
-				var v1 = fGreen(x,y);
-				var this2 = Math.round((col1 >> 24 & 255) / 255 * 255) << 24 | Math.round((col1 >> 16 & 255) / 255 * 255) << 16 | Math.round(v1 * 255) << 8 | Math.round((col1 & 255) / 255 * 255);
-				col1 = this2;
-				var v2 = fBlue(x,y);
-				var this3 = Math.round((col1 >> 24 & 255) / 255 * 255) << 24 | Math.round((col1 >> 16 & 255) / 255 * 255) << 16 | Math.round((col1 >> 8 & 255) / 255 * 255) << 8 | Math.round(v2 * 255);
-				col1 = this3;
-				var colorA = col1;
-				var x1 = (ix + 1) * dX;
-				var y1 = iy * dY;
-				var col2 = -16777216;
-				var v3 = fRed(x1,y1);
-				var this4 = Math.round((col2 >> 24 & 255) / 255 * 255) << 24 | Math.round(v3 * 255) << 16 | Math.round((col2 >> 8 & 255) / 255 * 255) << 8 | Math.round((col2 & 255) / 255 * 255);
-				col2 = this4;
-				var v4 = fGreen(x1,y1);
-				var this5 = Math.round((col2 >> 24 & 255) / 255 * 255) << 24 | Math.round((col2 >> 16 & 255) / 255 * 255) << 16 | Math.round(v4 * 255) << 8 | Math.round((col2 & 255) / 255 * 255);
-				col2 = this5;
-				var v5 = fBlue(x1,y1);
-				var this6 = Math.round((col2 >> 24 & 255) / 255 * 255) << 24 | Math.round((col2 >> 16 & 255) / 255 * 255) << 16 | Math.round((col2 >> 8 & 255) / 255 * 255) << 8 | Math.round(v5 * 255);
-				col2 = this6;
-				var colorB = col2;
-				var x2 = (ix + 1) * dX;
-				var y2 = (iy + 1) * dY;
-				var col3 = -16777216;
-				var v6 = fRed(x2,y2);
-				var this7 = Math.round((col3 >> 24 & 255) / 255 * 255) << 24 | Math.round(v6 * 255) << 16 | Math.round((col3 >> 8 & 255) / 255 * 255) << 8 | Math.round((col3 & 255) / 255 * 255);
-				col3 = this7;
-				var v7 = fGreen(x2,y2);
-				var this8 = Math.round((col3 >> 24 & 255) / 255 * 255) << 24 | Math.round((col3 >> 16 & 255) / 255 * 255) << 16 | Math.round(v7 * 255) << 8 | Math.round((col3 & 255) / 255 * 255);
-				col3 = this8;
-				var v8 = fBlue(x2,y2);
-				var this9 = Math.round((col3 >> 24 & 255) / 255 * 255) << 24 | Math.round((col3 >> 16 & 255) / 255 * 255) << 16 | Math.round((col3 >> 8 & 255) / 255 * 255) << 8 | Math.round(v8 * 255);
-				col3 = this9;
-				var colorC = col3;
-				var x3 = ix * dX;
-				var y3 = (iy + 1) * dY;
-				var col4 = -16777216;
-				var v9 = fRed(x3,y3);
-				var this10 = Math.round((col4 >> 24 & 255) / 255 * 255) << 24 | Math.round(v9 * 255) << 16 | Math.round((col4 >> 8 & 255) / 255 * 255) << 8 | Math.round((col4 & 255) / 255 * 255);
-				col4 = this10;
-				var v10 = fGreen(x3,y3);
-				var this11 = Math.round((col4 >> 24 & 255) / 255 * 255) << 24 | Math.round((col4 >> 16 & 255) / 255 * 255) << 16 | Math.round(v10 * 255) << 8 | Math.round((col4 & 255) / 255 * 255);
-				col4 = this11;
-				var v11 = fBlue(x3,y3);
-				var this12 = Math.round((col4 >> 24 & 255) / 255 * 255) << 24 | Math.round((col4 >> 16 & 255) / 255 * 255) << 16 | Math.round((col4 >> 8 & 255) / 255 * 255) << 8 | Math.round(v11 * 255);
-				col4 = this12;
-				var colorD = col4;
-				quadShaper.drawQuadColors(px,py,dx,dy,colorA,colorB,colorC,colorD);
-				px += dx;
-			}
-			px = sx;
-			py += dy;
-		}
-		var ii_min = this.posMin;
-		var ii_max = this.pen.paintType.get_pos() | 0;
-		var this1 = new trilateral3_shape_IntIterStart(ii_min,ii_max);
-		this.quadRange = this1;
-		return this.quadRange;
+var trilateral3_nodule_PenArrTexture = function(useGLScale) {
+	if(useGLScale == null) {
+		useGLScale = true;
 	}
-	,modifyColor: function(dX,dY,fRed,fGreen,fBlue) {
-		var count = 0;
-		var _g = 0;
-		var _g1 = this.row;
-		while(_g < _g1) {
-			var iy = _g++;
-			var _g2 = 0;
-			var _g3 = this.col;
-			while(_g2 < _g3) {
-				var ix = _g2++;
-				var quadShape = this.arrShaper[count];
-				++count;
-				var x = ix * dX;
-				var y = iy * dY;
-				var col = -16777216;
-				var v = fRed(x,y);
-				var this1 = Math.round((col >> 24 & 255) / 255 * 255) << 24 | Math.round(v * 255) << 16 | Math.round((col >> 8 & 255) / 255 * 255) << 8 | Math.round((col & 255) / 255 * 255);
-				col = this1;
-				var v1 = fGreen(x,y);
-				var this2 = Math.round((col >> 24 & 255) / 255 * 255) << 24 | Math.round((col >> 16 & 255) / 255 * 255) << 16 | Math.round(v1 * 255) << 8 | Math.round((col & 255) / 255 * 255);
-				col = this2;
-				var v2 = fBlue(x,y);
-				var this3 = Math.round((col >> 24 & 255) / 255 * 255) << 24 | Math.round((col >> 16 & 255) / 255 * 255) << 16 | Math.round((col >> 8 & 255) / 255 * 255) << 8 | Math.round(v2 * 255);
-				col = this3;
-				var colorA = col;
-				var x1 = (ix + 1) * dX;
-				var y1 = iy * dY;
-				var col1 = -16777216;
-				var v3 = fRed(x1,y1);
-				var this4 = Math.round((col1 >> 24 & 255) / 255 * 255) << 24 | Math.round(v3 * 255) << 16 | Math.round((col1 >> 8 & 255) / 255 * 255) << 8 | Math.round((col1 & 255) / 255 * 255);
-				col1 = this4;
-				var v4 = fGreen(x1,y1);
-				var this5 = Math.round((col1 >> 24 & 255) / 255 * 255) << 24 | Math.round((col1 >> 16 & 255) / 255 * 255) << 16 | Math.round(v4 * 255) << 8 | Math.round((col1 & 255) / 255 * 255);
-				col1 = this5;
-				var v5 = fBlue(x1,y1);
-				var this6 = Math.round((col1 >> 24 & 255) / 255 * 255) << 24 | Math.round((col1 >> 16 & 255) / 255 * 255) << 16 | Math.round((col1 >> 8 & 255) / 255 * 255) << 8 | Math.round(v5 * 255);
-				col1 = this6;
-				var colorB = col1;
-				var x2 = (ix + 1) * dX;
-				var y2 = (iy + 1) * dY;
-				var col2 = -16777216;
-				var v6 = fRed(x2,y2);
-				var this7 = Math.round((col2 >> 24 & 255) / 255 * 255) << 24 | Math.round(v6 * 255) << 16 | Math.round((col2 >> 8 & 255) / 255 * 255) << 8 | Math.round((col2 & 255) / 255 * 255);
-				col2 = this7;
-				var v7 = fGreen(x2,y2);
-				var this8 = Math.round((col2 >> 24 & 255) / 255 * 255) << 24 | Math.round((col2 >> 16 & 255) / 255 * 255) << 16 | Math.round(v7 * 255) << 8 | Math.round((col2 & 255) / 255 * 255);
-				col2 = this8;
-				var v8 = fBlue(x2,y2);
-				var this9 = Math.round((col2 >> 24 & 255) / 255 * 255) << 24 | Math.round((col2 >> 16 & 255) / 255 * 255) << 16 | Math.round((col2 >> 8 & 255) / 255 * 255) << 8 | Math.round(v8 * 255);
-				col2 = this9;
-				var colorC = col2;
-				var x3 = ix * dX;
-				var y3 = (iy + 1) * dY;
-				var col3 = -16777216;
-				var v9 = fRed(x3,y3);
-				var this10 = Math.round((col3 >> 24 & 255) / 255 * 255) << 24 | Math.round(v9 * 255) << 16 | Math.round((col3 >> 8 & 255) / 255 * 255) << 8 | Math.round((col3 & 255) / 255 * 255);
-				col3 = this10;
-				var v10 = fGreen(x3,y3);
-				var this11 = Math.round((col3 >> 24 & 255) / 255 * 255) << 24 | Math.round((col3 >> 16 & 255) / 255 * 255) << 16 | Math.round(v10 * 255) << 8 | Math.round((col3 & 255) / 255 * 255);
-				col3 = this11;
-				var v11 = fBlue(x3,y3);
-				var this12 = Math.round((col3 >> 24 & 255) / 255 * 255) << 24 | Math.round((col3 >> 16 & 255) / 255 * 255) << 16 | Math.round((col3 >> 8 & 255) / 255 * 255) << 8 | Math.round(v11 * 255);
-				col3 = this12;
-				var colorD = col3;
-				quadShape.modifyQuadColors(colorA,colorB,colorC,colorD);
-			}
-		}
-	}
+	var this1 = [];
+	this1[0] = 0.;
+	this.colorTriangles = this1;
+	trilateral3_nodule_PenNodule.call(this,useGLScale);
 };
+trilateral3_nodule_PenArrTexture.__name__ = true;
+trilateral3_nodule_PenArrTexture.__super__ = trilateral3_nodule_PenNodule;
+trilateral3_nodule_PenArrTexture.prototype = $extend(trilateral3_nodule_PenNodule.prototype,{
+	createPen: function() {
+		var t = this.colorTriangles;
+		var _e = t;
+		var _e1 = t;
+		var _e2 = t;
+		var _e3 = t;
+		var _e4 = t;
+		var _e5 = t;
+		var _e6 = t;
+		var _e7 = t;
+		var _e8 = t;
+		var _e9 = t;
+		var _e10 = t;
+		var _e11 = t;
+		var _e12 = t;
+		var _e13 = t;
+		var _e14 = t;
+		var _e15 = t;
+		var _e16 = t;
+		var triangleAbstract = { rotate : function(x,y,theta) {
+			var cos = Math.cos(-theta);
+			var sin = Math.sin(-theta);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_ax(_e,hyperKitGL_io_ArrayColorTrianglesUV.get_ax(_e) - x);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_ay(_e,hyperKitGL_io_ArrayColorTrianglesUV.get_ay(_e) - y);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_bx(_e,hyperKitGL_io_ArrayColorTrianglesUV.get_bx(_e) - x);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_by(_e,hyperKitGL_io_ArrayColorTrianglesUV.get_by(_e) - y);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_cx(_e,hyperKitGL_io_ArrayColorTrianglesUV.get_cx(_e) - x);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_cy(_e,hyperKitGL_io_ArrayColorTrianglesUV.get_cy(_e) - y);
+			var dx = hyperKitGL_io_ArrayColorTrianglesUV.get_ax(_e);
+			var dy = hyperKitGL_io_ArrayColorTrianglesUV.get_ay(_e);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_ax(_e,dx * cos - dy * sin);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_ay(_e,dx * sin + dy * cos);
+			dx = hyperKitGL_io_ArrayColorTrianglesUV.get_bx(_e);
+			dy = hyperKitGL_io_ArrayColorTrianglesUV.get_by(_e);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_bx(_e,dx * cos - dy * sin);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_by(_e,dx * sin + dy * cos);
+			dx = hyperKitGL_io_ArrayColorTrianglesUV.get_cx(_e);
+			dy = hyperKitGL_io_ArrayColorTrianglesUV.get_cy(_e);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_cx(_e,dx * cos - dy * sin);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_cy(_e,dx * sin + dy * cos);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_ax(_e,hyperKitGL_io_ArrayColorTrianglesUV.get_ax(_e) + x);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_ay(_e,hyperKitGL_io_ArrayColorTrianglesUV.get_ay(_e) + y);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_bx(_e,hyperKitGL_io_ArrayColorTrianglesUV.get_bx(_e) + x);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_by(_e,hyperKitGL_io_ArrayColorTrianglesUV.get_by(_e) + y);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_cx(_e,hyperKitGL_io_ArrayColorTrianglesUV.get_cx(_e) + x);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_cy(_e,hyperKitGL_io_ArrayColorTrianglesUV.get_cy(_e) + y);
+		}, moveDelta : function(dx,dy) {
+			hyperKitGL_io_ArrayColorTrianglesUV.moveDelta(_e1,dx,dy);
+		}, rotateTrig : function(x,y,cos,sin) {
+			hyperKitGL_io_ArrayColorTrianglesUV.set_ax(_e2,hyperKitGL_io_ArrayColorTrianglesUV.get_ax(_e2) - x);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_ay(_e2,hyperKitGL_io_ArrayColorTrianglesUV.get_ay(_e2) - y);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_bx(_e2,hyperKitGL_io_ArrayColorTrianglesUV.get_bx(_e2) - x);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_by(_e2,hyperKitGL_io_ArrayColorTrianglesUV.get_by(_e2) - y);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_cx(_e2,hyperKitGL_io_ArrayColorTrianglesUV.get_cx(_e2) - x);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_cy(_e2,hyperKitGL_io_ArrayColorTrianglesUV.get_cy(_e2) - y);
+			var dx = hyperKitGL_io_ArrayColorTrianglesUV.get_ax(_e2);
+			var dy = hyperKitGL_io_ArrayColorTrianglesUV.get_ay(_e2);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_ax(_e2,dx * cos - dy * sin);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_ay(_e2,dx * sin + dy * cos);
+			dx = hyperKitGL_io_ArrayColorTrianglesUV.get_bx(_e2);
+			dy = hyperKitGL_io_ArrayColorTrianglesUV.get_by(_e2);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_bx(_e2,dx * cos - dy * sin);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_by(_e2,dx * sin + dy * cos);
+			dx = hyperKitGL_io_ArrayColorTrianglesUV.get_cx(_e2);
+			dy = hyperKitGL_io_ArrayColorTrianglesUV.get_cy(_e2);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_cx(_e2,dx * cos - dy * sin);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_cy(_e2,dx * sin + dy * cos);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_ax(_e2,hyperKitGL_io_ArrayColorTrianglesUV.get_ax(_e2) + x);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_ay(_e2,hyperKitGL_io_ArrayColorTrianglesUV.get_ay(_e2) + y);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_bx(_e2,hyperKitGL_io_ArrayColorTrianglesUV.get_bx(_e2) + x);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_by(_e2,hyperKitGL_io_ArrayColorTrianglesUV.get_by(_e2) + y);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_cx(_e2,hyperKitGL_io_ArrayColorTrianglesUV.get_cx(_e2) + x);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_cy(_e2,hyperKitGL_io_ArrayColorTrianglesUV.get_cy(_e2) + y);
+		}, fullHit : function(px,py) {
+			return hyperKitGL_io_ArrayColorTrianglesUV.fullHit(_e3,px,py);
+		}, liteHit : function(px,py) {
+			var planeAB = (hyperKitGL_io_ArrayColorTrianglesUV.get_ax(_e4) - px) * (hyperKitGL_io_ArrayColorTrianglesUV.get_by(_e4) - py) - (hyperKitGL_io_ArrayColorTrianglesUV.get_bx(_e4) - px) * (hyperKitGL_io_ArrayColorTrianglesUV.get_ay(_e4) - py);
+			var planeBC = (hyperKitGL_io_ArrayColorTrianglesUV.get_bx(_e4) - px) * (hyperKitGL_io_ArrayColorTrianglesUV.get_cy(_e4) - py) - (hyperKitGL_io_ArrayColorTrianglesUV.get_cx(_e4) - px) * (hyperKitGL_io_ArrayColorTrianglesUV.get_by(_e4) - py);
+			var planeCA = (hyperKitGL_io_ArrayColorTrianglesUV.get_cx(_e4) - px) * (hyperKitGL_io_ArrayColorTrianglesUV.get_ay(_e4) - py) - (hyperKitGL_io_ArrayColorTrianglesUV.get_ax(_e4) - px) * (hyperKitGL_io_ArrayColorTrianglesUV.get_cy(_e4) - py);
+			if((Math.abs(planeAB) / planeAB | 0) == (Math.abs(planeBC) / planeBC | 0)) {
+				return (Math.abs(planeBC) / planeBC | 0) == (Math.abs(planeCA) / planeCA | 0);
+			} else {
+				return false;
+			}
+		}, get_bottom : function() {
+			return Math.max(Math.max(hyperKitGL_io_ArrayColorTrianglesUV.get_ay(_e5),hyperKitGL_io_ArrayColorTrianglesUV.get_by(_e5)),hyperKitGL_io_ArrayColorTrianglesUV.get_cy(_e5));
+		}, get_back : function() {
+			return Math.max(Math.max(hyperKitGL_io_ArrayColorTrianglesUV.get_az(_e6),hyperKitGL_io_ArrayColorTrianglesUV.get_bz(_e6)),hyperKitGL_io_ArrayColorTrianglesUV.get_cz(_e6));
+		}, get_right : function() {
+			return Math.max(Math.max(hyperKitGL_io_ArrayColorTrianglesUV.get_ax(_e7),hyperKitGL_io_ArrayColorTrianglesUV.get_bx(_e7)),hyperKitGL_io_ArrayColorTrianglesUV.get_cx(_e7));
+		}, get_x : function() {
+			return Math.min(Math.min(hyperKitGL_io_ArrayColorTrianglesUV.get_ax(_e8),hyperKitGL_io_ArrayColorTrianglesUV.get_bx(_e8)),hyperKitGL_io_ArrayColorTrianglesUV.get_cx(_e8));
+		}, set_x : function(x) {
+			var dx = x - Math.min(Math.min(hyperKitGL_io_ArrayColorTrianglesUV.get_ax(_e9),hyperKitGL_io_ArrayColorTrianglesUV.get_bx(_e9)),hyperKitGL_io_ArrayColorTrianglesUV.get_cx(_e9));
+			hyperKitGL_io_ArrayColorTrianglesUV.set_ax(_e9,hyperKitGL_io_ArrayColorTrianglesUV.get_ax(_e9) + dx);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_bx(_e9,hyperKitGL_io_ArrayColorTrianglesUV.get_bx(_e9) + dx);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_cx(_e9,hyperKitGL_io_ArrayColorTrianglesUV.get_cx(_e9) + dx);
+			return x;
+		}, get_y : function() {
+			return Math.max(Math.max(hyperKitGL_io_ArrayColorTrianglesUV.get_ay(_e10),hyperKitGL_io_ArrayColorTrianglesUV.get_by(_e10)),hyperKitGL_io_ArrayColorTrianglesUV.get_cy(_e10));
+		}, set_y : function(y) {
+			var dy = y - Math.max(Math.max(hyperKitGL_io_ArrayColorTrianglesUV.get_ay(_e11),hyperKitGL_io_ArrayColorTrianglesUV.get_by(_e11)),hyperKitGL_io_ArrayColorTrianglesUV.get_cy(_e11));
+			hyperKitGL_io_ArrayColorTrianglesUV.set_ay(_e11,hyperKitGL_io_ArrayColorTrianglesUV.get_ay(_e11) + dy);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_by(_e11,hyperKitGL_io_ArrayColorTrianglesUV.get_by(_e11) + dy);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_cy(_e11,hyperKitGL_io_ArrayColorTrianglesUV.get_cy(_e11) + dy);
+			return y;
+		}, get_z : function() {
+			return Math.min(Math.min(hyperKitGL_io_ArrayColorTrianglesUV.get_az(_e12),hyperKitGL_io_ArrayColorTrianglesUV.get_bz(_e12)),hyperKitGL_io_ArrayColorTrianglesUV.get_cz(_e12));
+		}, set_z : function(z) {
+			var dz = z - Math.min(Math.min(hyperKitGL_io_ArrayColorTrianglesUV.get_az(_e13),hyperKitGL_io_ArrayColorTrianglesUV.get_bz(_e13)),hyperKitGL_io_ArrayColorTrianglesUV.get_cz(_e13));
+			hyperKitGL_io_ArrayColorTrianglesUV.set_az(_e13,hyperKitGL_io_ArrayColorTrianglesUV.get_az(_e13) + dz);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_bz(_e13,hyperKitGL_io_ArrayColorTrianglesUV.get_bz(_e13) + dz);
+			hyperKitGL_io_ArrayColorTrianglesUV.set_cz(_e13,hyperKitGL_io_ArrayColorTrianglesUV.get_cz(_e13) + dz);
+			return z;
+		}, triangle : function(ax_,ay_,az_,bx_,by_,bz_,cx_,cy_,cz_) {
+			return hyperKitGL_io_ArrayColorTrianglesUV.triangle(_e14,ax_,ay_,az_,bx_,by_,bz_,cx_,cy_,cz_);
+		}, getTriangle3D : function() {
+			var pa = new geom_structure_Mat1x4(hyperKitGL_io_ArrayColorTrianglesUV.get_ax(_e15),hyperKitGL_io_ArrayColorTrianglesUV.get_ay(_e15),hyperKitGL_io_ArrayColorTrianglesUV.get_az(_e15),1.);
+			var pb = new geom_structure_Mat1x4(hyperKitGL_io_ArrayColorTrianglesUV.get_bx(_e15),hyperKitGL_io_ArrayColorTrianglesUV.get_by(_e15),hyperKitGL_io_ArrayColorTrianglesUV.get_bz(_e15),1.);
+			var pc = new geom_structure_Mat1x4(hyperKitGL_io_ArrayColorTrianglesUV.get_cx(_e15),hyperKitGL_io_ArrayColorTrianglesUV.get_cy(_e15),hyperKitGL_io_ArrayColorTrianglesUV.get_cz(_e15),1.);
+			return new trilateral3_structure_Triangle3D(pa,pb,pc);
+		}, transform : function(m) {
+			trilateral3_geom_FlatArrayTrianglesUV.transform(_e16,m);
+		}};
+		var _e17 = t;
+		var _e18 = t;
+		var _e19 = t;
+		var _e20 = t;
+		var _e21 = t;
+		var _e22 = t;
+		var _e23 = t;
+		var _e24 = t;
+		var _e25 = t;
+		var triangleAbstractUV = { moveDelta : function(du,dv) {
+			hyperKitGL_io_ArrayColorTrianglesUV.moveDeltaUV(_e17,du,dv);
+		}, get_u : function() {
+			return Math.min(Math.min(_e18[(_e18[0] | 0) * 27 + 7 + 1],_e18[(_e18[0] | 0) * 27 + 16 + 1]),_e18[(_e18[0] | 0) * 27 + 25 + 1]);
+		}, set_u : function(u_) {
+			var du = u_ - Math.min(Math.min(_e19[(_e19[0] | 0) * 27 + 7 + 1],_e19[(_e19[0] | 0) * 27 + 16 + 1]),_e19[(_e19[0] | 0) * 27 + 25 + 1]);
+			var v = _e19[(_e19[0] | 0) * 27 + 7 + 1] + du;
+			_e19[(_e19[0] | 0) * 27 + 7 + 1] = v;
+			var v = _e19[(_e19[0] | 0) * 27 + 16 + 1] + du;
+			_e19[(_e19[0] | 0) * 27 + 16 + 1] = v;
+			var v = _e19[(_e19[0] | 0) * 27 + 25 + 1] + du;
+			_e19[(_e19[0] | 0) * 27 + 25 + 1] = v;
+			return u_;
+		}, get_v : function() {
+			return Math.min(Math.min(_e20[(_e20[0] | 0) * 27 + 8 + 1],_e20[(_e20[0] | 0) * 27 + 17 + 1]),_e20[(_e20[0] | 0) * 27 + 26 + 1]);
+		}, set_v : function(v_) {
+			var dv = v_ - Math.min(Math.min(_e21[(_e21[0] | 0) * 27 + 8 + 1],_e21[(_e21[0] | 0) * 27 + 17 + 1]),_e21[(_e21[0] | 0) * 27 + 26 + 1]);
+			var v = _e21[(_e21[0] | 0) * 27 + 8 + 1] + dv;
+			_e21[(_e21[0] | 0) * 27 + 8 + 1] = v;
+			var v = _e21[(_e21[0] | 0) * 27 + 17 + 1] + dv;
+			_e21[(_e21[0] | 0) * 27 + 17 + 1] = v;
+			var v = _e21[(_e21[0] | 0) * 27 + 26 + 1] + dv;
+			_e21[(_e21[0] | 0) * 27 + 26 + 1] = v;
+			return v_;
+		}, get_bottomV : function() {
+			return Math.max(Math.max(_e22[(_e22[0] | 0) * 27 + 8 + 1],_e22[(_e22[0] | 0) * 27 + 17 + 1]),_e22[(_e22[0] | 0) * 27 + 26 + 1]);
+		}, get_rightU : function() {
+			return Math.max(Math.max(_e23[(_e23[0] | 0) * 27 + 7 + 1],_e23[(_e23[0] | 0) * 27 + 16 + 1]),_e23[(_e23[0] | 0) * 27 + 25 + 1]);
+		}, triangleUV : function(uA_,vA_,uB_,vB_,uC_,vC_,windAdjust_) {
+			return hyperKitGL_io_ArrayColorTrianglesUV.triangleUV(_e24,uA_,vA_,uB_,vB_,uC_,vC_,windAdjust_);
+		}, getTriangleUV : function() {
+			var ta = trilateral3_matrix_UV.fromUV({ u : _e25[(_e25[0] | 0) * 27 + 7 + 1], v : _e25[(_e25[0] | 0) * 27 + 8 + 1]});
+			var tb = trilateral3_matrix_UV.fromUV({ u : _e25[(_e25[0] | 0) * 27 + 16 + 1], v : _e25[(_e25[0] | 0) * 27 + 17 + 1]});
+			var tc = trilateral3_matrix_UV.fromUV({ u : _e25[(_e25[0] | 0) * 27 + 25 + 1], v : _e25[(_e25[0] | 0) * 27 + 26 + 1]});
+			return new trilateral3_structure_TriangleUV(ta,tb,tc);
+		}};
+		var _e26 = t;
+		var _e27 = t;
+		var _e28 = t;
+		var _e29 = t;
+		var _e30 = t;
+		var _e31 = t;
+		var _e32 = t;
+		var color3Abstract = { set_argb : function(col) {
+			hyperKitGL_io_ArrayColorTrianglesUV.set_redA(_e26,(col >> 16 & 255) / 255);
+			var v = (col & 255) / 255;
+			_e26[(_e26[0] | 0) * 27 + 5 + 1] = v;
+			var v = (col >> 8 & 255) / 255;
+			_e26[(_e26[0] | 0) * 27 + 4 + 1] = v;
+			var v = (col >> 24 & 255) / 255;
+			_e26[(_e26[0] | 0) * 27 + 6 + 1] = v;
+			hyperKitGL_io_ArrayColorTrianglesUV.set_redB(_e26,(col >> 16 & 255) / 255);
+			var v = (col & 255) / 255;
+			_e26[(_e26[0] | 0) * 27 + 14 + 1] = v;
+			var v = (col >> 8 & 255) / 255;
+			_e26[(_e26[0] | 0) * 27 + 13 + 1] = v;
+			var v = (col >> 24 & 255) / 255;
+			_e26[(_e26[0] | 0) * 27 + 15 + 1] = v;
+			hyperKitGL_io_ArrayColorTrianglesUV.set_redC(_e26,(col >> 16 & 255) / 255);
+			var v = (col & 255) / 255;
+			_e26[(_e26[0] | 0) * 27 + 23 + 1] = v;
+			var v = (col >> 8 & 255) / 255;
+			_e26[(_e26[0] | 0) * 27 + 22 + 1] = v;
+			var v = (col >> 24 & 255) / 255;
+			_e26[(_e26[0] | 0) * 27 + 24 + 1] = v;
+			return col;
+		}, set_argbA : function(col) {
+			hyperKitGL_io_ArrayColorTrianglesUV.set_redA(_e27,(col >> 16 & 255) / 255);
+			var v = (col & 255) / 255;
+			_e27[(_e27[0] | 0) * 27 + 5 + 1] = v;
+			var v = (col >> 8 & 255) / 255;
+			_e27[(_e27[0] | 0) * 27 + 4 + 1] = v;
+			var v = (col >> 24 & 255) / 255;
+			_e27[(_e27[0] | 0) * 27 + 6 + 1] = v;
+			return col;
+		}, get_argbA : function() {
+			return Math.round(_e28[(_e28[0] | 0) * 27 + 6 + 1] * 255) << 24 | Math.round(hyperKitGL_io_ArrayColorTrianglesUV.get_redA(_e28) * 255) << 16 | Math.round(_e28[(_e28[0] | 0) * 27 + 4 + 1] * 255) << 8 | Math.round(_e28[(_e28[0] | 0) * 27 + 5 + 1] * 255);
+		}, set_argbB : function(col) {
+			hyperKitGL_io_ArrayColorTrianglesUV.set_redB(_e29,(col >> 16 & 255) / 255);
+			var v = (col & 255) / 255;
+			_e29[(_e29[0] | 0) * 27 + 14 + 1] = v;
+			var v = (col >> 8 & 255) / 255;
+			_e29[(_e29[0] | 0) * 27 + 13 + 1] = v;
+			var v = (col >> 24 & 255) / 255;
+			_e29[(_e29[0] | 0) * 27 + 15 + 1] = v;
+			return col;
+		}, get_argbB : function() {
+			return Math.round(_e30[(_e30[0] | 0) * 27 + 15 + 1] * 255) << 24 | Math.round(hyperKitGL_io_ArrayColorTrianglesUV.get_redB(_e30) * 255) << 16 | Math.round(_e30[(_e30[0] | 0) * 27 + 13 + 1] * 255) << 8 | Math.round(_e30[(_e30[0] | 0) * 27 + 14 + 1] * 255);
+		}, set_argbC : function(col) {
+			hyperKitGL_io_ArrayColorTrianglesUV.set_redC(_e31,(col >> 16 & 255) / 255);
+			var v = (col & 255) / 255;
+			_e31[(_e31[0] | 0) * 27 + 23 + 1] = v;
+			var v = (col >> 8 & 255) / 255;
+			_e31[(_e31[0] | 0) * 27 + 22 + 1] = v;
+			var v = (col >> 24 & 255) / 255;
+			_e31[(_e31[0] | 0) * 27 + 24 + 1] = v;
+			return col;
+		}, get_argbC : function() {
+			return Math.round(_e32[(_e32[0] | 0) * 27 + 24 + 1] * 255) << 24 | Math.round(hyperKitGL_io_ArrayColorTrianglesUV.get_redC(_e32) * 255) << 16 | Math.round(_e32[(_e32[0] | 0) * 27 + 22 + 1] * 255) << 8 | Math.round(_e32[(_e32[0] | 0) * 27 + 23 + 1] * 255);
+		}};
+		var _e33 = t;
+		var _e34 = t;
+		var _e35 = t;
+		var _e36 = t;
+		var _e37 = t;
+		var _e38 = t;
+		var _e39 = t;
+		var _e40 = t;
+		var _e41 = t;
+		var _e42 = t;
+		var _e43 = t;
+		var _e44 = t;
+		var _e45 = t;
+		var _e46 = t;
+		var _e47 = t;
+		var _e48 = t;
+		var _e49 = t;
+		var paintAbstract = { triangle : function(ax_,ay_,az_,bx_,by_,bz_,cx_,cy_,cz_) {
+			return hyperKitGL_io_ArrayColorTrianglesUV.triangle(_e33,ax_,ay_,az_,bx_,by_,bz_,cx_,cy_,cz_);
+		}, triangleUV : function(uA_,vA_,uB_,vB_,uC_,vC_,windAdjust_) {
+			return hyperKitGL_io_ArrayColorTrianglesUV.triangleUV(_e34,uA_,vA_,uB_,vB_,uC_,vC_,windAdjust_);
+		}, cornerColors : function(colorA,colorB,colorC) {
+			hyperKitGL_io_ArrayColorTrianglesUV.set_redA(_e35,(colorA >> 16 & 255) / 255);
+			var v = (colorA & 255) / 255;
+			_e35[(_e35[0] | 0) * 27 + 5 + 1] = v;
+			var v = (colorA >> 8 & 255) / 255;
+			_e35[(_e35[0] | 0) * 27 + 4 + 1] = v;
+			var v = (colorA >> 24 & 255) / 255;
+			_e35[(_e35[0] | 0) * 27 + 6 + 1] = v;
+			hyperKitGL_io_ArrayColorTrianglesUV.set_redB(_e35,(colorB >> 16 & 255) / 255);
+			var v = (colorB & 255) / 255;
+			_e35[(_e35[0] | 0) * 27 + 14 + 1] = v;
+			var v = (colorB >> 8 & 255) / 255;
+			_e35[(_e35[0] | 0) * 27 + 13 + 1] = v;
+			var v = (colorB >> 24 & 255) / 255;
+			_e35[(_e35[0] | 0) * 27 + 15 + 1] = v;
+			hyperKitGL_io_ArrayColorTrianglesUV.set_redC(_e35,(colorC >> 16 & 255) / 255);
+			var v = (colorC & 255) / 255;
+			_e35[(_e35[0] | 0) * 27 + 23 + 1] = v;
+			var v = (colorC >> 8 & 255) / 255;
+			_e35[(_e35[0] | 0) * 27 + 22 + 1] = v;
+			var v = (colorC >> 24 & 255) / 255;
+			_e35[(_e35[0] | 0) * 27 + 24 + 1] = v;
+		}, colorTriangles : function(color,times) {
+			var _g = 0;
+			var _g1 = times;
+			while(_g < _g1) {
+				var i = _g++;
+				hyperKitGL_io_ArrayColorTrianglesUV.set_redA(_e36,(color >> 16 & 255) / 255);
+				var v = (color & 255) / 255;
+				_e36[(_e36[0] | 0) * 27 + 5 + 1] = v;
+				var v1 = (color >> 8 & 255) / 255;
+				_e36[(_e36[0] | 0) * 27 + 4 + 1] = v1;
+				var v2 = (color >> 24 & 255) / 255;
+				_e36[(_e36[0] | 0) * 27 + 6 + 1] = v2;
+				hyperKitGL_io_ArrayColorTrianglesUV.set_redB(_e36,(color >> 16 & 255) / 255);
+				var v3 = (color & 255) / 255;
+				_e36[(_e36[0] | 0) * 27 + 14 + 1] = v3;
+				var v4 = (color >> 8 & 255) / 255;
+				_e36[(_e36[0] | 0) * 27 + 13 + 1] = v4;
+				var v5 = (color >> 24 & 255) / 255;
+				_e36[(_e36[0] | 0) * 27 + 15 + 1] = v5;
+				hyperKitGL_io_ArrayColorTrianglesUV.set_redC(_e36,(color >> 16 & 255) / 255);
+				var v6 = (color & 255) / 255;
+				_e36[(_e36[0] | 0) * 27 + 23 + 1] = v6;
+				var v7 = (color >> 8 & 255) / 255;
+				_e36[(_e36[0] | 0) * 27 + 22 + 1] = v7;
+				var v8 = (color >> 24 & 255) / 255;
+				_e36[(_e36[0] | 0) * 27 + 24 + 1] = v8;
+			}
+		}, getTriInt : function() {
+			return new trilateral3_structure_TriInt(Math.round(_e37[(_e37[0] | 0) * 27 + 6 + 1] * 255) << 24 | Math.round(hyperKitGL_io_ArrayColorTrianglesUV.get_redA(_e37) * 255) << 16 | Math.round(_e37[(_e37[0] | 0) * 27 + 4 + 1] * 255) << 8 | Math.round(_e37[(_e37[0] | 0) * 27 + 5 + 1] * 255),Math.round(_e37[(_e37[0] | 0) * 27 + 15 + 1] * 255) << 24 | Math.round(hyperKitGL_io_ArrayColorTrianglesUV.get_redB(_e37) * 255) << 16 | Math.round(_e37[(_e37[0] | 0) * 27 + 13 + 1] * 255) << 8 | Math.round(_e37[(_e37[0] | 0) * 27 + 14 + 1] * 255),Math.round(_e37[(_e37[0] | 0) * 27 + 24 + 1] * 255) << 24 | Math.round(hyperKitGL_io_ArrayColorTrianglesUV.get_redC(_e37) * 255) << 16 | Math.round(_e37[(_e37[0] | 0) * 27 + 22 + 1] * 255) << 8 | Math.round(_e37[(_e37[0] | 0) * 27 + 23 + 1] * 255));
+		}, transform : function(m) {
+			trilateral3_geom_FlatArrayTrianglesUV.transform(_e38,m);
+		}, transformRange : function(m,startEnd) {
+			trilateral3_geom_FlatArrayTrianglesUV.transformRange(_e39,m,startEnd);
+		}, getTriangle3D : function() {
+			var pa = new geom_structure_Mat1x4(hyperKitGL_io_ArrayColorTrianglesUV.get_ax(_e40),hyperKitGL_io_ArrayColorTrianglesUV.get_ay(_e40),hyperKitGL_io_ArrayColorTrianglesUV.get_az(_e40),1.);
+			var pb = new geom_structure_Mat1x4(hyperKitGL_io_ArrayColorTrianglesUV.get_bx(_e40),hyperKitGL_io_ArrayColorTrianglesUV.get_by(_e40),hyperKitGL_io_ArrayColorTrianglesUV.get_bz(_e40),1.);
+			var pc = new geom_structure_Mat1x4(hyperKitGL_io_ArrayColorTrianglesUV.get_cx(_e40),hyperKitGL_io_ArrayColorTrianglesUV.get_cy(_e40),hyperKitGL_io_ArrayColorTrianglesUV.get_cz(_e40),1.);
+			return new trilateral3_structure_Triangle3D(pa,pb,pc);
+		}, getTriangleUV : function() {
+			var ta = trilateral3_matrix_UV.fromUV({ u : _e41[(_e41[0] | 0) * 27 + 7 + 1], v : _e41[(_e41[0] | 0) * 27 + 8 + 1]});
+			var tb = trilateral3_matrix_UV.fromUV({ u : _e41[(_e41[0] | 0) * 27 + 16 + 1], v : _e41[(_e41[0] | 0) * 27 + 17 + 1]});
+			var tc = trilateral3_matrix_UV.fromUV({ u : _e41[(_e41[0] | 0) * 27 + 25 + 1], v : _e41[(_e41[0] | 0) * 27 + 26 + 1]});
+			return new trilateral3_structure_TriangleUV(ta,tb,tc);
+		}, next : function() {
+			var pos_ = _e42[0] + 1.;
+			_e42[0] = pos_;
+			return _e42[0];
+		}, hasNext : function() {
+			return _e43[0] < _e43.length - 1;
+		}, get_pos : function() {
+			return _e44[0];
+		}, set_pos : function(pos_) {
+			_e45[0] = pos_;
+			return pos_;
+		}, get_size : function() {
+			return _e46.length - 1;
+		}, set_size : null, toStart : function(id,len) {
+			var starting = id * 27;
+			var totalLen = 27 * len | 0;
+			if(starting == 0) {
+				return false;
+			} else {
+				var ending = starting + totalLen;
+				var temp = [];
+				var count = 0;
+				var _g = starting;
+				var _g1 = ending;
+				while(_g < _g1) {
+					var i = _g++;
+					temp[count] = _e47[i + 1];
+					++count;
+				}
+				count = totalLen;
+				var _g = 0;
+				var _g1 = starting;
+				while(_g < _g1) {
+					var i = _g++;
+					var v = _e47[starting - 1 - i + 1];
+					_e47[ending - 1 - i + 1] = v;
+				}
+				count = 0;
+				var _g = 0;
+				var _g1 = totalLen;
+				while(_g < _g1) {
+					var i = _g++;
+					var v = temp[count - 2];
+					_e47[i + 1] = v;
+					++count;
+				}
+				temp = null;
+				return true;
+			}
+		}, toEnd : function(id,len) {
+			return hyperKitGL_io_ArrayFlatDepth.rangeToEnd(_e48,id * 27,27 * len | 0,_e48.length - 1);
+		}, swap : function(id0,id1,len) {
+			var start0 = id0 * 27;
+			var start1 = id1 * 27;
+			var totalLen = 27 * len | 0;
+			if(start0 + totalLen > _e49.length - 1 && start1 + totalLen > _e49.length - 1) {
+				var temp0;
+				var temp1;
+				var _g = 0;
+				var _g1 = totalLen;
+				while(_g < _g1) {
+					var i = _g++;
+					temp0 = _e49[start0 + i + 1];
+					temp1 = _e49[start1 + i + 1];
+					_e49[start0 + i + 1] = temp1;
+					_e49[start1 + i + 1] = temp0;
+				}
+				return true;
+			} else {
+				return false;
+			}
+		}, triangleCurrent : triangleAbstract, triangleCurrentUV : triangleAbstractUV, color3current : color3Abstract};
+		this.pen = new trilateral3_drawing_Pen(paintAbstract);
+		return this.pen;
+	}
+	,get_data: function() {
+		var this1 = this.colorTriangles;
+		var this2 = new Float32Array(this1.length - 1);
+		var fa32 = this2;
+		var _g = 0;
+		var _g1 = this1.length - 1;
+		while(_g < _g1) {
+			var i = _g++;
+			fa32[i] = this1[i + 1];
+		}
+		return fa32;
+	}
+	,get_size: function() {
+		return (this.colorTriangles.length - 1) * 3 | 0;
+	}
+});
 var trilateral3_reShape_QuadShaper = function(pen,start,wid,hi) {
 	if(hi == null) {
 		hi = 1000;
@@ -5046,80 +5985,36 @@ var trilateral3_reShape_QuadShaper = function(pen,start,wid,hi) {
 	if(wid == null) {
 		wid = 1000;
 	}
+	if(start == null) {
+		start = -1.;
+	}
+	if(start == -1) {
+		start = pen.paintType.get_pos();
+	}
 	this.pen = pen;
 	this.start = start;
 	this.tri = new trilateral3_reShape_TrianglesShaper(pen,wid,hi);
 };
 trilateral3_reShape_QuadShaper.__name__ = true;
 trilateral3_reShape_QuadShaper.prototype = {
-	drawQuadColors: function(u,v,w,h,colorA,colorB,colorC,colorD) {
-		if(colorD == null) {
-			colorD = -1;
-		}
-		if(colorC == null) {
-			colorC = -1;
-		}
-		if(colorB == null) {
-			colorB = -1;
-		}
-		if(colorA == null) {
-			colorA = -1;
-		}
+	drawQuad: function(u,v,w,h) {
+		this.width = w;
+		this.height = h;
+		this.startU = u;
+		this.startV = v;
 		var _this = this.pen;
-		var colorA1 = colorA;
-		var colorB1 = colorB;
-		var colorC1 = colorC;
-		var colorD1 = colorD;
-		if(colorD1 == null) {
-			colorD1 = -1;
-		}
-		if(colorC1 == null) {
-			colorC1 = -1;
-		}
-		if(colorB1 == null) {
-			colorB1 = -1;
-		}
-		if(colorA1 == null) {
-			colorA1 = -1;
-		}
 		var bx = u + w;
 		var dy = v + h;
-		var colorA = colorA1;
-		var colorB = colorB1;
-		var colorC = colorC1;
-		var colorD = colorD1;
-		if(colorD == null) {
-			colorD = -1;
+		var color = -1;
+		if(color == null) {
+			color = -1;
 		}
-		if(colorC == null) {
-			colorC = -1;
+		var color1 = color;
+		if(color1 == null) {
+			color1 = -1;
 		}
-		if(colorB == null) {
-			colorB = -1;
-		}
-		if(colorA == null) {
-			colorA = -1;
-		}
-		var colorA1 = colorA;
-		var colorB1 = colorD;
-		var colorC1 = colorB;
-		if(colorC1 == null) {
-			colorC1 = -1;
-		}
-		if(colorB1 == null) {
-			colorB1 = -1;
-		}
-		if(colorA1 == null) {
-			colorA1 = -1;
-		}
-		if(colorA1 == -1) {
-			colorA1 = _this.currentColor;
-		}
-		if(colorB1 == -1) {
-			colorB1 = _this.currentColor;
-		}
-		if(colorC1 == -1) {
-			colorC1 = _this.currentColor;
+		if(color1 == -1) {
+			color1 = _this.currentColor;
 		}
 		var ax = u;
 		var ay = v;
@@ -5140,28 +6035,14 @@ trilateral3_reShape_QuadShaper.prototype = {
 			cy /= 2000;
 			_this.paintType.triangleUV(ax,ay,bx1,by,cx,cy,windAdjust);
 		}
-		_this.paintType.cornerColors(colorA1,colorB1,colorC1);
+		_this.paintType.cornerColors(color1,color1,color1);
 		_this.paintType.next();
-		var colorA = colorB;
-		var colorB = colorD;
-		var colorC1 = colorC;
-		if(colorC1 == null) {
-			colorC1 = -1;
+		var color1 = color;
+		if(color1 == null) {
+			color1 = -1;
 		}
-		if(colorB == null) {
-			colorB = -1;
-		}
-		if(colorA == null) {
-			colorA = -1;
-		}
-		if(colorA == -1) {
-			colorA = _this.currentColor;
-		}
-		if(colorB == -1) {
-			colorB = _this.currentColor;
-		}
-		if(colorC1 == -1) {
-			colorC1 = _this.currentColor;
+		if(color1 == -1) {
+			color1 = _this.currentColor;
 		}
 		var ax = bx;
 		var ay = v;
@@ -5182,29 +6063,77 @@ trilateral3_reShape_QuadShaper.prototype = {
 			cy /= 2000;
 			_this.paintType.triangleUV(ax,ay,bx,by,cx,cy,windAdjust);
 		}
-		_this.paintType.cornerColors(colorA,colorB,colorC1);
+		_this.paintType.cornerColors(color1,color1,color1);
 		_this.paintType.next();
-		return 2;
+		var q = 2;
+		return q;
 	}
-	,modifyQuadColors: function(colorA,colorB,colorC,colorD) {
-		if(colorD == null) {
-			colorD = -1;
+	,rook_90: function() {
+		this.rotateLockTopLeft(-Math.PI / 2);
+	}
+	,rotateLockTopLeft: function(theta) {
+		if(theta > Math.PI / 2 || theta < -Math.PI / 2) {
+			throw new haxe_Exception("theta needs to be between 0 and pi/2");
 		}
-		if(colorC == null) {
-			colorC = -1;
-		}
-		if(colorB == null) {
-			colorB = -1;
-		}
-		if(colorA == null) {
-			colorA = -1;
-		}
+		var p = this.pen.paintType.get_pos();
 		var v = this.start;
 		this.pen.paintType.set_pos(v);
-		this.pen.paintType.cornerColors(colorA,colorD,colorB);
+		this.tri.curr = this.pen.paintType.triangleCurrent;
+		var curr = this.tri.curr;
+		var _this = this.tri;
+		var ax = _this.curr.get_x() * _this.wid + _this.wid;
+		var _this = this.tri;
+		var ay = -(_this.curr.get_y() * _this.hi - _this.hi);
+		var _this = this.tri;
+		var w = _this.curr.get_right() * _this.wid + _this.wid - ax;
+		var _this = this.tri;
+		var h = -(_this.curr.get_bottom() * _this.hi - _this.hi) - ay;
+		this.tri.rotateCentre(ax + w / 2,ay + h / 2,theta);
 		var v = this.start + 1;
 		this.pen.paintType.set_pos(v);
-		this.pen.paintType.cornerColors(colorB,colorD,colorC);
+		this.tri.rotateCentre(ax + w / 2,ay + h / 2,theta);
+		var v = this.start;
+		this.pen.paintType.set_pos(v);
+		var _this = this.tri;
+		var nx = _this.curr.get_x() * _this.wid + _this.wid;
+		var _this = this.tri;
+		var ny = -(_this.curr.get_y() * _this.hi - _this.hi);
+		var _this = this.tri;
+		var val_ = (ax - _this.wid) / _this.wid;
+		_this.curr.set_x(val_);
+		var _this = this.tri;
+		var val_ = -(ay - _this.hi) / _this.hi;
+		_this.curr.set_y(val_);
+		var dx = ax - nx;
+		var dy = ay - ny;
+		var v = this.start + 1;
+		this.pen.paintType.set_pos(v);
+		var _this = this.tri;
+		var _this1 = this.tri;
+		var val = _this1.curr.get_x() * _this1.wid + _this1.wid + dx;
+		var val_ = (val - _this.wid) / _this.wid;
+		_this.curr.set_x(val_);
+		var _this = this.tri;
+		var _this1 = this.tri;
+		var val = -(_this1.curr.get_y() * _this1.hi - _this1.hi) + dy;
+		var val_ = -(val - _this.hi) / _this.hi;
+		_this.curr.set_y(val_);
+		this.pen.paintType.set_pos(p);
+	}
+	,rotateFromCentre: function(dx,dy,theta) {
+		var p = this.pen.paintType.get_pos();
+		var v = this.start;
+		this.pen.paintType.set_pos(v);
+		var curr = this.tri.curr;
+		var _this = this.tri;
+		var ax = _this.curr.get_x() * _this.wid + _this.wid;
+		var _this = this.tri;
+		var ay = -(_this.curr.get_y() * _this.hi - _this.hi);
+		this.tri.rotateCentre(this.startU + dx,this.startV + dy,theta);
+		var v = this.start + 1;
+		this.pen.paintType.set_pos(v);
+		this.tri.rotateCentre(this.startU + dx,this.startV + dy,theta);
+		this.pen.paintType.set_pos(p);
 	}
 };
 var trilateral3_reShape_TrianglesShaper = function(pen,wid,hi) {
@@ -5224,6 +6153,11 @@ var trilateral3_reShape_TrianglesShaper = function(pen,wid,hi) {
 	this.curr3color = pen.paintType.color3current;
 };
 trilateral3_reShape_TrianglesShaper.__name__ = true;
+trilateral3_reShape_TrianglesShaper.prototype = {
+	rotateCentre: function(vx,vy,val) {
+		this.curr.rotate((vx - this.wid) / this.wid,-(vy - this.hi) / this.hi,val);
+	}
+};
 var trilateral3_shape_IntIterStart = function(min_,max_) {
 	this.start = min_;
 	this.max = max_;
@@ -5256,17 +6190,30 @@ var trilateral3_structure_Triangle3D = function(a,b,c) {
 	this.c = c;
 };
 trilateral3_structure_Triangle3D.__name__ = true;
+var trilateral3_structure_TriangleUV = function(a,b,c) {
+	this.a = a;
+	this.b = b;
+	this.c = c;
+};
+trilateral3_structure_TriangleUV.__name__ = true;
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $global.$haxeUID++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = m.bind(o); o.hx__closures__[m.__id__] = f; } return f; }
 $global.$haxeUID |= 0;
+if(typeof(performance) != "undefined" ? typeof(performance.now) == "function" : false) {
+	HxOverrides.now = performance.now.bind(performance);
+}
+if( String.fromCodePoint == null ) String.fromCodePoint = function(c) { return c < 0x10000 ? String.fromCharCode(c) : String.fromCharCode((c>>10)+0xD7C0)+String.fromCharCode((c&0x3FF)+0xDC00); }
 String.__name__ = true;
 Array.__name__ = true;
+haxe_Resource.content = [{ name : "leafJson", data : "eyAgIAogICAgImxlYWYiOiB7CiAgICAgICAgIm5hbWUiOiAiemVicmEiLAogICAgICAgICJ0b3AiOiB7ICJuYW1lIjogImJvZHkiCiAgICAgICAgICAgICAgICwgInRleHR1cmUiOiAiYm9keS5wbmciCiAgICAgICAgICAgICAgICwgInBhcmVudE5hbWUiOiAiIgogICAgICAgICAgICAgICAsICJ4IjogMC4wCiAgICAgICAgICAgICAgICwgInkiOiAwLjAKICAgICAgICAgICAgICAgLCAib3giOiAwLjAKICAgICAgICAgICAgICAgLCAib3kiOiAwLjAKICAgICAgICAgICAgICAgLCAiY3giOiAwLjAKICAgICAgICAgICAgICAgLCAiY3kiOiAwLjAKICAgICAgICAgICAgICAgLCAicm90YXRpb24iOiAwLjAKICAgICAgICB9LAogICAgICAgICJsZWF2ZXMiOiBbCiAgICAgICAgICAgIHsgICAgIm5hbWUiOiAiaGVhZCIKICAgICAgICAgICAgICAgLCAidGV4dHVyZSI6ICJoZWFkLnBuZyIKICAgICAgICAgICAgICAgLCAicGFyZW50TmFtZSI6ICJuZWNrIgogICAgICAgICAgICAgICAsICJveCI6IDE4LjAKICAgICAgICAgICAgICAgLCAib3kiOiAzMi4wCiAgICAgICAgICAgICAgICwgImN4IjogNDAuMAogICAgICAgICAgICAgICAsICJjeSI6IDMwLjAKICAgICAgICAgICAgICAgLCAicm90YXRpb24iOiAwLjAKICAgICAgICAgICAgfSwKICAgICAgICAgICAgeyAgICAibmFtZSI6ICJuZWNrIgogICAgICAgICAgICAgICAsICJ0ZXh0dXJlIjogIm5lY2sucG5nIgogICAgICAgICAgICAgICAsICJwYXJlbnROYW1lIjogImJvZHkiCiAgICAgICAgICAgICAgICwgIm94IjogMzMuMAogICAgICAgICAgICAgICAsICJveSI6IDQ5LjAKICAgICAgICAgICAgICAgLCAiY3giOiA4MC4wCiAgICAgICAgICAgICAgICwgImN5IjogOTAuMAogICAgICAgICAgICAgICAsICJyb3RhdGlvbiI6IDAuMAogICAgICAgICAgICB9LAogICAgICAgICAgICB7ICAgICJuYW1lIjogImNoaW4iCiAgICAgICAgICAgICAgICwgInRleHR1cmUiOiAiY2hpbi5wbmciCiAgICAgICAgICAgICAgICwgInBhcmVudE5hbWUiOiAiaGVhZCIKICAgICAgICAgICAgICAgLCAib3giOiAyMC4wCiAgICAgICAgICAgICAgICwgIm95IjogNjIuMAogICAgICAgICAgICAgICAsICJjeCI6IDExLjAKICAgICAgICAgICAgICAgLCAiY3kiOiAtNS4wCiAgICAgICAgICAgICAgICwgInJvdGF0aW9uIjogMC4wCiAgICAgICAgICAgIH0sCiAgICAgICAgICAgIHsgICAgIm5hbWUiOiAiYmFja0hvZmYiCiAgICAgICAgICAgICAgICwgInRleHR1cmUiOiAiYmFja0hvZmYucG5nIgogICAgICAgICAgICAgICAsICJwYXJlbnROYW1lIjogImJhY2tMZWdCb3R0b20iCiAgICAgICAgICAgICAgICwgIm94IjogMTAuMAogICAgICAgICAgICAgICAsICJveSI6IDU1LjAKICAgICAgICAgICAgICAgLCAiY3giOiAxNS4wCiAgICAgICAgICAgICAgICwgImN5IjogMC4wCiAgICAgICAgICAgICAgICwgInJvdGF0aW9uIjogMC4wCiAgICAgICAgICAgIH0sCiAgICAgICAgICAgIHsgICAgIm5hbWUiOiAiYmFja0hvZmYyIgogICAgICAgICAgICAgICAsICJ0ZXh0dXJlIjogImJhY2tIb2ZmLnBuZyIKICAgICAgICAgICAgICAgLCAicGFyZW50TmFtZSI6ICJiYWNrTGVnQm90dG9tMiIKICAgICAgICAgICAgICAgLCAib3giOiAxMC4wCiAgICAgICAgICAgICAgICwgIm95IjogNTMuMAogICAgICAgICAgICAgICAsICJjeCI6IDE1LjAKICAgICAgICAgICAgICAgLCAiY3kiOiAwLjAKICAgICAgICAgICAgICAgLCAicm90YXRpb24iOiAwLjAKICAgICAgICAgICAgfSwKICAgICAgICAgICAgeyAgICAibmFtZSI6ICJmcm9udEhvZmYiCiAgICAgICAgICAgICAgICwgInRleHR1cmUiOiAiZnJvbnRIb2ZmLnBuZyIKICAgICAgICAgICAgICAgLCAicGFyZW50TmFtZSI6ICJmcm9udExlZ0JvdHRvbSIKICAgICAgICAgICAgICAgLCAib3giOiAxMC4wCiAgICAgICAgICAgICAgICwgIm95IjogNTAuMAogICAgICAgICAgICAgICAsICJjeCI6IDE1LjAKICAgICAgICAgICAgICAgLCAiY3kiOiAwLjAKICAgICAgICAgICAgICAgLCAicm90YXRpb24iOiAwLjAKICAgICAgICAgICAgfSwKICAgICAgICAgICAgeyAgICAibmFtZSI6ICJmcm9udEhvZmYyIgogICAgICAgICAgICAgICAsICJ0ZXh0dXJlIjogImZyb250SG9mZi5wbmciCiAgICAgICAgICAgICAgICwgInBhcmVudE5hbWUiOiAiZnJvbnRMZWdCb3R0b20yIgogICAgICAgICAgICAgICAsICJveCI6IDEwLjAKICAgICAgICAgICAgICAgLCAib3kiOiA0OC4wCiAgICAgICAgICAgICAgICwgImN4IjogMTUuMAogICAgICAgICAgICAgICAsICJjeSI6IDAuMAogICAgICAgICAgICAgICAsICJyb3RhdGlvbiI6IDAuMAogICAgICAgICAgICB9LAogICAgICAgICAgICB7ICAgICJuYW1lIjogImJhY2tMZWdCb3R0b20iCiAgICAgICAgICAgICAgICwgInRleHR1cmUiOiAiYmFja0xlZ0JvdHRvbS5wbmciCiAgICAgICAgICAgICAgICwgInBhcmVudE5hbWUiOiAiYmFja0xlZ1RvcCIKICAgICAgICAgICAgICAgLCAib3giOiA0Ny4wCiAgICAgICAgICAgICAgICwgIm95IjogNzUuMAogICAgICAgICAgICAgICAsICJjeCI6IDE1LjAKICAgICAgICAgICAgICAgLCAiY3kiOiA1LjAKICAgICAgICAgICAgICAgLCAicm90YXRpb24iOiAwLjAKICAgICAgICAgICAgfSwKICAgICAgICAgICAgeyAgICAibmFtZSI6ICJiYWNrTGVnQm90dG9tMiIKICAgICAgICAgICAgICAgLCAidGV4dHVyZSI6ICJiYWNrTGVnQm90dG9tLnBuZyIKICAgICAgICAgICAgICAgLCAicGFyZW50TmFtZSI6ICJiYWNrTGVnVG9wMiIKICAgICAgICAgICAgICAgLCAib3giOiA0Ny4wCiAgICAgICAgICAgICAgICwgIm95IjogNzMuMAogICAgICAgICAgICAgICAsICJjeCI6IDE1LjAKICAgICAgICAgICAgICAgLCAiY3kiOiA1LjAKICAgICAgICAgICAgICAgLCAicm90YXRpb24iOiAwLjAKICAgICAgICAgICAgfSwKICAgICAgICAgICAgeyAgICAibmFtZSI6ICJmcm9udExlZ0JvdHRvbSIKICAgICAgICAgICAgICAgLCAidGV4dHVyZSI6ICJmcm9udExlZ0JvdHRvbS5wbmciCiAgICAgICAgICAgICAgICwgInBhcmVudE5hbWUiOiAiZnJvbnRMZWdUb3AiCiAgICAgICAgICAgICAgICwgIm94IjogMzUuMAogICAgICAgICAgICAgICAsICJveSI6IDk1LjAKICAgICAgICAgICAgICAgLCAiY3giOiAxMC4wCiAgICAgICAgICAgICAgICwgImN5IjogMTAuMAogICAgICAgICAgICAgICAsICJyb3RhdGlvbiI6IDAuMAogICAgICAgICAgICB9LAogICAgICAgICAgICB7ICAgICJuYW1lIjogImZyb250TGVnQm90dG9tMiIKICAgICAgICAgICAgICAgLCAidGV4dHVyZSI6ICJmcm9udExlZ0JvdHRvbS5wbmciCiAgICAgICAgICAgICAgICwgInBhcmVudE5hbWUiOiAiZnJvbnRMZWdUb3AyIgogICAgICAgICAgICAgICAsICJveCI6IDM1LjAKICAgICAgICAgICAgICAgLCAib3kiOiA5My4wCiAgICAgICAgICAgICAgICwgImN4IjogMTAuMAogICAgICAgICAgICAgICAsICJjeSI6IDEwLjAKICAgICAgICAgICAgICAgLCAicm90YXRpb24iOiAwLjAKICAgICAgICAgICAgfSwKICAgICAgICAgICAgeyAgICAibmFtZSI6ICJmcm9udExlZ1RvcCIKICAgICAgICAgICAgICAgLCAidGV4dHVyZSI6ICJmcm9udExlZ1RvcC5wbmciCiAgICAgICAgICAgICAgICwgInBhcmVudE5hbWUiOiAiYm9keSIKICAgICAgICAgICAgICAgLCAib3giOiAyOC4wICAKICAgICAgICAgICAgICAgLCAib3kiOiA4Ny4wIAogICAgICAgICAgICAgICAsICJjeCI6IDI1LjAKICAgICAgICAgICAgICAgLCAiY3kiOiAyNS4wCiAgICAgICAgICAgICAgICwgInJvdGF0aW9uIjogMC4wCiAgICAgICAgICAgIH0sCiAgICAgICAgICAgIHsgICAgIm5hbWUiOiAiZnJvbnRMZWdUb3AyIgogICAgICAgICAgICAgICAsICJ0ZXh0dXJlIjogImZyb250TGVnVG9wLnBuZyIKICAgICAgICAgICAgICAgLCAicGFyZW50TmFtZSI6ICJib2R5IgogICAgICAgICAgICAgICAsICJveCI6IDI4LjAgCiAgICAgICAgICAgICAgICwgIm95IjogODUuMAogICAgICAgICAgICAgICAsICJjeCI6IDI1LjAKICAgICAgICAgICAgICAgLCAiY3kiOiAyNS4wCiAgICAgICAgICAgICAgICwgInJvdGF0aW9uIjogMC4wCiAgICAgICAgICAgIH0sCiAgICAgICAgICAgIHsgICAgIm5hbWUiOiAiYmFja0xlZ1RvcCIKICAgICAgICAgICAgICAgLCAidGV4dHVyZSI6ICJiYWNrTGVnVG9wLnBuZyIKICAgICAgICAgICAgICAgLCAicGFyZW50TmFtZSI6ICJib2R5IgogICAgICAgICAgICAgICAsICJveCI6IDE4NS4wCiAgICAgICAgICAgICAgICwgIm95IjogNTcuMAogICAgICAgICAgICAgICAsICJjeCI6IDIzLjAKICAgICAgICAgICAgICAgLCAiY3kiOiAtOC4wCiAgICAgICAgICAgICAgICwgInJvdGF0aW9uIjogMC4wCiAgICAgICAgICAgIH0sCiAgICAgICAgICAgIHsgICAgIm5hbWUiOiAiYmFja0xlZ1RvcDIiCiAgICAgICAgICAgICAgICwgInRleHR1cmUiOiAiYmFja0xlZ1RvcC5wbmciCiAgICAgICAgICAgICAgICwgInBhcmVudE5hbWUiOiAiYm9keSIKICAgICAgICAgICAgICAgLCAib3giOiAxODUuMAogICAgICAgICAgICAgICAsICJveSI6IDU1LjAKICAgICAgICAgICAgICAgLCAiY3giOiAyMy4wCiAgICAgICAgICAgICAgICwgImN5IjogLTguMAogICAgICAgICAgICAgICAsICJyb3RhdGlvbiI6IDAuMAogICAgICAgICAgICB9LAogICAgICAgICAgICB7ICAgICJuYW1lIjogInRhaWwiCiAgICAgICAgICAgICAgICwgInRleHR1cmUiOiAidGFpbC5wbmciCiAgICAgICAgICAgICAgICwgInBhcmVudE5hbWUiOiAiYm9keSIKICAgICAgICAgICAgICAgLCAib3giOiAyMzAuMAogICAgICAgICAgICAgICAsICJveSI6IDI1LjAKICAgICAgICAgICAgICAgLCAiY3giOiA1LjAKICAgICAgICAgICAgICAgLCAiY3kiOiA1LjAKICAgICAgICAgICAgICAgLCAicm90YXRpb24iOiAwLjAKICAgICAgICAgICAgfQogICAgICAgIF0KICAgIH0KfQ"},{ name : "atlasJson", data : "ewogICAgImZyYW1lcyI6IHsKCiAgICJjaGluLnBuZyI6CiAgICB7CiAgICAgICAgImZyYW1lIjogeyJ4IjowLCJ5IjowLCJ3IjoxMSwiaCI6MTJ9LAogICAgICAgICJyb3RhdGVkIjogZmFsc2UsCiAgICAgICAgInRyaW1tZWQiOiBmYWxzZSwKICAgICAgICAic3ByaXRlU291cmNlU2l6ZSI6IHsieCI6MCwieSI6MCwidyI6MTEsImgiOjEyfSwKICAgICAgICAic291cmNlU2l6ZSI6IHsidyI6MTEsImgiOjEyIH0KICAgIH0sCiAgICJiYWNrSG9mZi5wbmciOgogICAgewogICAgICAgICJmcmFtZSI6IHsieCI6MTEsInkiOjAsInciOjIwLCJoIjoxNn0sCiAgICAgICAgInJvdGF0ZWQiOiBmYWxzZSwKICAgICAgICAidHJpbW1lZCI6IGZhbHNlLAogICAgICAgICJzcHJpdGVTb3VyY2VTaXplIjogeyJ4IjowLCJ5IjowLCJ3IjoyMCwiaCI6MTZ9LAogICAgICAgICJzb3VyY2VTaXplIjogeyJ3IjoyMCwiaCI6MTYgfQogICAgfSwKICAgImZyb250SG9mZi5wbmciOgogICAgewogICAgICAgICJmcmFtZSI6IHsieCI6MzEsInkiOjAsInciOjIwLCJoIjoxNX0sCiAgICAgICAgInJvdGF0ZWQiOiBmYWxzZSwKICAgICAgICAidHJpbW1lZCI6IGZhbHNlLAogICAgICAgICJzcHJpdGVTb3VyY2VTaXplIjogeyJ4IjowLCJ5IjowLCJ3IjoyMCwiaCI6MTV9LAogICAgICAgICJzb3VyY2VTaXplIjogeyJ3IjoyMCwiaCI6MTUgfQogICAgfSwKICAgImZyb250TGVnQm90dG9tLnBuZyI6CiAgICB7CiAgICAgICAgImZyYW1lIjogeyJ4IjoxMSwieSI6MTYsInciOjE4LCJoIjo1MX0sCiAgICAgICAgInJvdGF0ZWQiOiBmYWxzZSwKICAgICAgICAidHJpbW1lZCI6IGZhbHNlLAogICAgICAgICJzcHJpdGVTb3VyY2VTaXplIjogeyJ4IjowLCJ5IjowLCJ3IjoxOCwiaCI6NTF9LAogICAgICAgICJzb3VyY2VTaXplIjogeyJ3IjoxOCwiaCI6NTEgfQogICAgfSwKICAgImJhY2tMZWdCb3R0b20ucG5nIjoKICAgIHsKICAgICAgICAiZnJhbWUiOiB7IngiOjI5LCJ5IjoxNiwidyI6MzEsImgiOjU4fSwKICAgICAgICAicm90YXRlZCI6IGZhbHNlLAogICAgICAgICJ0cmltbWVkIjogZmFsc2UsCiAgICAgICAgInNwcml0ZVNvdXJjZVNpemUiOiB7IngiOjAsInkiOjAsInciOjMxLCJoIjo1OH0sCiAgICAgICAgInNvdXJjZVNpemUiOiB7InciOjMxLCJoIjo1OCB9CiAgICB9LAogICAiYmFja0xlZ1RvcC5wbmciOgogICAgewogICAgICAgICJmcmFtZSI6IHsieCI6NjAsInkiOjE2LCJ3Ijo2NCwiaCI6NzN9LAogICAgICAgICJyb3RhdGVkIjogZmFsc2UsCiAgICAgICAgInRyaW1tZWQiOiBmYWxzZSwKICAgICAgICAic3ByaXRlU291cmNlU2l6ZSI6IHsieCI6MCwieSI6MCwidyI6NjQsImgiOjczfSwKICAgICAgICAic291cmNlU2l6ZSI6IHsidyI6NjQsImgiOjczIH0KICAgIH0sCiAgICJoZWFkLnBuZyI6CiAgICB7CiAgICAgICAgImZyYW1lIjogeyJ4IjoxMjQsInkiOjE2LCJ3Ijo3NywiaCI6NDV9LAogICAgICAgICJyb3RhdGVkIjogdHJ1ZSwKICAgICAgICAidHJpbW1lZCI6IGZhbHNlLAogICAgICAgICJzcHJpdGVTb3VyY2VTaXplIjogeyJ4IjowLCJ5IjowLCJ3Ijo3NywiaCI6NDV9LAogICAgICAgICJzb3VyY2VTaXplIjogeyJ3Ijo3NywiaCI6NDUgfQogICAgfSwKICAgInRhaWwucG5nIjoKICAgIHsKICAgICAgICAiZnJhbWUiOiB7IngiOjI5LCJ5Ijo3NCwidyI6MjMsImgiOjg4fSwKICAgICAgICAicm90YXRlZCI6IGZhbHNlLAogICAgICAgICJ0cmltbWVkIjogZmFsc2UsCiAgICAgICAgInNwcml0ZVNvdXJjZVNpemUiOiB7IngiOjAsInkiOjAsInciOjIzLCJoIjo4OH0sCiAgICAgICAgInNvdXJjZVNpemUiOiB7InciOjIzLCJoIjo4OCB9CiAgICB9LAogICAiZnJvbnRMZWdUb3AucG5nIjoKICAgIHsKICAgICAgICAiZnJhbWUiOiB7IngiOjYwLCJ5Ijo4OSwidyI6NTcsImgiOjkyfSwKICAgICAgICAicm90YXRlZCI6IGZhbHNlLAogICAgICAgICJ0cmltbWVkIjogZmFsc2UsCiAgICAgICAgInNwcml0ZVNvdXJjZVNpemUiOiB7IngiOjAsInkiOjAsInciOjU3LCJoIjo5Mn0sCiAgICAgICAgInNvdXJjZVNpemUiOiB7InciOjU3LCJoIjo5MiB9CiAgICB9LAogICAibmVjay5wbmciOgogICAgewogICAgICAgICJmcmFtZSI6IHsieCI6MTE3LCJ5Ijo4OSwidyI6OTIsImgiOjExMH0sCiAgICAgICAgInJvdGF0ZWQiOiBmYWxzZSwKICAgICAgICAidHJpbW1lZCI6IGZhbHNlLAogICAgICAgICJzcHJpdGVTb3VyY2VTaXplIjogeyJ4IjowLCJ5IjowLCJ3Ijo5MiwiaCI6MTEwfSwKICAgICAgICAic291cmNlU2l6ZSI6IHsidyI6OTIsImgiOjExMCB9CiAgICB9LAogICAiYm9keS5wbmciOgogICAgewogICAgICAgICJmcmFtZSI6IHsieCI6MjQwLCJ5IjowLCJ3IjoyMzAsImgiOjEwMH0sCiAgICAgICAgInJvdGF0ZWQiOiBmYWxzZSwKICAgICAgICAidHJpbW1lZCI6IGZhbHNlLAogICAgICAgICJzcHJpdGVTb3VyY2VTaXplIjogeyJ4IjowLCJ5IjowLCJ3IjoyMzAsImgiOjEwMH0sCiAgICAgICAgInNvdXJjZVNpemUiOiB7InciOjIzMCwiaCI6MTAwIH0KICAgICB9CiB9LCAgCiAgICJtZXRhIjogewogICAgICAgICJhcHAiOiAiaHR0cDovL3d3dy5jb2RlYW5kd2ViLmNvbS90ZXh0dXJlcGFja2VyIiwKICAgICAgICAidmVyc2lvbiI6ICIxLjAiLAogICAgICAgICJpbWFnZSI6ICIuL2Fzc2V0cy9yZWN0UGFjay96ZWJyYUF0bGFzLnBuZyIsCiAgICAgICAgImZvcm1hdCI6ICJSR0JBODg4OCIsCiAgICAgICAgInNpemUiOiB7InciOjQ4MCwiaCI6MjQwfSwKICAgICAgICAic2NhbGUiOiAiMSIKICAgIH0KfQo"}];
 hxGeomAlgo_PolyTools.exposeEnum(hxGeomAlgo_WindingRule);
 hxGeomAlgo_PolyTools.exposeEnum(hxGeomAlgo_ResultType);
 js_Boot.__toStr = ({ }).toString;
+haxe_crypto_Base64.CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+haxe_crypto_Base64.BYTES = haxe_io_Bytes.ofString(haxe_crypto_Base64.CHARS);
 hxGeomAlgo_HxPoint.EMPTY = hxGeomAlgo_HxPoint._new(NaN,NaN);
 hxGeomAlgo_PolyTools.point = hxGeomAlgo_HxPoint._new();
 hxGeomAlgo_PolyTools.zero = hxGeomAlgo_HxPoint._new(0,0);
 hxGeomAlgo_PolyTools.EPSILON = .00000001;
 hyperKitGL_AnimateTimer.counter = 0;
-hyperKitGLsamples_gradientGrid_Main_main();
+hyperKitGLsamples_zealAtlas_ZealAtlas_main();
 })(typeof exports != "undefined" ? exports : typeof window != "undefined" ? window : typeof self != "undefined" ? self : this, typeof window != "undefined" ? window : typeof global != "undefined" ? global : typeof self != "undefined" ? self : this);

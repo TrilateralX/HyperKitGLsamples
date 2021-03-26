@@ -13,6 +13,8 @@ import haxe.Timer;
 import trilateral3.drawing.Pen;
 import trilateral3.nodule.PenColor;
 import trilateral3.nodule.PenTexture;
+import trilateral3.nodule.PenArrColor;
+import trilateral3.nodule.PenArrTexture;
 import trilateral3.shape.IteratorRange;
 import hyperKitGL.ImageGL;
 import hyperKitGL.BufferGL;
@@ -42,9 +44,9 @@ function main(){
 class Main extends PlyMix {
     // always required
     public var penColor:            Pen;
-    public var penNoduleColor       = new PenColor();
+    public var penNoduleColor       = new PenArrColor();
     public var penTexture:          Pen;
-    public var penNoduleTexture     = new PenTexture();
+    public var penNoduleTexture     = new PenArrTexture();
     
     public var quadShaper:          QuadShaper;
     public var sketch:              Sketch;
@@ -64,6 +66,7 @@ class Main extends PlyMix {
     
     inline
     function setupDrawingPens(){
+        trace('setupDrawingPens');
         setupNoduleBuffers();
         penInits();
     }
@@ -97,6 +100,7 @@ class Main extends PlyMix {
     }
     inline 
     function setupImage(){
+        trace('setupImage');
         img             =  imageLoader.imageArr[ 0 ];
         imgW            = img.width;
         imgH            = img.height;
@@ -106,10 +110,11 @@ class Main extends PlyMix {
                          , 0.,2./ratio,0.
                          , 0.,0.,1.];
         // show original flower.
-        //showImageOnCanvas( img, imgW, imgH );
+        showImageOnCanvas( img, imgW, imgH );
     }
     override
     public function draw(){
+        trace( '__draw ' );
         // setup
         setupImage();
         setupDrawingPens();
@@ -117,6 +122,7 @@ class Main extends PlyMix {
         // drawing examples
         drawQuad();
         starDrawing();
+        trace('drew everything');
     }
     inline 
     function setupSketch(){
@@ -131,7 +137,7 @@ class Main extends PlyMix {
     function drawQuad(){
         posMin = Std.int( penTexture.pos );
         // create a quad and populate it with an image
-        quadShaper       = new QuadShaper( penTexture, 0 );
+        quadShaper       = new QuadShaper( penTexture, penTexture.pos );
         quadShaper.drawQuadColors( 0., 0., 1000., 1000., Blue, Green, Yellow, Red );
         quadRange = posMin...Std.int( penTexture.pos );
         // store for render

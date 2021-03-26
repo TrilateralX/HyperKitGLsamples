@@ -1,6 +1,6 @@
 package;
 
-class TableCloth{ 
+class TableCloth { 
     public var png_: String = png;
 }
     // inline base64 encoded png of the Haxe Logo

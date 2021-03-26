@@ -13,6 +13,7 @@ import haxe.Timer;
 // Sketching
 import trilateral3.drawing.Pen;
 import trilateral3.nodule.PenColor;
+import trilateral3.nodule.PenArrColor;
 import trilateral3.nodule.PenTexture;
 import trilateral3.shape.IteratorRange;
 import hyperKitGL.ImageGL;
@@ -43,7 +44,7 @@ function main(){
 
 class Main extends PlyMix {
     public var penColor:            Pen;
-    public var penNoduleColor       = new PenColor();
+    public var penNoduleColor       = new PenArrColor();
     public var posMin:              Int;
     public var quadRange:           IteratorRange;
     public var draw_Shape           = new Array<RangeEntity>();
@@ -70,6 +71,7 @@ class Main extends PlyMix {
         // setup
         setupDrawingPens();
         drawQuad();
+        setAnimate();
     }
     inline
     function drawQuad(){
@@ -94,7 +96,6 @@ class Main extends PlyMix {
         draw_Shape[ draw_Shape.length ] = { textured: false
                                           , range: quadRange };
         // this should not be needed!!
-        setAnimate();
     }
     var theta = 0.1;
     override
