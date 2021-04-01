@@ -22,7 +22,7 @@
 -dce full
 #--no-traces
 --next
-
+# -D keep-inline-positions
 #--macro nullSafety("trilateral", Strict)
 #--macro nullSafety("fracs", Strict)
 #--macro nullSafety("justPath", Strict)

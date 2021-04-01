@@ -4062,7 +4062,7 @@ hyperKitGL_io_ArrayColorTriangles.moveDelta = function(this1,dx,dy) {
 	hyperKitGL_io_ArrayColorTriangles.set_cy(this1,hyperKitGL_io_ArrayColorTriangles.get_cy(this1) + dy);
 };
 hyperKitGL_io_ArrayColorTriangles.fullHit = function(this1,px,py) {
-	if(px > Math.min(Math.min(hyperKitGL_io_ArrayColorTriangles.get_ax(this1),hyperKitGL_io_ArrayColorTriangles.get_bx(this1)),hyperKitGL_io_ArrayColorTriangles.get_cx(this1)) && px < Math.max(Math.max(hyperKitGL_io_ArrayColorTriangles.get_ax(this1),hyperKitGL_io_ArrayColorTriangles.get_bx(this1)),hyperKitGL_io_ArrayColorTriangles.get_cx(this1)) && py > Math.min(Math.min(hyperKitGL_io_ArrayColorTriangles.get_ay(this1),hyperKitGL_io_ArrayColorTriangles.get_by(this1)),hyperKitGL_io_ArrayColorTriangles.get_cy(this1)) && py < Math.max(Math.max(hyperKitGL_io_ArrayColorTriangles.get_ay(this1),hyperKitGL_io_ArrayColorTriangles.get_by(this1)),hyperKitGL_io_ArrayColorTriangles.get_cy(this1))) {
+	if(px > Math.min(Math.min(hyperKitGL_io_ArrayColorTriangles.get_ax(this1),hyperKitGL_io_ArrayColorTriangles.get_bx(this1)),hyperKitGL_io_ArrayColorTriangles.get_cx(this1)) && px < Math.max(Math.max(hyperKitGL_io_ArrayColorTriangles.get_ax(this1),hyperKitGL_io_ArrayColorTriangles.get_bx(this1)),hyperKitGL_io_ArrayColorTriangles.get_cx(this1)) && py > Math.max(Math.max(hyperKitGL_io_ArrayColorTriangles.get_ay(this1),hyperKitGL_io_ArrayColorTriangles.get_by(this1)),hyperKitGL_io_ArrayColorTriangles.get_cy(this1)) && py < Math.max(Math.max(hyperKitGL_io_ArrayColorTriangles.get_ay(this1),hyperKitGL_io_ArrayColorTriangles.get_by(this1)),hyperKitGL_io_ArrayColorTriangles.get_cy(this1))) {
 		return true;
 	}
 	var planeAB = (hyperKitGL_io_ArrayColorTriangles.get_ax(this1) - px) * (hyperKitGL_io_ArrayColorTriangles.get_by(this1) - py) - (hyperKitGL_io_ArrayColorTriangles.get_bx(this1) - px) * (hyperKitGL_io_ArrayColorTriangles.get_ay(this1) - py);
@@ -4207,7 +4207,7 @@ hyperKitGL_io_ArrayColorTrianglesUV.moveDelta = function(this1,dx,dy) {
 	hyperKitGL_io_ArrayColorTrianglesUV.set_cy(this1,hyperKitGL_io_ArrayColorTrianglesUV.get_cy(this1) + dy);
 };
 hyperKitGL_io_ArrayColorTrianglesUV.fullHit = function(this1,px,py) {
-	if(px > Math.min(Math.min(hyperKitGL_io_ArrayColorTrianglesUV.get_ax(this1),hyperKitGL_io_ArrayColorTrianglesUV.get_bx(this1)),hyperKitGL_io_ArrayColorTrianglesUV.get_cx(this1)) && px < Math.max(Math.max(hyperKitGL_io_ArrayColorTrianglesUV.get_ax(this1),hyperKitGL_io_ArrayColorTrianglesUV.get_bx(this1)),hyperKitGL_io_ArrayColorTrianglesUV.get_cx(this1)) && py > Math.min(Math.min(hyperKitGL_io_ArrayColorTrianglesUV.get_ay(this1),hyperKitGL_io_ArrayColorTrianglesUV.get_by(this1)),hyperKitGL_io_ArrayColorTrianglesUV.get_cy(this1)) && py < Math.max(Math.max(hyperKitGL_io_ArrayColorTrianglesUV.get_ay(this1),hyperKitGL_io_ArrayColorTrianglesUV.get_by(this1)),hyperKitGL_io_ArrayColorTrianglesUV.get_cy(this1))) {
+	if(px > Math.min(Math.min(hyperKitGL_io_ArrayColorTrianglesUV.get_ax(this1),hyperKitGL_io_ArrayColorTrianglesUV.get_bx(this1)),hyperKitGL_io_ArrayColorTrianglesUV.get_cx(this1)) && px < Math.max(Math.max(hyperKitGL_io_ArrayColorTrianglesUV.get_ax(this1),hyperKitGL_io_ArrayColorTrianglesUV.get_bx(this1)),hyperKitGL_io_ArrayColorTrianglesUV.get_cx(this1)) && py > Math.max(Math.max(hyperKitGL_io_ArrayColorTrianglesUV.get_ay(this1),hyperKitGL_io_ArrayColorTrianglesUV.get_by(this1)),hyperKitGL_io_ArrayColorTrianglesUV.get_cy(this1)) && py < Math.max(Math.max(hyperKitGL_io_ArrayColorTrianglesUV.get_ay(this1),hyperKitGL_io_ArrayColorTrianglesUV.get_by(this1)),hyperKitGL_io_ArrayColorTrianglesUV.get_cy(this1))) {
 		return true;
 	}
 	var planeAB = (hyperKitGL_io_ArrayColorTrianglesUV.get_ax(this1) - px) * (hyperKitGL_io_ArrayColorTrianglesUV.get_by(this1) - py) - (hyperKitGL_io_ArrayColorTrianglesUV.get_bx(this1) - px) * (hyperKitGL_io_ArrayColorTrianglesUV.get_ay(this1) - py);
@@ -4488,7 +4488,7 @@ hyperKitGLsamples_basic_Main.prototype = $extend(hyperKitGL_PlyMix.prototype,{
 		}
 		this.sketch.width = 40;
 		this.posMin = this.penTexture.paintType.get_pos() | 0;
-		this.quadShaper = new trilateral3_reShape_QuadShaper(this.penTexture,0);
+		this.quadShaper = new trilateral3_reShape_QuadShaper(this.penTexture,this.penTexture.paintType.get_pos());
 		this.quadShaper.drawQuadColors(0.,0.,1000.,1000.,-16776961,-16711936,-256,-65536);
 		var ii_min = this.posMin;
 		var ii_max = this.penTexture.paintType.get_pos() | 0;
@@ -13212,8 +13212,8 @@ trilateral3_nodule_PenArrColor.prototype = $extend(trilateral3_nodule_PenNodule.
 		var _e15 = t;
 		var _e16 = t;
 		var triangleAbstract = { rotate : function(x,y,theta) {
-			var cos = Math.cos(theta);
-			var sin = Math.sin(theta);
+			var cos = Math.cos(-theta);
+			var sin = Math.sin(-theta);
 			hyperKitGL_io_ArrayColorTriangles.set_ax(_e,hyperKitGL_io_ArrayColorTriangles.get_ax(_e) - x);
 			hyperKitGL_io_ArrayColorTriangles.set_ay(_e,hyperKitGL_io_ArrayColorTriangles.get_ay(_e) - y);
 			hyperKitGL_io_ArrayColorTriangles.set_bx(_e,hyperKitGL_io_ArrayColorTriangles.get_bx(_e) - x);
@@ -13291,9 +13291,9 @@ trilateral3_nodule_PenArrColor.prototype = $extend(trilateral3_nodule_PenNodule.
 			hyperKitGL_io_ArrayColorTriangles.set_cx(_e9,hyperKitGL_io_ArrayColorTriangles.get_cx(_e9) + dx);
 			return x;
 		}, get_y : function() {
-			return Math.min(Math.min(hyperKitGL_io_ArrayColorTriangles.get_ay(_e10),hyperKitGL_io_ArrayColorTriangles.get_by(_e10)),hyperKitGL_io_ArrayColorTriangles.get_cy(_e10));
+			return Math.max(Math.max(hyperKitGL_io_ArrayColorTriangles.get_ay(_e10),hyperKitGL_io_ArrayColorTriangles.get_by(_e10)),hyperKitGL_io_ArrayColorTriangles.get_cy(_e10));
 		}, set_y : function(y) {
-			var dy = y - Math.min(Math.min(hyperKitGL_io_ArrayColorTriangles.get_ay(_e11),hyperKitGL_io_ArrayColorTriangles.get_by(_e11)),hyperKitGL_io_ArrayColorTriangles.get_cy(_e11));
+			var dy = y - Math.max(Math.max(hyperKitGL_io_ArrayColorTriangles.get_ay(_e11),hyperKitGL_io_ArrayColorTriangles.get_by(_e11)),hyperKitGL_io_ArrayColorTriangles.get_cy(_e11));
 			hyperKitGL_io_ArrayColorTriangles.set_ay(_e11,hyperKitGL_io_ArrayColorTriangles.get_ay(_e11) + dy);
 			hyperKitGL_io_ArrayColorTriangles.set_by(_e11,hyperKitGL_io_ArrayColorTriangles.get_by(_e11) + dy);
 			hyperKitGL_io_ArrayColorTriangles.set_cy(_e11,hyperKitGL_io_ArrayColorTriangles.get_cy(_e11) + dy);
@@ -13582,10 +13582,8 @@ trilateral3_nodule_PenArrTexture.prototype = $extend(trilateral3_nodule_PenNodul
 		var _e15 = t;
 		var _e16 = t;
 		var triangleAbstract = { rotate : function(x,y,theta) {
-			haxe_Log.trace("rotate*****8",{ fileName : "hyperKitGL/io/ArrayColorTrianglesUV.hx", lineNumber : 480, className : "hyperKitGL.io._ArrayColorTrianglesUV.ArrayColorTrianglesUV_Impl_", methodName : "rotate"});
-			var cos = Math.cos(theta);
-			var sin = Math.sin(theta);
-			haxe_Log.trace("{ ax: " + hyperKitGL_io_ArrayColorTrianglesUV.get_ax(_e) + ", ay: " + hyperKitGL_io_ArrayColorTrianglesUV.get_ay(_e) + ", az: " + hyperKitGL_io_ArrayColorTrianglesUV.get_az(_e) + " }" + "\n" + "{ bx: " + hyperKitGL_io_ArrayColorTrianglesUV.get_bx(_e) + ", by: " + hyperKitGL_io_ArrayColorTrianglesUV.get_by(_e) + ", bz: " + hyperKitGL_io_ArrayColorTrianglesUV.get_bz(_e) + " }" + "\n" + "{ cx: " + hyperKitGL_io_ArrayColorTrianglesUV.get_cx(_e) + ", cy: " + hyperKitGL_io_ArrayColorTrianglesUV.get_cy(_e) + ", cz: " + hyperKitGL_io_ArrayColorTrianglesUV.get_cz(_e) + " }" + "\n",{ fileName : "hyperKitGL/io/ArrayColorTrianglesUV.hx", lineNumber : 487, className : "hyperKitGL.io._ArrayColorTrianglesUV.ArrayColorTrianglesUV_Impl_", methodName : "rotateTrig"});
+			var cos = Math.cos(-theta);
+			var sin = Math.sin(-theta);
 			hyperKitGL_io_ArrayColorTrianglesUV.set_ax(_e,hyperKitGL_io_ArrayColorTrianglesUV.get_ax(_e) - x);
 			hyperKitGL_io_ArrayColorTrianglesUV.set_ay(_e,hyperKitGL_io_ArrayColorTrianglesUV.get_ay(_e) - y);
 			hyperKitGL_io_ArrayColorTrianglesUV.set_bx(_e,hyperKitGL_io_ArrayColorTrianglesUV.get_bx(_e) - x);
@@ -13610,11 +13608,9 @@ trilateral3_nodule_PenArrTexture.prototype = $extend(trilateral3_nodule_PenNodul
 			hyperKitGL_io_ArrayColorTrianglesUV.set_by(_e,hyperKitGL_io_ArrayColorTrianglesUV.get_by(_e) + y);
 			hyperKitGL_io_ArrayColorTrianglesUV.set_cx(_e,hyperKitGL_io_ArrayColorTrianglesUV.get_cx(_e) + x);
 			hyperKitGL_io_ArrayColorTrianglesUV.set_cy(_e,hyperKitGL_io_ArrayColorTrianglesUV.get_cy(_e) + y);
-			haxe_Log.trace("{ ax: " + hyperKitGL_io_ArrayColorTrianglesUV.get_ax(_e) + ", ay: " + hyperKitGL_io_ArrayColorTrianglesUV.get_ay(_e) + ", az: " + hyperKitGL_io_ArrayColorTrianglesUV.get_az(_e) + " }" + "\n" + "{ bx: " + hyperKitGL_io_ArrayColorTrianglesUV.get_bx(_e) + ", by: " + hyperKitGL_io_ArrayColorTrianglesUV.get_by(_e) + ", bz: " + hyperKitGL_io_ArrayColorTrianglesUV.get_bz(_e) + " }" + "\n" + "{ cx: " + hyperKitGL_io_ArrayColorTrianglesUV.get_cx(_e) + ", cy: " + hyperKitGL_io_ArrayColorTrianglesUV.get_cy(_e) + ", cz: " + hyperKitGL_io_ArrayColorTrianglesUV.get_cz(_e) + " }" + "\n",{ fileName : "hyperKitGL/io/ArrayColorTrianglesUV.hx", lineNumber : 514, className : "hyperKitGL.io._ArrayColorTrianglesUV.ArrayColorTrianglesUV_Impl_", methodName : "rotateTrig"});
 		}, moveDelta : function(dx,dy) {
 			hyperKitGL_io_ArrayColorTrianglesUV.moveDelta(_e1,dx,dy);
 		}, rotateTrig : function(x,y,cos,sin) {
-			haxe_Log.trace("{ ax: " + hyperKitGL_io_ArrayColorTrianglesUV.get_ax(_e2) + ", ay: " + hyperKitGL_io_ArrayColorTrianglesUV.get_ay(_e2) + ", az: " + hyperKitGL_io_ArrayColorTrianglesUV.get_az(_e2) + " }" + "\n" + "{ bx: " + hyperKitGL_io_ArrayColorTrianglesUV.get_bx(_e2) + ", by: " + hyperKitGL_io_ArrayColorTrianglesUV.get_by(_e2) + ", bz: " + hyperKitGL_io_ArrayColorTrianglesUV.get_bz(_e2) + " }" + "\n" + "{ cx: " + hyperKitGL_io_ArrayColorTrianglesUV.get_cx(_e2) + ", cy: " + hyperKitGL_io_ArrayColorTrianglesUV.get_cy(_e2) + ", cz: " + hyperKitGL_io_ArrayColorTrianglesUV.get_cz(_e2) + " }" + "\n",{ fileName : "hyperKitGL/io/ArrayColorTrianglesUV.hx", lineNumber : 487, className : "hyperKitGL.io._ArrayColorTrianglesUV.ArrayColorTrianglesUV_Impl_", methodName : "rotateTrig"});
 			hyperKitGL_io_ArrayColorTrianglesUV.set_ax(_e2,hyperKitGL_io_ArrayColorTrianglesUV.get_ax(_e2) - x);
 			hyperKitGL_io_ArrayColorTrianglesUV.set_ay(_e2,hyperKitGL_io_ArrayColorTrianglesUV.get_ay(_e2) - y);
 			hyperKitGL_io_ArrayColorTrianglesUV.set_bx(_e2,hyperKitGL_io_ArrayColorTrianglesUV.get_bx(_e2) - x);
@@ -13639,7 +13635,6 @@ trilateral3_nodule_PenArrTexture.prototype = $extend(trilateral3_nodule_PenNodul
 			hyperKitGL_io_ArrayColorTrianglesUV.set_by(_e2,hyperKitGL_io_ArrayColorTrianglesUV.get_by(_e2) + y);
 			hyperKitGL_io_ArrayColorTrianglesUV.set_cx(_e2,hyperKitGL_io_ArrayColorTrianglesUV.get_cx(_e2) + x);
 			hyperKitGL_io_ArrayColorTrianglesUV.set_cy(_e2,hyperKitGL_io_ArrayColorTrianglesUV.get_cy(_e2) + y);
-			haxe_Log.trace("{ ax: " + hyperKitGL_io_ArrayColorTrianglesUV.get_ax(_e2) + ", ay: " + hyperKitGL_io_ArrayColorTrianglesUV.get_ay(_e2) + ", az: " + hyperKitGL_io_ArrayColorTrianglesUV.get_az(_e2) + " }" + "\n" + "{ bx: " + hyperKitGL_io_ArrayColorTrianglesUV.get_bx(_e2) + ", by: " + hyperKitGL_io_ArrayColorTrianglesUV.get_by(_e2) + ", bz: " + hyperKitGL_io_ArrayColorTrianglesUV.get_bz(_e2) + " }" + "\n" + "{ cx: " + hyperKitGL_io_ArrayColorTrianglesUV.get_cx(_e2) + ", cy: " + hyperKitGL_io_ArrayColorTrianglesUV.get_cy(_e2) + ", cz: " + hyperKitGL_io_ArrayColorTrianglesUV.get_cz(_e2) + " }" + "\n",{ fileName : "hyperKitGL/io/ArrayColorTrianglesUV.hx", lineNumber : 514, className : "hyperKitGL.io._ArrayColorTrianglesUV.ArrayColorTrianglesUV_Impl_", methodName : "rotateTrig"});
 		}, fullHit : function(px,py) {
 			return hyperKitGL_io_ArrayColorTrianglesUV.fullHit(_e3,px,py);
 		}, liteHit : function(px,py) {
@@ -13666,9 +13661,9 @@ trilateral3_nodule_PenArrTexture.prototype = $extend(trilateral3_nodule_PenNodul
 			hyperKitGL_io_ArrayColorTrianglesUV.set_cx(_e9,hyperKitGL_io_ArrayColorTrianglesUV.get_cx(_e9) + dx);
 			return x;
 		}, get_y : function() {
-			return Math.min(Math.min(hyperKitGL_io_ArrayColorTrianglesUV.get_ay(_e10),hyperKitGL_io_ArrayColorTrianglesUV.get_by(_e10)),hyperKitGL_io_ArrayColorTrianglesUV.get_cy(_e10));
+			return Math.max(Math.max(hyperKitGL_io_ArrayColorTrianglesUV.get_ay(_e10),hyperKitGL_io_ArrayColorTrianglesUV.get_by(_e10)),hyperKitGL_io_ArrayColorTrianglesUV.get_cy(_e10));
 		}, set_y : function(y) {
-			var dy = y - Math.min(Math.min(hyperKitGL_io_ArrayColorTrianglesUV.get_ay(_e11),hyperKitGL_io_ArrayColorTrianglesUV.get_by(_e11)),hyperKitGL_io_ArrayColorTrianglesUV.get_cy(_e11));
+			var dy = y - Math.max(Math.max(hyperKitGL_io_ArrayColorTrianglesUV.get_ay(_e11),hyperKitGL_io_ArrayColorTrianglesUV.get_by(_e11)),hyperKitGL_io_ArrayColorTrianglesUV.get_cy(_e11));
 			hyperKitGL_io_ArrayColorTrianglesUV.set_ay(_e11,hyperKitGL_io_ArrayColorTrianglesUV.get_ay(_e11) + dy);
 			hyperKitGL_io_ArrayColorTrianglesUV.set_by(_e11,hyperKitGL_io_ArrayColorTrianglesUV.get_by(_e11) + dy);
 			hyperKitGL_io_ArrayColorTrianglesUV.set_cy(_e11,hyperKitGL_io_ArrayColorTrianglesUV.get_cy(_e11) + dy);
@@ -13983,6 +13978,12 @@ var trilateral3_reShape_QuadShaper = function(pen,start,wid,hi) {
 	}
 	if(wid == null) {
 		wid = 1000;
+	}
+	if(start == null) {
+		start = -1.;
+	}
+	if(start == -1) {
+		start = pen.paintType.get_pos();
 	}
 	this.pen = pen;
 	this.start = start;
