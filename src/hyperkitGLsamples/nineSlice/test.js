@@ -4459,7 +4459,7 @@ hyperKitGLsamples_nineSlice_Main.prototype = $extend(hyperKitGL_PlyMix.prototype
 		this.nineSlice.addSlices(0,0,1024,1024,200,200,600,600,-1);
 		var nineRange_min = 0;
 		var nineRange_max = 18;
-		this.nineSlice.dim(600,600);
+		this.nineSlice.scaleBorder(0.5,true);
 		var red = -65536;
 		var yellow = -256;
 		this.nineSlice.modifyColors(-65536,-33024,-256,-16711936,-33024,-33024,-256,-16711936,-256,-256,-16711936,-16776961,-16711936,-16711936,-16776961,-16776961);
@@ -4467,7 +4467,7 @@ hyperKitGLsamples_nineSlice_Main.prototype = $extend(hyperKitGL_PlyMix.prototype
 		var tmp1 = this.draw_Shape.length;
 		var this1 = new trilateral3_shape_IntIterStart(nineRange_min,nineRange_max);
 		tmp[tmp1] = new trilateral3_structure_RangeEntity(true,this1,this.bgColor);
-		haxe_Log.trace("drew everything",{ fileName : "../../../src/hyperKitGLsamples/nineSlice/Main.hx", lineNumber : 130, className : "hyperKitGLsamples.nineSlice.Main", methodName : "draw"});
+		haxe_Log.trace("drew everything",{ fileName : "../../../src/hyperKitGLsamples/nineSlice/Main.hx", lineNumber : 132, className : "hyperKitGLsamples.nineSlice.Main", methodName : "draw"});
 	}
 	,renderDraw: function() {
 		var haveTextures = false;
@@ -4480,6 +4480,7 @@ hyperKitGLsamples_nineSlice_Main.prototype = $extend(hyperKitGL_PlyMix.prototype
 		if(this.count > this.colors.length - 1) {
 			this.tick = 0.;
 		}
+		this.nineSlice.scaleBorder(1 + c / 200,true);
 		this.nineSlice.dim(Math.abs(400 * c) + 600,Math.abs(300 * s) + 600);
 		this.nineSlice.modifyColors(this.colors[this.count2],this.colors[this.count2],this.colors[this.count2],this.colors[this.count2],this.colors[this.count],-65536,-1,this.colors[this.count],this.colors[this.count2],-256,-16776961,this.colors[this.count2],this.colors[this.count],this.colors[this.count],this.colors[this.count],this.colors[this.count]);
 		this.theta += 0.01;
@@ -5622,6 +5623,468 @@ trilateral3_reShape_NineSlice.prototype = {
 		quadShaper = this.arrShaper[8];
 		quadShaper.modifyQuadColors(color10,color11,color15,color14);
 	}
+	,getBorder: function() {
+		return { bLeft : this.left, bRight : this.wid - this.left - this.fat, bTop : this.top, bBottom : this.hi - this.top - this.tall};
+	}
+	,scaleBorder: function(s,keepDim) {
+		var b = this.getBorder();
+		this.adjustBorder(b.bLeft * s,b.bRight * s,b.bTop * s,b.bBottom * s,keepDim);
+	}
+	,adjustBorder: function(bLeft,bRight,bTop,bBottom,keepDim) {
+		var p = this.pen.paintType.get_pos();
+		var dLeft = this.left - bLeft;
+		var dRight = this.wid - this.left - this.fat - bRight;
+		var dTop = this.top - bTop;
+		var dBottom = this.hi - this.top - this.tall - bBottom;
+		var oldWid = this.wid;
+		var oldHi = this.hi;
+		this.wid = this.wid - dLeft - dRight;
+		this.hi = this.hi - dTop - dBottom;
+		this.left = bLeft;
+		this.top = bTop;
+		var quadShaper = this.arrShaper[0];
+		quadShaper.dim(bLeft,bTop);
+		quadShaper = this.arrShaper[1];
+		var v = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v);
+		var _this = quadShaper.tri;
+		var _xy = new hyperKitGL_XY(_this.curr.get_x() * _this.wid + _this.wid,-(_this.curr.get_y() * _this.hi - _this.hi));
+		var v = _xy.x - dLeft;
+		var v1 = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v1);
+		var _this = quadShaper.tri;
+		var _xy = new hyperKitGL_XY(_this.curr.get_x() * _this.wid + _this.wid,-(_this.curr.get_y() * _this.hi - _this.hi));
+		var v1 = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v1);
+		var _this = quadShaper.tri;
+		var val = new hyperKitGL_XY(v,new hyperKitGL_XY(_this.curr.get_x() * _this.wid + _this.wid,-(_this.curr.get_y() * _this.hi - _this.hi)).y);
+		var p1 = quadShaper.pen.paintType.get_pos();
+		var v = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v);
+		var tmp;
+		var _this = quadShaper.tri;
+		if(_this.curr.get_x() * _this.wid + _this.wid != null) {
+			var _this = quadShaper.tri;
+			tmp = -(_this.curr.get_y() * _this.hi - _this.hi) != null;
+		} else {
+			tmp = false;
+		}
+		if(tmp) {
+			var _this = quadShaper.tri;
+			var _g = _this.curr.get_x() * _this.wid + _this.wid;
+			var _this = quadShaper.tri;
+			quadShaper.lastXY = new hyperKitGL_XY(_g,-(_this.curr.get_y() * _this.hi - _this.hi));
+		}
+		var _this = quadShaper.tri;
+		var val1 = val.x;
+		var val_ = (val1 - _this.wid) / _this.wid;
+		_this.curr.set_x(val_);
+		var val1 = val.y;
+		var val_ = -(val1 - _this.hi) / _this.hi;
+		_this.curr.set_y(val_);
+		var v = quadShaper.start + 1;
+		quadShaper.pen.paintType.set_pos(v);
+		var _this = quadShaper.tri;
+		var val1 = val.x;
+		var val_ = (val1 - _this.wid) / _this.wid;
+		_this.curr.set_x(val_);
+		var val1 = val.y;
+		var val_ = -(val1 - _this.hi) / _this.hi;
+		_this.curr.set_y(val_);
+		quadShaper.pen.paintType.set_pos(p1);
+		quadShaper = this.arrShaper[2];
+		quadShaper.dim(bRight,bTop);
+		var v = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v);
+		var _this = quadShaper.tri;
+		var _xy = new hyperKitGL_XY(_this.curr.get_x() * _this.wid + _this.wid,-(_this.curr.get_y() * _this.hi - _this.hi));
+		var v = _xy.x - bRight;
+		var v1 = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v1);
+		var _this = quadShaper.tri;
+		var _xy = new hyperKitGL_XY(_this.curr.get_x() * _this.wid + _this.wid,-(_this.curr.get_y() * _this.hi - _this.hi));
+		var v1 = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v1);
+		var _this = quadShaper.tri;
+		var val = new hyperKitGL_XY(v,new hyperKitGL_XY(_this.curr.get_x() * _this.wid + _this.wid,-(_this.curr.get_y() * _this.hi - _this.hi)).y);
+		var p1 = quadShaper.pen.paintType.get_pos();
+		var v = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v);
+		var tmp;
+		var _this = quadShaper.tri;
+		if(_this.curr.get_x() * _this.wid + _this.wid != null) {
+			var _this = quadShaper.tri;
+			tmp = -(_this.curr.get_y() * _this.hi - _this.hi) != null;
+		} else {
+			tmp = false;
+		}
+		if(tmp) {
+			var _this = quadShaper.tri;
+			var _g = _this.curr.get_x() * _this.wid + _this.wid;
+			var _this = quadShaper.tri;
+			quadShaper.lastXY = new hyperKitGL_XY(_g,-(_this.curr.get_y() * _this.hi - _this.hi));
+		}
+		var _this = quadShaper.tri;
+		var val1 = val.x;
+		var val_ = (val1 - _this.wid) / _this.wid;
+		_this.curr.set_x(val_);
+		var val1 = val.y;
+		var val_ = -(val1 - _this.hi) / _this.hi;
+		_this.curr.set_y(val_);
+		var v = quadShaper.start + 1;
+		quadShaper.pen.paintType.set_pos(v);
+		var _this = quadShaper.tri;
+		var val1 = val.x;
+		var val_ = (val1 - _this.wid) / _this.wid;
+		_this.curr.set_x(val_);
+		var val1 = val.y;
+		var val_ = -(val1 - _this.hi) / _this.hi;
+		_this.curr.set_y(val_);
+		quadShaper.pen.paintType.set_pos(p1);
+		quadShaper = this.arrShaper[3];
+		var v = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v);
+		var _this = quadShaper.tri;
+		var _xy = new hyperKitGL_XY(_this.curr.get_x() * _this.wid + _this.wid,-(_this.curr.get_y() * _this.hi - _this.hi));
+		var v = _xy.y - dTop;
+		var v1 = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v1);
+		var _this = quadShaper.tri;
+		var _xy = new hyperKitGL_XY(_this.curr.get_x() * _this.wid + _this.wid,-(_this.curr.get_y() * _this.hi - _this.hi));
+		var v1 = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v1);
+		var _this = quadShaper.tri;
+		var val = new hyperKitGL_XY(new hyperKitGL_XY(_this.curr.get_x() * _this.wid + _this.wid,-(_this.curr.get_y() * _this.hi - _this.hi)).x,v);
+		var p1 = quadShaper.pen.paintType.get_pos();
+		var v = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v);
+		var tmp;
+		var _this = quadShaper.tri;
+		if(_this.curr.get_x() * _this.wid + _this.wid != null) {
+			var _this = quadShaper.tri;
+			tmp = -(_this.curr.get_y() * _this.hi - _this.hi) != null;
+		} else {
+			tmp = false;
+		}
+		if(tmp) {
+			var _this = quadShaper.tri;
+			var _g = _this.curr.get_x() * _this.wid + _this.wid;
+			var _this = quadShaper.tri;
+			quadShaper.lastXY = new hyperKitGL_XY(_g,-(_this.curr.get_y() * _this.hi - _this.hi));
+		}
+		var _this = quadShaper.tri;
+		var val1 = val.x;
+		var val_ = (val1 - _this.wid) / _this.wid;
+		_this.curr.set_x(val_);
+		var val1 = val.y;
+		var val_ = -(val1 - _this.hi) / _this.hi;
+		_this.curr.set_y(val_);
+		var v = quadShaper.start + 1;
+		quadShaper.pen.paintType.set_pos(v);
+		var _this = quadShaper.tri;
+		var val1 = val.x;
+		var val_ = (val1 - _this.wid) / _this.wid;
+		_this.curr.set_x(val_);
+		var val1 = val.y;
+		var val_ = -(val1 - _this.hi) / _this.hi;
+		_this.curr.set_y(val_);
+		quadShaper.pen.paintType.set_pos(p1);
+		quadShaper = this.arrShaper[4];
+		var v = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v);
+		var _this = quadShaper.tri;
+		var _xy = new hyperKitGL_XY(_this.curr.get_x() * _this.wid + _this.wid,-(_this.curr.get_y() * _this.hi - _this.hi));
+		var v = _xy.x - dLeft;
+		var v1 = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v1);
+		var _this = quadShaper.tri;
+		var _xy = new hyperKitGL_XY(_this.curr.get_x() * _this.wid + _this.wid,-(_this.curr.get_y() * _this.hi - _this.hi));
+		var v1 = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v1);
+		var _this = quadShaper.tri;
+		var val = new hyperKitGL_XY(v,new hyperKitGL_XY(_this.curr.get_x() * _this.wid + _this.wid,-(_this.curr.get_y() * _this.hi - _this.hi)).y);
+		var p1 = quadShaper.pen.paintType.get_pos();
+		var v = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v);
+		var tmp;
+		var _this = quadShaper.tri;
+		if(_this.curr.get_x() * _this.wid + _this.wid != null) {
+			var _this = quadShaper.tri;
+			tmp = -(_this.curr.get_y() * _this.hi - _this.hi) != null;
+		} else {
+			tmp = false;
+		}
+		if(tmp) {
+			var _this = quadShaper.tri;
+			var _g = _this.curr.get_x() * _this.wid + _this.wid;
+			var _this = quadShaper.tri;
+			quadShaper.lastXY = new hyperKitGL_XY(_g,-(_this.curr.get_y() * _this.hi - _this.hi));
+		}
+		var _this = quadShaper.tri;
+		var val1 = val.x;
+		var val_ = (val1 - _this.wid) / _this.wid;
+		_this.curr.set_x(val_);
+		var val1 = val.y;
+		var val_ = -(val1 - _this.hi) / _this.hi;
+		_this.curr.set_y(val_);
+		var v = quadShaper.start + 1;
+		quadShaper.pen.paintType.set_pos(v);
+		var _this = quadShaper.tri;
+		var val1 = val.x;
+		var val_ = (val1 - _this.wid) / _this.wid;
+		_this.curr.set_x(val_);
+		var val1 = val.y;
+		var val_ = -(val1 - _this.hi) / _this.hi;
+		_this.curr.set_y(val_);
+		quadShaper.pen.paintType.set_pos(p1);
+		var v = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v);
+		var _this = quadShaper.tri;
+		var _xy = new hyperKitGL_XY(_this.curr.get_x() * _this.wid + _this.wid,-(_this.curr.get_y() * _this.hi - _this.hi));
+		var v = _xy.y - dTop;
+		var v1 = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v1);
+		var _this = quadShaper.tri;
+		var _xy = new hyperKitGL_XY(_this.curr.get_x() * _this.wid + _this.wid,-(_this.curr.get_y() * _this.hi - _this.hi));
+		var v1 = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v1);
+		var _this = quadShaper.tri;
+		var val = new hyperKitGL_XY(new hyperKitGL_XY(_this.curr.get_x() * _this.wid + _this.wid,-(_this.curr.get_y() * _this.hi - _this.hi)).x,v);
+		var p1 = quadShaper.pen.paintType.get_pos();
+		var v = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v);
+		var tmp;
+		var _this = quadShaper.tri;
+		if(_this.curr.get_x() * _this.wid + _this.wid != null) {
+			var _this = quadShaper.tri;
+			tmp = -(_this.curr.get_y() * _this.hi - _this.hi) != null;
+		} else {
+			tmp = false;
+		}
+		if(tmp) {
+			var _this = quadShaper.tri;
+			var _g = _this.curr.get_x() * _this.wid + _this.wid;
+			var _this = quadShaper.tri;
+			quadShaper.lastXY = new hyperKitGL_XY(_g,-(_this.curr.get_y() * _this.hi - _this.hi));
+		}
+		var _this = quadShaper.tri;
+		var val1 = val.x;
+		var val_ = (val1 - _this.wid) / _this.wid;
+		_this.curr.set_x(val_);
+		var val1 = val.y;
+		var val_ = -(val1 - _this.hi) / _this.hi;
+		_this.curr.set_y(val_);
+		var v = quadShaper.start + 1;
+		quadShaper.pen.paintType.set_pos(v);
+		var _this = quadShaper.tri;
+		var val1 = val.x;
+		var val_ = (val1 - _this.wid) / _this.wid;
+		_this.curr.set_x(val_);
+		var val1 = val.y;
+		var val_ = -(val1 - _this.hi) / _this.hi;
+		_this.curr.set_y(val_);
+		quadShaper.pen.paintType.set_pos(p1);
+		quadShaper = this.arrShaper[5];
+		var v = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v);
+		var _this = quadShaper.tri;
+		var _xy = new hyperKitGL_XY(_this.curr.get_x() * _this.wid + _this.wid,-(_this.curr.get_y() * _this.hi - _this.hi));
+		var v = _xy.x - dLeft;
+		var v1 = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v1);
+		var _this = quadShaper.tri;
+		var _xy = new hyperKitGL_XY(_this.curr.get_x() * _this.wid + _this.wid,-(_this.curr.get_y() * _this.hi - _this.hi));
+		var v1 = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v1);
+		var _this = quadShaper.tri;
+		var val = new hyperKitGL_XY(v,new hyperKitGL_XY(_this.curr.get_x() * _this.wid + _this.wid,-(_this.curr.get_y() * _this.hi - _this.hi)).y);
+		var p1 = quadShaper.pen.paintType.get_pos();
+		var v = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v);
+		var tmp;
+		var _this = quadShaper.tri;
+		if(_this.curr.get_x() * _this.wid + _this.wid != null) {
+			var _this = quadShaper.tri;
+			tmp = -(_this.curr.get_y() * _this.hi - _this.hi) != null;
+		} else {
+			tmp = false;
+		}
+		if(tmp) {
+			var _this = quadShaper.tri;
+			var _g = _this.curr.get_x() * _this.wid + _this.wid;
+			var _this = quadShaper.tri;
+			quadShaper.lastXY = new hyperKitGL_XY(_g,-(_this.curr.get_y() * _this.hi - _this.hi));
+		}
+		var _this = quadShaper.tri;
+		var val1 = val.x;
+		var val_ = (val1 - _this.wid) / _this.wid;
+		_this.curr.set_x(val_);
+		var val1 = val.y;
+		var val_ = -(val1 - _this.hi) / _this.hi;
+		_this.curr.set_y(val_);
+		var v = quadShaper.start + 1;
+		quadShaper.pen.paintType.set_pos(v);
+		var _this = quadShaper.tri;
+		var val1 = val.x;
+		var val_ = (val1 - _this.wid) / _this.wid;
+		_this.curr.set_x(val_);
+		var val1 = val.y;
+		var val_ = -(val1 - _this.hi) / _this.hi;
+		_this.curr.set_y(val_);
+		quadShaper.pen.paintType.set_pos(p1);
+		var v = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v);
+		var _this = quadShaper.tri;
+		var _xy = new hyperKitGL_XY(_this.curr.get_x() * _this.wid + _this.wid,-(_this.curr.get_y() * _this.hi - _this.hi));
+		var v = _xy.y - dTop;
+		var v1 = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v1);
+		var _this = quadShaper.tri;
+		var _xy = new hyperKitGL_XY(_this.curr.get_x() * _this.wid + _this.wid,-(_this.curr.get_y() * _this.hi - _this.hi));
+		var v1 = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v1);
+		var _this = quadShaper.tri;
+		var val = new hyperKitGL_XY(new hyperKitGL_XY(_this.curr.get_x() * _this.wid + _this.wid,-(_this.curr.get_y() * _this.hi - _this.hi)).x,v);
+		var p1 = quadShaper.pen.paintType.get_pos();
+		var v = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v);
+		var tmp;
+		var _this = quadShaper.tri;
+		if(_this.curr.get_x() * _this.wid + _this.wid != null) {
+			var _this = quadShaper.tri;
+			tmp = -(_this.curr.get_y() * _this.hi - _this.hi) != null;
+		} else {
+			tmp = false;
+		}
+		if(tmp) {
+			var _this = quadShaper.tri;
+			var _g = _this.curr.get_x() * _this.wid + _this.wid;
+			var _this = quadShaper.tri;
+			quadShaper.lastXY = new hyperKitGL_XY(_g,-(_this.curr.get_y() * _this.hi - _this.hi));
+		}
+		var _this = quadShaper.tri;
+		var val1 = val.x;
+		var val_ = (val1 - _this.wid) / _this.wid;
+		_this.curr.set_x(val_);
+		var val1 = val.y;
+		var val_ = -(val1 - _this.hi) / _this.hi;
+		_this.curr.set_y(val_);
+		var v = quadShaper.start + 1;
+		quadShaper.pen.paintType.set_pos(v);
+		var _this = quadShaper.tri;
+		var val1 = val.x;
+		var val_ = (val1 - _this.wid) / _this.wid;
+		_this.curr.set_x(val_);
+		var val1 = val.y;
+		var val_ = -(val1 - _this.hi) / _this.hi;
+		_this.curr.set_y(val_);
+		quadShaper.pen.paintType.set_pos(p1);
+		quadShaper = this.arrShaper[6];
+		quadShaper.dim(bLeft,bBottom);
+		quadShaper = this.arrShaper[7];
+		var v = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v);
+		var _this = quadShaper.tri;
+		var _xy = new hyperKitGL_XY(_this.curr.get_x() * _this.wid + _this.wid,-(_this.curr.get_y() * _this.hi - _this.hi));
+		var v = _xy.x - dLeft;
+		var v1 = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v1);
+		var _this = quadShaper.tri;
+		var _xy = new hyperKitGL_XY(_this.curr.get_x() * _this.wid + _this.wid,-(_this.curr.get_y() * _this.hi - _this.hi));
+		var v1 = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v1);
+		var _this = quadShaper.tri;
+		var val = new hyperKitGL_XY(v,new hyperKitGL_XY(_this.curr.get_x() * _this.wid + _this.wid,-(_this.curr.get_y() * _this.hi - _this.hi)).y);
+		var p1 = quadShaper.pen.paintType.get_pos();
+		var v = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v);
+		var tmp;
+		var _this = quadShaper.tri;
+		if(_this.curr.get_x() * _this.wid + _this.wid != null) {
+			var _this = quadShaper.tri;
+			tmp = -(_this.curr.get_y() * _this.hi - _this.hi) != null;
+		} else {
+			tmp = false;
+		}
+		if(tmp) {
+			var _this = quadShaper.tri;
+			var _g = _this.curr.get_x() * _this.wid + _this.wid;
+			var _this = quadShaper.tri;
+			quadShaper.lastXY = new hyperKitGL_XY(_g,-(_this.curr.get_y() * _this.hi - _this.hi));
+		}
+		var _this = quadShaper.tri;
+		var val1 = val.x;
+		var val_ = (val1 - _this.wid) / _this.wid;
+		_this.curr.set_x(val_);
+		var val1 = val.y;
+		var val_ = -(val1 - _this.hi) / _this.hi;
+		_this.curr.set_y(val_);
+		var v = quadShaper.start + 1;
+		quadShaper.pen.paintType.set_pos(v);
+		var _this = quadShaper.tri;
+		var val1 = val.x;
+		var val_ = (val1 - _this.wid) / _this.wid;
+		_this.curr.set_x(val_);
+		var val1 = val.y;
+		var val_ = -(val1 - _this.hi) / _this.hi;
+		_this.curr.set_y(val_);
+		quadShaper.pen.paintType.set_pos(p1);
+		var v = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v);
+		var _this = quadShaper.tri;
+		var _xy = new hyperKitGL_XY(_this.curr.get_x() * _this.wid + _this.wid,-(_this.curr.get_y() * _this.hi - _this.hi));
+		var v = _xy.y - dTop;
+		var v1 = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v1);
+		var _this = quadShaper.tri;
+		var _xy = new hyperKitGL_XY(_this.curr.get_x() * _this.wid + _this.wid,-(_this.curr.get_y() * _this.hi - _this.hi));
+		var v1 = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v1);
+		var _this = quadShaper.tri;
+		var val = new hyperKitGL_XY(new hyperKitGL_XY(_this.curr.get_x() * _this.wid + _this.wid,-(_this.curr.get_y() * _this.hi - _this.hi)).x,v);
+		var p1 = quadShaper.pen.paintType.get_pos();
+		var v = quadShaper.start;
+		quadShaper.pen.paintType.set_pos(v);
+		var tmp;
+		var _this = quadShaper.tri;
+		if(_this.curr.get_x() * _this.wid + _this.wid != null) {
+			var _this = quadShaper.tri;
+			tmp = -(_this.curr.get_y() * _this.hi - _this.hi) != null;
+		} else {
+			tmp = false;
+		}
+		if(tmp) {
+			var _this = quadShaper.tri;
+			var _g = _this.curr.get_x() * _this.wid + _this.wid;
+			var _this = quadShaper.tri;
+			quadShaper.lastXY = new hyperKitGL_XY(_g,-(_this.curr.get_y() * _this.hi - _this.hi));
+		}
+		var _this = quadShaper.tri;
+		var val1 = val.x;
+		var val_ = (val1 - _this.wid) / _this.wid;
+		_this.curr.set_x(val_);
+		var val1 = val.y;
+		var val_ = -(val1 - _this.hi) / _this.hi;
+		_this.curr.set_y(val_);
+		var v = quadShaper.start + 1;
+		quadShaper.pen.paintType.set_pos(v);
+		var _this = quadShaper.tri;
+		var val1 = val.x;
+		var val_ = (val1 - _this.wid) / _this.wid;
+		_this.curr.set_x(val_);
+		var val1 = val.y;
+		var val_ = -(val1 - _this.hi) / _this.hi;
+		_this.curr.set_y(val_);
+		quadShaper.pen.paintType.set_pos(p1);
+		quadShaper = this.arrShaper[8];
+		quadShaper.dim(bRight,bBottom);
+		this.pen.paintType.set_pos(p);
+		if(keepDim) {
+			this.dim(oldWid,oldHi);
+		} else {
+			this.dim(this.wid,this.hi);
+		}
+	}
 	,dim: function(w,h) {
 		var p = this.pen.paintType.get_pos();
 		var rW = this.wid - this.left - this.fat;
@@ -5778,7 +6241,6 @@ trilateral3_reShape_NineSlice.prototype = {
 		var val_ = -(val1 - _this.hi) / _this.hi;
 		_this.curr.set_y(val_);
 		quadShaper.pen.paintType.set_pos(p1);
-		var ds = this.posMin;
 		quadShaper = this.arrShaper[7];
 		quadShaper.dim(this.fat,this.hi - this.top - this.tall);
 		var v = this.y + this.top + this.tall;
@@ -5824,7 +6286,6 @@ trilateral3_reShape_NineSlice.prototype = {
 		var val_ = -(val1 - _this.hi) / _this.hi;
 		_this.curr.set_y(val_);
 		quadShaper.pen.paintType.set_pos(p1);
-		var ds = this.posMin;
 		quadShaper = this.arrShaper[8];
 		quadShaper.dim(this.wid - this.left - this.fat,this.hi - this.top - this.tall);
 		var v = this.x + this.left + this.fat;

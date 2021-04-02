@@ -115,11 +115,8 @@ class Main extends PlyMix {
         nineSlice = new NineSlice( penTexture );
         nineSlice.addSlices( 0, 0, 1024, 1024, 200, 200, 600, 600, 0xFFFFFFFF );
         var nineRange = 0...18;
-        // store for render
-        nineSlice.dim( 600, 600 );
         var red = 0xFFFF0000;
         var yellow = 0xFFFFFF00;
-        
         nineSlice.modifyColors( Red, Orange, Yellow, Green
                              , Orange, Orange, Yellow, Green
                              , Yellow, Yellow, Green, Blue
@@ -133,6 +130,8 @@ class Main extends PlyMix {
     var count = 0;
     var count2 = 0;
     var tick = 0.;
+    var border:{ bLeft: Float, bRight: Float
+               , bTop: Float, bBottom: Float };
     override
     public function renderDraw(){
         var haveTextures: Bool = false;
@@ -143,6 +142,7 @@ class Main extends PlyMix {
         count = Math.round( tick );
         count2 = colors.length - 1 - count;
         if( count > colors.length - 1 ) tick = 0.;
+        nineSlice.scaleBorder( 1 + c/200, true );
         nineSlice.dim( Math.abs( 400*c ) + 600, Math.abs( 300*s ) + 600 );
         nineSlice.modifyColors( colors[count2], colors[count2], colors[count2], colors[count2]
                              , colors[count], Red, White, colors[count]
