@@ -40,7 +40,8 @@ import hyperKitGLsamples.shiftCalendar.CalendarDraw;
 import hyperKitGL.DivertTrace;
 function main(){
     new Main( 1000, 1000 );
-    var divertTrace = new DivertTrace();
+    // divert trace hidden
+    // var divertTrace = new DivertTrace();
     trace("Shift example");
 }
 enum abstract QuadColorFill(Int){
@@ -78,10 +79,10 @@ class Main extends PlyMix {
         trace( 'draw' );
         loadButtonImage();
         // white alpha background
-        bgA = 0.5;
-        bgR = 0.4;
-        bgG = 0.1;
-        bgB = 0.0;
+        bgA = 1.;//0.5;
+        bgR = 0.8;//0.4;
+        bgG = 0.8;//0.1;
+        bgB = 0.8;//0.0;
     }
     inline 
     function loadButtonImage(){
@@ -116,29 +117,65 @@ class Main extends PlyMix {
         quadDrawing = new QuadDrawing( penTexture, draw_Shape );
         calendarDraw = new CalendarDraw( quadDrawing );
         var x = 100.;
-        var y = 0.;
+        var px = x;
+        var y = 7.;
         var today : ShiftDateTime = '2021-04-07 16:53:00';
         var count = 7;
+        // vars to setup the top of next row.
+        var maxBottom = 0.;
+        var tempB = 0.;
+        // -- ROW 0 --
+        // Left 0
         var data = drawMonthDate( x, y, today, count, false );
-        y = data.rb.b;
+        tempB = data.rb.b;
+        if( tempB > maxBottom ) maxBottom = tempB;
+        // Middle 0
+        x = data.rb.r;
         var data = drawMonthDateNext( x, y, data.today, data.count, data.rb.toggleLast );
-        y = data.rb.b;
+        tempB = data.rb.b;
+        if( tempB > maxBottom ) maxBottom = tempB;
+        // Right 0
+        x = data.rb.r;
         var data = drawMonthDateNext( x, y, data.today, data.count, data.rb.toggleLast );
-        // next row
-        var x = data.rb.r;
-        var y = 0.;
+        tempB = data.rb.b;
+        if( tempB > maxBottom ) maxBottom = tempB;
+        
+        // -- ROW 1 --
+        // Left 1
+        x = px;
+        y = maxBottom;
         var data = drawMonthDateNext( x, y, data.today, data.count, data.rb.toggleLast );
-        y = data.rb.b;
+        tempB = data.rb.b;
+        if( tempB > maxBottom ) maxBottom = tempB;
+        // Middle 1
+        x = data.rb.r;
         var data = drawMonthDateNext( x, y, data.today, data.count, data.rb.toggleLast );
-        y = data.rb.b;
+        tempB = data.rb.b;
+        if( tempB > maxBottom ) maxBottom = tempB;
+        // Right 1
+        x = data.rb.r;
         var data = drawMonthDateNext( x, y, data.today, data.count, data.rb.toggleLast );
-        var x = data.rb.r;
-        var y = 0.;
+        tempB = data.rb.b;
+        if( tempB > maxBottom ) maxBottom = tempB;
+        
+        // -- ROW 1 --
+        // Left 1
+        x = px;
+        y = maxBottom;
         var data = drawMonthDateNext( x, y, data.today, data.count, data.rb.toggleLast );
-        y = data.rb.b;
+        tempB = data.rb.b;
+        if( tempB > maxBottom ) maxBottom = tempB;
+        // Middle 1
+        x = data.rb.r;
         var data = drawMonthDateNext( x, y, data.today, data.count, data.rb.toggleLast );
-        y = data.rb.b;
+        tempB = data.rb.b;
+        if( tempB > maxBottom ) maxBottom = tempB;
+        // Right 1
+        x = data.rb.r;
         var data = drawMonthDateNext( x, y, data.today, data.count, data.rb.toggleLast );
+        tempB = data.rb.b;
+        if( tempB > maxBottom ) maxBottom = tempB;
+        
     }
     public inline 
     function drawMonthDateNext( x: Float, y: Float, today: ShiftDateTime, count: Int, toggleLast: Bool ){
@@ -147,9 +184,11 @@ class Main extends PlyMix {
     }
     public inline
     function drawMonthDate( x: Float, y: Float, today: ShiftDateTime, count: Int, toggleLast: Bool ){
-        calendarDraw.drawMonth( today.getMonth(), x-5, y );
+        var headerH = 60.;
+        calendarDraw.drawMonth( today.getMonth(), x-5 + 80., y );
         var noDays = today.daysMonth();
-        var rb = calendarDraw.createDates( x, y + 80, today.getFirstWeekDay() - 1, noDays, count, toggleLast );
+        var rb = calendarDraw.createDates( x, y + headerH, today.getFirstWeekDay() - 1, noDays, count, toggleLast );
+        rb.b -= 10.;
         count += noDays;
         return { rb: rb, today: today, count: count };
     }
@@ -171,10 +210,14 @@ class Main extends PlyMix {
         penTexture.useTexture   = true;
         penTexture.currentColor = 0xffFFFFFF;
     }
+    var t = 0.;
     override
     public function renderDraw(){
         var haveTextures: Bool = false;
         var haveColors:   Bool = false;
+        var dateQuads = calendarDraw.dateQuads;
+        var monthQuads = calendarDraw.monthQuads;
+        var toggles = calendarDraw.toggles;
         for( a_shape in draw_Shape ){
             switch( a_shape.textured ){
                 case true:
@@ -195,5 +238,21 @@ class Main extends PlyMix {
     inline
     function showImageOnCanvas( img: Image, wid: Int, hi: Int ){
         mainSheet.cx.drawImage( img, 0, 0, wid, hi );
+    }
+    /*
+    Uses one of penners tweening equations modified with hardcoded 's'  see:
+    
+    credit:
+
+    Easing Equations v2.0
+    September 1, 2003
+    (c) 2003 Robert Penner, all rights reserved.
+    This work is subject to the terms in http://www.robertpenner.com/easing_terms_of_use.html.
+    
+    */
+    public inline function easeOutSubtle ( t : Float, b : Float, c : Float, d : Float ) : Float
+    {
+        var s = 0.1;
+        return c * ( ( t = t / d - 1 ) * t * ( ( s + 1 ) * t + s) + 1 ) + b;
     }
 }

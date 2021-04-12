@@ -20,7 +20,9 @@ class CalendarDraw {
     var dateInitY   = new Array<Float>();
     var monInitX    = new Array<Float>();
     var monInitY    = new Array<Float>();
-    var monthQuad = new Array<QuadShaper>();
+    public var dateQuads  = new Array<QuadShaper>();
+    public var monthQuads = new Array<QuadShaper>();
+    public var toggles    = new Array<Bool>();
     var quadDrawing: QuadDrawing;
     public function new( quadDrawing_: QuadDrawing ){
         quadDrawing = quadDrawing_;
@@ -74,15 +76,18 @@ class CalendarDraw {
                 toggle = !toggle;
             }
             quadShaper = if( toggle ){
-                quadDrawing.drawBox( x, y, w, h, VERT_COLOR_FILL, 0xff993333, 0xffff9933 );
+                quadDrawing.drawBox( x, y, h, h, SOLID_FILL, 0xFF666666 );
+                
             } else {
-                quadDrawing.drawBox( x, y, w, h, VERT_COLOR_FILL, 0xff3333ff, 0xff339933 );//,
+                quadDrawing.drawBox( x, y, h, h, NONE );
             }
-            //quadShaper.x = 100; not working!!
+            dateQuads[ dateQuads.length ] = quadShaper;
+            //quadShaper.x = 100; //not working!!
             nx = snx + ix*nw;
             ny = sny + iy*nh;
             quadShaper.xy = { x: nx, y: ny };
             quadShaper.dim( nw, nh );
+            //
             if( nx > maxX ) maxX = nx;
             ix += 1;
             if( ( iStart+1 )%7 == 0 ) {
@@ -101,7 +106,7 @@ class CalendarDraw {
         var mw = monthPosW*2;
         var mh = monthPosH*2;
         var dy = monthDeltaY*2;
-        for( i in 0...9 ){
+        for( i in 0...10 ){
             monInitX[i] = mx;
             monInitY[i] = my;
             my =  smy + i*dy;
@@ -110,7 +115,7 @@ class CalendarDraw {
         var my = month2PosY*2;
         var smy = my;
         var count = 0;
-        for( i in 9...12 ){
+        for( i in 10...13 ){
             monInitX[i] = mx;
             monInitY[i] = my;
             count++;
@@ -118,14 +123,17 @@ class CalendarDraw {
         }
     }
     public inline
-    function drawMonth( i: Int, x: Float, y: Float ){
-        i = i%12;
-        var mw = monthPosW*2;
-        var mh = monthPosH*2;
-        var mx = monInitX[i];
-        var my = monInitY[i];
-        var quadShaper = quadDrawing.drawBox( mx, my, mw, mh, VERT_COLOR_FILL, 0xffff0000, 0xffcc00cc );
-        quadShaper.xy = { x: x, y: y };
+    function drawMonth( i: Int, px: Float, py: Float ){
+        i = i%13;
+        var w = monthPosW*2;
+        var h = monthPosH*2;
+        var x = monInitX[i];
+        var y = monInitY[i];
+        var quadShaper = quadDrawing.drawBox( x, y, w, h, SOLID_FILL, 0xFFaaaaaa );
+        //quadDrawing.drawBox( mx, my, mw, mh, VERT_COLOR_FILL, 0xffff0000, 0xffcc00cc );
+        quadShaper.xy = { x: px, y: py };
+        quadShaper.dim( w/1.2, h/1.5 );
+        monthQuads[ monthQuads.length ] = quadShaper;
         return quadShaper;
     }
     public inline
@@ -135,7 +143,7 @@ class CalendarDraw {
         var mw = monthPosW*2;
         var mh = monthPosH*2;
         var quadShaper: QuadShaper;
-        for( i in 0...12 ){
+        for( i in 0...13 ){
             x = monInitX[i];
             y = monInitY[i];
             var quadShaper = quadDrawing.drawBox( x, y, mw, mh, VERT_COLOR_FILL, 0xffff0000, 0xffcc00cc );
