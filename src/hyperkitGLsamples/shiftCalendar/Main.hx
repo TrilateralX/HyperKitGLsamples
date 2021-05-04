@@ -36,6 +36,7 @@ import trilateral3.reShape.NineSlice;
 import trilateral3.reShape.RangeShaper;
 import trilateral3.reShape.QuadDrawing;
 import hyperKitGLsamples.shiftCalendar.CalendarDraw;
+import hyperKitGLsamples.imageEncode.CalendarGraphic;
 // To trace on screen
 import hyperKitGL.DivertTrace;
 function main(){
@@ -87,7 +88,7 @@ class Main extends PlyMix {
     inline 
     function loadButtonImage(){
         // built in load images
-        imageLoader.loadEncoded( [ CalendarGraphic.png ],[ 'CalendarGraphic' ] );
+        imageLoader.loadEncoded( [ CalendarGraphic.png_ ],[ 'CalendarGraphic' ] );
     }
     inline 
     function setupImage(){

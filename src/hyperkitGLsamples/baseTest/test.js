@@ -4500,32 +4500,33 @@ hyperKitGL_iterArr_ArrayTriple._new = function(arr) {
 	var this1 = arr;
 	return this1;
 };
-var hyperKitGLsamples_basic_Main = function(width,height) {
-	this.theta = 0.;
-	this.outlineTexture = true;
+var trilateral3base_TrilateralBase = function(width,height,testImage) {
+	if(testImage == null) {
+		testImage = "";
+	}
 	this.draw_Shape = [];
-	this.bgQuadFill = -1;
-	this.bgStarFill = -1;
-	this.bgStarOutline = -65536;
 	this.penNoduleTexture = new trilateral3_nodule_PenArrTexture();
 	this.penNoduleColor = new trilateral3_nodule_PenArrColor();
 	hyperKitGL_PlyMix.call(this,width,height);
-	haxe_Log.trace("draw",{ fileName : "../../../src/hyperKitGLsamples/basic/Main.hx", lineNumber : 93, className : "hyperKitGLsamples.basic.Main", methodName : "new"});
-	this.imageLoader.loadEncoded([hyperKitGLsamples_imageEncode_Flower.png_],["Flower"]);
+	if(testImage != "") {
+		this.imageLoader.loadEncoded([testImage],["TestImage"]);
+	} else {
+		haxe_Log.trace("new - no testImage supplied, will need to start",{ fileName : "trilateral3base/TrilateralBase.hx", lineNumber : 39, className : "trilateral3base.TrilateralBase", methodName : "new"});
+	}
+	var divertTrace = new hyperKitGL_DivertTrace();
 };
-hyperKitGLsamples_basic_Main.__name__ = true;
-hyperKitGLsamples_basic_Main.__super__ = hyperKitGL_PlyMix;
-hyperKitGLsamples_basic_Main.prototype = $extend(hyperKitGL_PlyMix.prototype,{
+trilateral3base_TrilateralBase.__name__ = true;
+trilateral3base_TrilateralBase.__super__ = hyperKitGL_PlyMix;
+trilateral3base_TrilateralBase.prototype = $extend(hyperKitGL_PlyMix.prototype,{
 	draw: function() {
-		haxe_Log.trace("__draw ",{ fileName : "../../../src/hyperKitGLsamples/basic/Main.hx", lineNumber : 117, className : "hyperKitGLsamples.basic.Main", methodName : "draw"});
-		haxe_Log.trace("setupImage",{ fileName : "../../../src/hyperKitGLsamples/basic/Main.hx", lineNumber : 103, className : "hyperKitGLsamples.basic.Main", methodName : "setupImage"});
+		haxe_Log.trace("draw ",{ fileName : "trilateral3base/TrilateralBase.hx", lineNumber : 49, className : "trilateral3base.TrilateralBase", methodName : "draw"});
+		haxe_Log.trace("setupImage",{ fileName : "trilateral3base/TrilateralBase.hx", lineNumber : 63, className : "trilateral3base.TrilateralBase", methodName : "setupImage"});
 		this.img = this.imageLoader.imageArr[0];
 		this.imgW = this.img.width;
 		this.imgH = this.img.height;
-		var ratio = 1.;
-		this.transformUVArr = [2.,0.,0.,0.,2. / ratio,0.,0.,0.,1.];
-		this.mainSheet.cx.drawImage(this.img,0,0,this.imgW,this.imgH);
-		haxe_Log.trace("setupDrawingPens",{ fileName : "../../../src/hyperKitGLsamples/basic/Main.hx", lineNumber : 69, className : "hyperKitGLsamples.basic.Main", methodName : "setupDrawingPens"});
+		this.imageRatio = this.img.height / this.img.width;
+		this.transformUVArr = [2.,0.,0.,0.,2. / this.imageRatio,0.,0.,0.,1.];
+		haxe_Log.trace("setupDrawingPens",{ fileName : "trilateral3base/TrilateralBase.hx", lineNumber : 75, className : "trilateral3base.TrilateralBase", methodName : "setupDrawingPens"});
 		this.dataGLcolor = { get_data : ($_=this.penNoduleColor,$bind($_,$_.get_data)), get_size : ($_=this.penNoduleColor,$bind($_,$_.get_size))};
 		this.dataGLtexture = { get_data : ($_=this.penNoduleTexture,$bind($_,$_.get_data)), get_size : ($_=this.penNoduleTexture,$bind($_,$_.get_size))};
 		this.penColor = this.penNoduleColor.pen;
@@ -4533,57 +4534,93 @@ hyperKitGLsamples_basic_Main.prototype = $extend(hyperKitGL_PlyMix.prototype,{
 		this.penTexture = this.penNoduleTexture.pen;
 		this.penTexture.useTexture = true;
 		this.penTexture.currentColor = -1;
-		if(this.outlineTexture) {
-			this.sketch = new trilateral3_drawing_Sketch(this.penTexture,4,0);
-		} else {
-			this.sketch = new trilateral3_drawing_Sketch(this.penColor,4,0);
+		this.sketchTexture = new trilateral3_drawing_Sketch(this.penTexture,4,0);
+		this.sketchColor = new trilateral3_drawing_Sketch(this.penColor,4,0);
+		this.sketchTexture.width = 5;
+		this.sketchColor.width = 5;
+		this.firstDraw();
+	}
+	,renderDraw: function() {
+		var haveTextures = false;
+		var haveColors = false;
+		this.renderAnimate();
+		var _g = 0;
+		var _g1 = this.draw_Shape;
+		while(_g < _g1.length) {
+			var a_shape = _g1[_g];
+			++_g;
+			if(a_shape.textured) {
+				haveTextures = true;
+				this.drawTextureShape(a_shape.range.start,a_shape.range.max,a_shape.bgColor);
+			} else {
+				haveColors = true;
+				this.drawColorShape(a_shape.range.start,a_shape.range.max);
+			}
 		}
-		this.sketch.width = 40;
-		this.posMin = this.penTexture.paintType.get_pos() | 0;
+		if(!haveColors) {
+			this.drawColorShape(0,0);
+		}
+	}
+});
+var hyperKitGLsamples_baseTest_Main = function(width,height,flower) {
+	this.theta = 0.;
+	this.outlineTexture = true;
+	this.bgQuadFill = -1;
+	this.bgStarFill = -1;
+	this.bgStarOutline = -65536;
+	trilateral3base_TrilateralBase.call(this,width,height,flower);
+};
+hyperKitGLsamples_baseTest_Main.__name__ = true;
+hyperKitGLsamples_baseTest_Main.__super__ = trilateral3base_TrilateralBase;
+hyperKitGLsamples_baseTest_Main.prototype = $extend(trilateral3base_TrilateralBase.prototype,{
+	firstDraw: function() {
+		var _this = this.penTexture.range;
+		_this.posMin = _this.pen.paintType.get_pos() | 0;
 		this.quadShaper = new trilateral3_reShape_QuadShaper(this.penTexture,this.penTexture.paintType.get_pos());
 		this.quadShaper.drawQuadColors(0.,0.,1000.,1000.,-16776961,-16711936,-256,-65536);
-		var ii_min = this.posMin;
-		var ii_max = this.penTexture.paintType.get_pos() | 0;
+		var tmp = this.draw_Shape;
+		var tmp1 = this.draw_Shape.length;
+		var _this = this.penTexture.range;
+		var ii_min = _this.posMin;
+		var ii_max = _this.pen.paintType.get_pos() | 0;
 		var this1 = new trilateral3_shape_IntIterStart(ii_min,ii_max);
-		this.quadRange = this1;
-		this.draw_Shape[this.draw_Shape.length] = new trilateral3_structure_RangeEntity(true,this.quadRange,this.bgQuadFill);
+		tmp[tmp1] = new trilateral3_structure_RangeEntity(true,this1,this.bgQuadFill);
 		var iterRange;
 		if(this.outlineTexture) {
 			this.penTexture.currentColor = -13057;
-			this.posMin = this.penTexture.paintType.get_pos() | 0;
-			this.drawStar(this.sketch,3);
-			var ii_min = this.posMin;
-			var ii_max = this.penTexture.paintType.get_pos() - 1 | 0;
+			var _this = this.penTexture.range;
+			_this.posMin = _this.pen.paintType.get_pos() | 0;
+			this.drawStar(this.sketchTexture,3);
+			var _this = this.penTexture.range;
+			var ii_min = _this.posMin;
+			var ii_max = _this.pen.paintType.get_pos() | 0;
 			var this1 = new trilateral3_shape_IntIterStart(ii_min,ii_max);
 			iterRange = this.outlineStarRange = this1;
 		} else {
 			this.penColor.currentColor = -13057;
-			this.posMin = this.penColor.paintType.get_pos() | 0;
-			this.drawStar(this.sketch,3);
-			var ii_min = this.posMin;
-			var ii_max = this.penColor.paintType.get_pos() - 1 | 0;
-			var this1 = new trilateral3_shape_IntIterStart(ii_min,ii_max);
-			this.outlineStarRange = this1;
-			var ii_min = this.posMin;
-			var ii_max = this.penColor.paintType.get_pos() - 1 | 0;
+			var _this = this.penColor.range;
+			_this.posMin = _this.pen.paintType.get_pos() | 0;
+			this.drawStar(this.sketchColor,3);
+			var _this = this.penColor.range;
+			var ii_min = _this.posMin;
+			var ii_max = _this.pen.paintType.get_pos() | 0;
 			var this1 = new trilateral3_shape_IntIterStart(ii_min,ii_max);
 			iterRange = this.outlineStarRange = this1;
 		}
 		this.draw_Shape[this.draw_Shape.length] = new trilateral3_structure_RangeEntity(this.outlineTexture,iterRange,this.bgStarFill);
 		this.penColor.currentColor = -13057;
-		this.posMin = this.penColor.paintType.get_pos() | 0;
-		trilateral3_drawing_Fill_triangulate(this.penColor,this.sketch,1);
-		var ii_min = this.posMin;
-		var ii_max = this.penColor.paintType.get_pos() - 1 | 0;
+		var _this = this.penColor.range;
+		_this.posMin = _this.pen.paintType.get_pos() | 0;
+		trilateral3_drawing_Fill_triangulate(this.penColor,this.sketchColor,1);
+		var _this = this.penColor.range;
+		var ii_min = _this.posMin;
+		var ii_max = _this.pen.paintType.get_pos() | 0;
 		var this1 = new trilateral3_shape_IntIterStart(ii_min,ii_max);
-		this.fillStarRange = this1;
-		this.draw_Shape[this.draw_Shape.length] = new trilateral3_structure_RangeEntity(false,this.fillStarRange,this.bgStarOutline);
-		this.starRangeShaper = new trilateral3_reShape_RangeShaper(this.penColor,this.fillStarRange);
-		haxe_Log.trace("drew everything",{ fileName : "../../../src/hyperKitGLsamples/basic/Main.hx", lineNumber : 125, className : "hyperKitGLsamples.basic.Main", methodName : "draw"});
+		var fillStarRange = this1;
+		this.draw_Shape[this.draw_Shape.length] = new trilateral3_structure_RangeEntity(false,fillStarRange,this.bgStarOutline);
+		this.starRangeShaper = new trilateral3_reShape_RangeShaper(this.penColor,fillStarRange);
 	}
-	,renderDraw: function() {
-		var haveTextures = false;
-		var haveColors = false;
+	,renderAnimate: function() {
 		var _this = this.quadShaper;
 		var _this1 = this.quadShaper;
 		var v = _this1.start;
@@ -4659,28 +4696,10 @@ hyperKitGLsamples_basic_Main.prototype = $extend(hyperKitGL_PlyMix.prototype,{
 		_this.px = xy.x;
 		_this.py = xy.y;
 		this.theta += 0.1;
-		var _g = 0;
-		var _g1 = this.draw_Shape;
-		while(_g < _g1.length) {
-			var a_shape = _g1[_g];
-			++_g;
-			if(a_shape.textured) {
-				haveTextures = true;
-				this.drawTextureShape(a_shape.range.start,a_shape.range.max,a_shape.bgColor);
-			} else {
-				haveColors = true;
-				this.drawColorShape(a_shape.range.start,a_shape.range.max);
-			}
-		}
-		if(!haveColors) {
-			this.tempHackFix();
-		}
-	}
-	,tempHackFix: function() {
-		this.drawColorShape(0,0);
 	}
 	,drawStar: function(sketch,size) {
 		var s = size;
+		var sketch = this.sketchTexture;
 		sketch.moveTo(121 * s,111 * s);
 		sketch.moveTo(150 * s,25 * s);
 		var x_ = 179 * s;
@@ -5037,10 +5056,8 @@ hyperKitGLsamples_basic_Main.prototype = $extend(hyperKitGL_PlyMix.prototype,{
 		}
 	}
 });
-function hyperKitGLsamples_basic_Main_main() {
-	new hyperKitGLsamples_basic_Main(1000,1000);
-	var divertTrace = new hyperKitGL_DivertTrace();
-	haxe_Log.trace("Basic example",{ fileName : "../../../src/hyperKitGLsamples/basic/Main.hx", lineNumber : 41, className : "hyperKitGLsamples.basic._Main.Main_Fields_", methodName : "main"});
+function hyperKitGLsamples_baseTest_Main_main() {
+	new hyperKitGLsamples_baseTest_Main(1000,1000,hyperKitGLsamples_imageEncode_Flower.png_);
 }
 var hyperKitGLsamples_imageEncode_Flower = function() { };
 hyperKitGLsamples_imageEncode_Flower.__name__ = true;
@@ -14315,5 +14332,5 @@ org_poly2tri_Constants.EPSILON = 1e-12;
 org_poly2tri_Constants.PI_2 = Math.PI / 2;
 org_poly2tri_Constants.PI_3div4 = 3 * Math.PI / 4;
 org_poly2tri_Point.C_ID = 0;
-hyperKitGLsamples_basic_Main_main();
+hyperKitGLsamples_baseTest_Main_main();
 })(typeof exports != "undefined" ? exports : typeof window != "undefined" ? window : typeof self != "undefined" ? self : this, typeof window != "undefined" ? window : typeof global != "undefined" ? global : typeof self != "undefined" ? self : this);

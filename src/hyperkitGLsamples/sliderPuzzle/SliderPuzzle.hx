@@ -31,11 +31,10 @@ import trilateral3.reShape.QuadDepth;
 import trilateral3.geom.Transformer;
 import trilateral3.matrix.Vertex;
 import trilateral3.Trilateral;
-import hyperKitGLsamples.sliderPuzzle.TableCloth;
-import hyperKitGLsamples.sliderPuzzle.ZealImage;
 // To trace on screen
 import hyperKitGL.DivertTrace;
 import hyperKitGLsamples.sliderPuzzle.NextTo;
+import hyperKitGLsamples.imageEncode.TableCloth;
 function main(){
     new SliderPuzzle( 1000, 1000 );
     var divertTrace = new DivertTrace();
@@ -73,7 +72,7 @@ class SliderPuzzle extends PlyMix {
     function new( width: Int, height: Int ){
         super( width, height );
         trace( 'draw' );
-        imageLoader.loadEncoded( [ TableCloth.png ],[ 'tableCloth' ] );
+        imageLoader.loadEncoded( [ TableCloth.png_ ],[ 'tableCloth' ] );
         //imageLoader.loadEncoded( [ ZealImage.png ],[ 'zealImage' ] );
     }
     inline

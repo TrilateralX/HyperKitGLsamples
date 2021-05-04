@@ -72,6 +72,7 @@ class CalendarDraw {
             iStart = i + start;
             x = dateInitX[i];
             y = dateInitY[i];
+            // + 1 for 
             if(  (i - 2 + count )%4 == 0 ){
                 toggle = !toggle;
             }

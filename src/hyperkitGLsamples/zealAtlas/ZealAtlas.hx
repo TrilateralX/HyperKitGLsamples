@@ -35,7 +35,7 @@ import trilateral3.Trilateral;
 import trilateral3.structure.RangeEntity;
 // To trace on screen
 import hyperKitGL.DivertTrace;
-import hyperKitGLsamples.zealAtlas.ZealImage;
+import hyperKitGLsamples.imageEncode.ZealImage;
 
 import hxRectPack2D.output.BodyFrames;
 import hxRectPack2D.output.TP;
@@ -108,7 +108,7 @@ class ZealAtlas extends PlyMix {
     public function new( width: Int, height: Int ){
         super( width, height );
         trace( 'draw' );
-        imageLoader.loadEncoded( [ ZealImage.png ],[ 'zealImage' ] );
+        imageLoader.loadEncoded( [ ZealImage.png_ ],[ 'zealImage' ] );
     }
     
     inline 

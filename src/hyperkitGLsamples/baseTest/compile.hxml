@@ -1,0 +1,26 @@
+-js test.js
+-cp ../../../src
+-lib fracs
+-lib justPath
+-lib trilateral3
+-lib pallette
+-lib hxPolyK
+-lib poly2trihx 
+-lib hxGeomAlgo
+-lib hyperKitGL
+-lib trilateral3base
+
+-main hyperKitGLsamples.baseTest.Main
+-D js-flatten 
+-D useHyperKitGL
+#-D trilateral_debug
+#-D trilateral_debugPoints
+-dce full
+#--no-traces
+--next
+
+
+
+-cmd echo '<!DOCTYPE html><meta charset="UTF-8"><html><body><script src="test.js"></script></body></html>' >index.html
+# open html on mac os.
+-cmd open index.html

@@ -43,23 +43,13 @@ import hyperKitGLsamples.galapagos.View;
 import trilateral3.structure.RangeEntity;
 
 // To trace on screen
-import hyperKitGL.DivertTrace;
 function main(){
-    new Galapagos( 1000, 1000 );
-    var divertTrace = new DivertTrace();
+    new Galapagos( 1000, 1000, GalapagosBW.png );
     trace("Galapagos example");
 }
 //Galapagos based on the example I created for hxDaedalus
-class Galapagos extends PlyMix {
-    // general setup
-    public var penC:                Pen;
-    public var penColor             = new PenColor();
-    public var penT:                Pen;
-    public var penTexture           = new PenTexture();
-    
-    public var posMin:              Int;
+class Galapagos extends TrilateralBase {
     public var draw_Shape           = new Array<RangeEntity>();
-    
     public var quadRange:           IteratorRange;
     public var bgQuadFill           = 0xFFFFFFFF; 
     
@@ -76,31 +66,10 @@ class Galapagos extends PlyMix {
     var y:             Float = 0;
     var imgBW:         Image;
     var imgColor:      Image;
-    // fairly generic setups
-    inline
-    function setupDrawingPens(){
-        setupNoduleBuffers();
-        penInits();
-    }
-    inline
-    function setupNoduleBuffers(){
-        dataGLcolor   = { get_data: penColor.get_data
-                        , get_size: penColor.get_size };
-        dataGLtexture = { get_data: penTexture.get_data
-                        , get_size: penTexture.get_size };
-    }
-    inline
-    function penInits(){
-        penC = penColor.pen;
-        penC.currentColor = 0xFFFF00FF;
-        penT = penTexture.pen;
-        penT.useTexture   = true;
-        penT.currentColor = 0xffFFFFFF;
-    }
     
     public
-    function new( width: Int, height: Int ){
-        super( width, height );
+    function new( width: Int, height: Int, galapagos: String ){
+        super( width, height, galapagos );
         trace( 'draw' );
         loadIslandImages();
     }

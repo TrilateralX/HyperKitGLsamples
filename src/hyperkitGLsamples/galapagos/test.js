@@ -8028,6 +8028,10 @@ var hyperKitGL_PlyMix = function(width_,height_,hasImage,animate) {
 		hasImage = true;
 	}
 	this.mode = 0;
+	this.bgB = 0.5;
+	this.bgG = 0.0;
+	this.bgR = 0.5;
+	this.bgA = 0.9;
 	this.uvTransform = "uvTransform";
 	this.uniformColor = "bgColor";
 	this.uniformImage = "uImage0";
@@ -8221,12 +8225,20 @@ var hyperKitGL_PlyMix = function(width_,height_,hasImage,animate) {
 			}
 			var gl = this.gl;
 			var indices = this.indicesTexture;
+			var isDynamic = true;
+			if(isDynamic == null) {
+				isDynamic = false;
+			}
 			var buf = gl.createBuffer();
 			var staticDraw = 35044;
 			var dynamicDraw = 35048;
 			var arrBuffer = 34963;
 			gl.bindBuffer(arrBuffer,buf);
-			gl.bufferData(arrBuffer,new Uint16Array(indices),staticDraw);
+			if(isDynamic) {
+				gl.bufferData(arrBuffer,new Uint16Array(indices),dynamicDraw);
+			} else {
+				gl.bufferData(arrBuffer,new Uint16Array(indices),staticDraw);
+			}
 			gl.bindBuffer(arrBuffer,null);
 			this.bufIndices = buf;
 		}
@@ -8284,7 +8296,23 @@ var hyperKitGL_PlyMix = function(width_,height_,hasImage,animate) {
 				var gl = _gthis.gl;
 				var width = _gthis.width;
 				var height = _gthis.height;
-				gl.clearColor(0.5,0.0,0.5,0.9);
+				var r = _gthis.bgR;
+				var g = _gthis.bgG;
+				var b = _gthis.bgB;
+				var a = _gthis.bgA;
+				if(a == null) {
+					a = 0.;
+				}
+				if(b == null) {
+					b = 0.;
+				}
+				if(g == null) {
+					g = 0.;
+				}
+				if(r == null) {
+					r = 0.;
+				}
+				gl.clearColor(r,g,b,a);
 				gl.enable(2929);
 				gl.clear(16384);
 				gl.viewport(0,0,width,height);
@@ -8331,7 +8359,6 @@ hyperKitGL_PlyMix.prototype = {
 			case 2:
 				this.gl.useProgram(this.programTexture);
 				this.gl.bindBuffer(34962,this.bufTexture);
-				this.gl.bindBuffer(34962,this.bufIndices);
 				var gl = this.gl;
 				var program = this.programTexture;
 				var rgbaName = this.vertexColor;
@@ -8540,12 +8567,20 @@ hyperKitGL_PlyMix.prototype = {
 			}
 			var gl = this.gl;
 			var indices = this.indicesTexture;
+			var isDynamic = true;
+			if(isDynamic == null) {
+				isDynamic = false;
+			}
 			var buf = gl.createBuffer();
 			var staticDraw = 35044;
 			var dynamicDraw = 35048;
 			var arrBuffer = 34963;
 			gl.bindBuffer(arrBuffer,buf);
-			gl.bufferData(arrBuffer,new Uint16Array(indices),staticDraw);
+			if(isDynamic) {
+				gl.bufferData(arrBuffer,new Uint16Array(indices),dynamicDraw);
+			} else {
+				gl.bufferData(arrBuffer,new Uint16Array(indices),staticDraw);
+			}
 			gl.bindBuffer(arrBuffer,null);
 			this.bufIndices = buf;
 		}
@@ -8603,7 +8638,23 @@ hyperKitGL_PlyMix.prototype = {
 				var gl = _gthis.gl;
 				var width = _gthis.width;
 				var height = _gthis.height;
-				gl.clearColor(0.5,0.0,0.5,0.9);
+				var r = _gthis.bgR;
+				var g = _gthis.bgG;
+				var b = _gthis.bgB;
+				var a = _gthis.bgA;
+				if(a == null) {
+					a = 0.;
+				}
+				if(b == null) {
+					b = 0.;
+				}
+				if(g == null) {
+					g = 0.;
+				}
+				if(r == null) {
+					r = 0.;
+				}
+				gl.clearColor(r,g,b,a);
 				gl.enable(2929);
 				gl.clear(16384);
 				gl.viewport(0,0,width,height);
@@ -8617,7 +8668,7 @@ hyperKitGL_PlyMix.prototype = {
 		}
 	}
 	,draw: function() {
-		haxe_Log.trace("parent draw",{ fileName : "hyperKitGL/PlyMix.js.hx", lineNumber : 172, className : "hyperKitGL.PlyMix", methodName : "draw"});
+		haxe_Log.trace("parent draw",{ fileName : "hyperKitGL/PlyMix.js.hx", lineNumber : 176, className : "hyperKitGL.PlyMix", methodName : "draw"});
 	}
 	,drawTextureShape: function(start,end,bgColor) {
 		var modeChange = this.setProgramMode(2);
@@ -8660,7 +8711,6 @@ hyperKitGL_PlyMix.prototype = {
 			indicesTexture.push(count++);
 			indicesTexture.push(count++);
 		}
-		this.gl.bufferData(34963,new Uint16Array(this.indicesTexture),dynamicDraw);
 		this.drawData(this.programTexture,this.dataGLtexture,start,end,27);
 	}
 	,drawColorShape: function(start,end) {
@@ -8679,7 +8729,23 @@ hyperKitGL_PlyMix.prototype = {
 		var gl = this.gl;
 		var width = this.width;
 		var height = this.height;
-		gl.clearColor(0.5,0.0,0.5,0.9);
+		var r = this.bgR;
+		var g = this.bgG;
+		var b = this.bgB;
+		var a = this.bgA;
+		if(a == null) {
+			a = 0.;
+		}
+		if(b == null) {
+			b = 0.;
+		}
+		if(g == null) {
+			g = 0.;
+		}
+		if(r == null) {
+			r = 0.;
+		}
+		gl.clearColor(r,g,b,a);
 		gl.enable(2929);
 		gl.clear(16384);
 		gl.viewport(0,0,width,height);
@@ -8770,84 +8836,15 @@ hyperKitGL_io_Float32FlatDepth.rangeToEnd = function(this1,starting,totalLen,sec
 	var _g1 = ending;
 	while(_g < _g1) {
 		var i = _g++;
-		var tmp = count++;
-		if(i > this1.length - 3) {
-			var l = Math.ceil(i * 2 + 2);
-			var p = this1[0];
-			var s = this1[1];
-			var sInt = this1[1] | 0;
-			var arr = this1.subarray(2,this1.length);
-			var this2 = new Float32Array(l + 2);
-			var this3 = this2;
-			this3[0] = 0.;
-			this3[1] = 0.;
-			var this4 = this3;
-			this1 = this4.subarray(2,this4.length);
-			var _g2 = 0;
-			var _g3 = sInt;
-			while(_g2 < _g3) {
-				var i1 = _g2++;
-				this1[i1 + 2] = arr[i1];
-			}
-			this1[0] = p;
-			this1[1] = s;
-			haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-		}
-		temp[tmp] = this1[i + 2];
+		temp[count++] = this1[i + 2];
 	}
 	var left = section * (this1[1] | 0) - ending;
 	var _g = 0;
 	var _g1 = left;
 	while(_g < _g1) {
 		var i = _g++;
-		var k = starting + i;
-		var k1 = ending + i;
-		if(k1 > this1.length - 3) {
-			var l = Math.ceil(k1 * 2 + 2);
-			var p = this1[0];
-			var s = this1[1];
-			var sInt = this1[1] | 0;
-			var arr = this1.subarray(2,this1.length);
-			var this2 = new Float32Array(l + 2);
-			var this3 = this2;
-			this3[0] = 0.;
-			this3[1] = 0.;
-			var this4 = this3;
-			this1 = this4.subarray(2,this4.length);
-			var _g2 = 0;
-			var _g3 = sInt;
-			while(_g2 < _g3) {
-				var i1 = _g2++;
-				this1[i1 + 2] = arr[i1];
-			}
-			this1[0] = p;
-			this1[1] = s;
-			haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-		}
-		var v = this1[k1 + 2];
-		if(k > this1.length - 3) {
-			var l1 = Math.ceil(k * 2 + 2);
-			var p1 = this1[0];
-			var s1 = this1[1];
-			var sInt1 = this1[1] | 0;
-			var arr1 = this1.subarray(2,this1.length);
-			var this5 = new Float32Array(l1 + 2);
-			var this6 = this5;
-			this6[0] = 0.;
-			this6[1] = 0.;
-			var this7 = this6;
-			this1 = this7.subarray(2,this7.length);
-			var _g4 = 0;
-			var _g5 = sInt1;
-			while(_g4 < _g5) {
-				var i2 = _g4++;
-				this1[i2 + 2] = arr1[i2];
-			}
-			this1[0] = p1;
-			this1[1] = s1;
-			haxe_Log.trace("resize now " + (l1 + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-		}
-		this1[k + 2] = v;
+		var v = this1[ending + i + 2];
+		this1[starting + i + 2] = v;
 	}
 	var last = section * (this1[1] | 0);
 	var reserveTop = last - totalLen;
@@ -8857,28 +8854,6 @@ hyperKitGL_io_Float32FlatDepth.rangeToEnd = function(this1,starting,totalLen,sec
 	while(_g < _g1) {
 		var i = _g++;
 		var v = temp[count++];
-		if(i > this1.length - 3) {
-			var l = Math.ceil(i * 2 + 2);
-			var p = this1[0];
-			var s = this1[1];
-			var sInt = this1[1] | 0;
-			var arr = this1.subarray(2,this1.length);
-			var this2 = new Float32Array(l + 2);
-			var this3 = this2;
-			this3[0] = 0.;
-			this3[1] = 0.;
-			var this4 = this3;
-			this1 = this4.subarray(2,this4.length);
-			var _g2 = 0;
-			var _g3 = sInt;
-			while(_g2 < _g3) {
-				var i1 = _g2++;
-				this1[i1 + 2] = arr[i1];
-			}
-			this1[0] = p;
-			this1[1] = s;
-			haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-		}
 		this1[i + 2] = v;
 	}
 	temp = null;
@@ -8886,639 +8861,87 @@ hyperKitGL_io_Float32FlatDepth.rangeToEnd = function(this1,starting,totalLen,sec
 };
 var hyperKitGL_io_FloatColorTriangles = {};
 hyperKitGL_io_FloatColorTriangles.get_ax = function(this1) {
-	var k = (this1[0] | 0) * 21;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	return this1[k + 2];
+	return this1[(this1[0] | 0) * 21 + 2];
 };
 hyperKitGL_io_FloatColorTriangles.set_ax = function(this1,v) {
-	var k = (this1[0] | 0) * 21;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
+	this1[(this1[0] | 0) * 21 + 2] = v;
 	return v;
 };
 hyperKitGL_io_FloatColorTriangles.get_ay = function(this1) {
-	var k = (this1[0] | 0) * 21 + 1;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	return this1[k + 2];
+	return this1[(this1[0] | 0) * 21 + 1 + 2];
 };
 hyperKitGL_io_FloatColorTriangles.set_ay = function(this1,v) {
-	var k = (this1[0] | 0) * 21 + 1;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
+	this1[(this1[0] | 0) * 21 + 1 + 2] = v;
 	return v;
 };
 hyperKitGL_io_FloatColorTriangles.get_az = function(this1) {
-	var k = (this1[0] | 0) * 21 + 2;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	return this1[k + 2];
+	return this1[(this1[0] | 0) * 21 + 2 + 2];
 };
 hyperKitGL_io_FloatColorTriangles.set_az = function(this1,v) {
-	var k = (this1[0] | 0) * 21 + 2;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
+	this1[(this1[0] | 0) * 21 + 2 + 2] = v;
 	return v;
 };
 hyperKitGL_io_FloatColorTriangles.get_redA = function(this1) {
-	var k = (this1[0] | 0) * 21 + 3;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	return this1[k + 2];
+	return this1[(this1[0] | 0) * 21 + 3 + 2];
 };
 hyperKitGL_io_FloatColorTriangles.set_redA = function(this1,v) {
-	var k = (this1[0] | 0) * 21 + 3;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
+	this1[(this1[0] | 0) * 21 + 3 + 2] = v;
 	return v;
 };
 hyperKitGL_io_FloatColorTriangles.get_bx = function(this1) {
-	var k = (this1[0] | 0) * 21 + 7;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	return this1[k + 2];
+	return this1[(this1[0] | 0) * 21 + 7 + 2];
 };
 hyperKitGL_io_FloatColorTriangles.set_bx = function(this1,v) {
-	var k = (this1[0] | 0) * 21 + 7;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
+	this1[(this1[0] | 0) * 21 + 7 + 2] = v;
 	return v;
 };
 hyperKitGL_io_FloatColorTriangles.get_by = function(this1) {
-	var k = (this1[0] | 0) * 21 + 8;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	return this1[k + 2];
+	return this1[(this1[0] | 0) * 21 + 8 + 2];
 };
 hyperKitGL_io_FloatColorTriangles.set_by = function(this1,v) {
-	var k = (this1[0] | 0) * 21 + 8;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
+	this1[(this1[0] | 0) * 21 + 8 + 2] = v;
 	return v;
 };
 hyperKitGL_io_FloatColorTriangles.get_bz = function(this1) {
-	var k = (this1[0] | 0) * 21 + 9;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	return this1[k + 2];
+	return this1[(this1[0] | 0) * 21 + 9 + 2];
 };
 hyperKitGL_io_FloatColorTriangles.set_bz = function(this1,v) {
-	var k = (this1[0] | 0) * 21 + 9;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
+	this1[(this1[0] | 0) * 21 + 9 + 2] = v;
 	return v;
 };
 hyperKitGL_io_FloatColorTriangles.get_redB = function(this1) {
-	var k = (this1[0] | 0) * 21 + 10;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	return this1[k + 2];
+	return this1[(this1[0] | 0) * 21 + 10 + 2];
 };
 hyperKitGL_io_FloatColorTriangles.set_redB = function(this1,v) {
-	var k = (this1[0] | 0) * 21 + 10;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
+	this1[(this1[0] | 0) * 21 + 10 + 2] = v;
 	return v;
 };
 hyperKitGL_io_FloatColorTriangles.get_cx = function(this1) {
-	var k = (this1[0] | 0) * 21 + 14;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	return this1[k + 2];
+	return this1[(this1[0] | 0) * 21 + 14 + 2];
 };
 hyperKitGL_io_FloatColorTriangles.set_cx = function(this1,v) {
-	var k = (this1[0] | 0) * 21 + 14;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
+	this1[(this1[0] | 0) * 21 + 14 + 2] = v;
 	return v;
 };
 hyperKitGL_io_FloatColorTriangles.get_cy = function(this1) {
-	var k = (this1[0] | 0) * 21 + 15;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	return this1[k + 2];
+	return this1[(this1[0] | 0) * 21 + 15 + 2];
 };
 hyperKitGL_io_FloatColorTriangles.set_cy = function(this1,v) {
-	var k = (this1[0] | 0) * 21 + 15;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
+	this1[(this1[0] | 0) * 21 + 15 + 2] = v;
 	return v;
 };
 hyperKitGL_io_FloatColorTriangles.get_cz = function(this1) {
-	var k = (this1[0] | 0) * 21 + 16;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	return this1[k + 2];
+	return this1[(this1[0] | 0) * 21 + 16 + 2];
 };
 hyperKitGL_io_FloatColorTriangles.set_cz = function(this1,v) {
-	var k = (this1[0] | 0) * 21 + 16;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
+	this1[(this1[0] | 0) * 21 + 16 + 2] = v;
 	return v;
 };
 hyperKitGL_io_FloatColorTriangles.get_redC = function(this1) {
-	var k = (this1[0] | 0) * 21 + 17;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	return this1[k + 2];
+	return this1[(this1[0] | 0) * 21 + 17 + 2];
 };
 hyperKitGL_io_FloatColorTriangles.set_redC = function(this1,v) {
-	var k = (this1[0] | 0) * 21 + 17;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
+	this1[(this1[0] | 0) * 21 + 17 + 2] = v;
 	return v;
 };
 hyperKitGL_io_FloatColorTriangles.triangle = function(this1,ax_,ay_,az_,bx_,by_,bz_,cx_,cy_,cz_) {
@@ -9568,639 +8991,87 @@ hyperKitGL_io_FloatColorTriangles.fullHit = function(this1,px,py) {
 };
 var hyperKitGL_io_FloatColorTrianglesUV = {};
 hyperKitGL_io_FloatColorTrianglesUV.get_ax = function(this1) {
-	var k = (this1[0] | 0) * 27;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	return this1[k + 2];
+	return this1[(this1[0] | 0) * 27 + 2];
 };
 hyperKitGL_io_FloatColorTrianglesUV.set_ax = function(this1,v) {
-	var k = (this1[0] | 0) * 27;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
+	this1[(this1[0] | 0) * 27 + 2] = v;
 	return v;
 };
 hyperKitGL_io_FloatColorTrianglesUV.get_ay = function(this1) {
-	var k = (this1[0] | 0) * 27 + 1;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	return this1[k + 2];
+	return this1[(this1[0] | 0) * 27 + 1 + 2];
 };
 hyperKitGL_io_FloatColorTrianglesUV.set_ay = function(this1,v) {
-	var k = (this1[0] | 0) * 27 + 1;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
+	this1[(this1[0] | 0) * 27 + 1 + 2] = v;
 	return v;
 };
 hyperKitGL_io_FloatColorTrianglesUV.get_az = function(this1) {
-	var k = (this1[0] | 0) * 27 + 2;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	return this1[k + 2];
+	return this1[(this1[0] | 0) * 27 + 2 + 2];
 };
 hyperKitGL_io_FloatColorTrianglesUV.set_az = function(this1,v) {
-	var k = (this1[0] | 0) * 27 + 2;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
+	this1[(this1[0] | 0) * 27 + 2 + 2] = v;
 	return v;
 };
 hyperKitGL_io_FloatColorTrianglesUV.get_redA = function(this1) {
-	var k = (this1[0] | 0) * 27 + 3;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	return this1[k + 2];
+	return this1[(this1[0] | 0) * 27 + 3 + 2];
 };
 hyperKitGL_io_FloatColorTrianglesUV.set_redA = function(this1,v) {
-	var k = (this1[0] | 0) * 27 + 3;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
+	this1[(this1[0] | 0) * 27 + 3 + 2] = v;
 	return v;
 };
 hyperKitGL_io_FloatColorTrianglesUV.get_bx = function(this1) {
-	var k = (this1[0] | 0) * 27 + 9;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	return this1[k + 2];
+	return this1[(this1[0] | 0) * 27 + 9 + 2];
 };
 hyperKitGL_io_FloatColorTrianglesUV.set_bx = function(this1,v) {
-	var k = (this1[0] | 0) * 27 + 9;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
+	this1[(this1[0] | 0) * 27 + 9 + 2] = v;
 	return v;
 };
 hyperKitGL_io_FloatColorTrianglesUV.get_by = function(this1) {
-	var k = (this1[0] | 0) * 27 + 10;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	return this1[k + 2];
+	return this1[(this1[0] | 0) * 27 + 10 + 2];
 };
 hyperKitGL_io_FloatColorTrianglesUV.set_by = function(this1,v) {
-	var k = (this1[0] | 0) * 27 + 10;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
+	this1[(this1[0] | 0) * 27 + 10 + 2] = v;
 	return v;
 };
 hyperKitGL_io_FloatColorTrianglesUV.get_bz = function(this1) {
-	var k = (this1[0] | 0) * 27 + 11;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	return this1[k + 2];
+	return this1[(this1[0] | 0) * 27 + 11 + 2];
 };
 hyperKitGL_io_FloatColorTrianglesUV.set_bz = function(this1,v) {
-	var k = (this1[0] | 0) * 27 + 11;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
+	this1[(this1[0] | 0) * 27 + 11 + 2] = v;
 	return v;
 };
 hyperKitGL_io_FloatColorTrianglesUV.get_redB = function(this1) {
-	var k = (this1[0] | 0) * 27 + 12;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	return this1[k + 2];
+	return this1[(this1[0] | 0) * 27 + 12 + 2];
 };
 hyperKitGL_io_FloatColorTrianglesUV.set_redB = function(this1,v) {
-	var k = (this1[0] | 0) * 27 + 12;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
+	this1[(this1[0] | 0) * 27 + 12 + 2] = v;
 	return v;
 };
 hyperKitGL_io_FloatColorTrianglesUV.get_cx = function(this1) {
-	var k = (this1[0] | 0) * 27 + 18;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	return this1[k + 2];
+	return this1[(this1[0] | 0) * 27 + 18 + 2];
 };
 hyperKitGL_io_FloatColorTrianglesUV.set_cx = function(this1,v) {
-	var k = (this1[0] | 0) * 27 + 18;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
+	this1[(this1[0] | 0) * 27 + 18 + 2] = v;
 	return v;
 };
 hyperKitGL_io_FloatColorTrianglesUV.get_cy = function(this1) {
-	var k = (this1[0] | 0) * 27 + 19;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	return this1[k + 2];
+	return this1[(this1[0] | 0) * 27 + 19 + 2];
 };
 hyperKitGL_io_FloatColorTrianglesUV.set_cy = function(this1,v) {
-	var k = (this1[0] | 0) * 27 + 19;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
+	this1[(this1[0] | 0) * 27 + 19 + 2] = v;
 	return v;
 };
 hyperKitGL_io_FloatColorTrianglesUV.get_cz = function(this1) {
-	var k = (this1[0] | 0) * 27 + 20;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	return this1[k + 2];
+	return this1[(this1[0] | 0) * 27 + 20 + 2];
 };
 hyperKitGL_io_FloatColorTrianglesUV.set_cz = function(this1,v) {
-	var k = (this1[0] | 0) * 27 + 20;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
+	this1[(this1[0] | 0) * 27 + 20 + 2] = v;
 	return v;
 };
 hyperKitGL_io_FloatColorTrianglesUV.get_redC = function(this1) {
-	var k = (this1[0] | 0) * 27 + 21;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	return this1[k + 2];
+	return this1[(this1[0] | 0) * 27 + 21 + 2];
 };
 hyperKitGL_io_FloatColorTrianglesUV.set_redC = function(this1,v) {
-	var k = (this1[0] | 0) * 27 + 21;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
+	this1[(this1[0] | 0) * 27 + 21 + 2] = v;
 	return v;
 };
 hyperKitGL_io_FloatColorTrianglesUV.triangle = function(this1,ax_,ay_,az_,bx_,by_,bz_,cx_,cy_,cz_) {
@@ -10224,248 +9095,18 @@ hyperKitGL_io_FloatColorTrianglesUV.triangle = function(this1,ax_,ay_,az_,bx_,by
 };
 hyperKitGL_io_FloatColorTrianglesUV.triangleUV = function(this1,uA_,vA_,uB_,vB_,uC_,vC_,windAdjust_) {
 	var windAdjust = windAdjust_ == null ? hyperKitGL_io_FloatColorTrianglesUV.adjustWinding(this1) : windAdjust_;
-	var k = (this1[0] | 0) * 27 + 7;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = uA_;
-	var k = (this1[0] | 0) * 27 + 8;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = vA_;
+	this1[(this1[0] | 0) * 27 + 7 + 2] = uA_;
+	this1[(this1[0] | 0) * 27 + 8 + 2] = vA_;
 	if(windAdjust) {
-		var k = (this1[0] | 0) * 27 + 16;
-		if(k > this1.length - 3) {
-			var l = Math.ceil(k * 2 + 2);
-			var p = this1[0];
-			var s = this1[1];
-			var sInt = this1[1] | 0;
-			var arr = this1.subarray(2,this1.length);
-			var this2 = new Float32Array(l + 2);
-			var this3 = this2;
-			this3[0] = 0.;
-			this3[1] = 0.;
-			var this2 = this3;
-			this1 = this2.subarray(2,this2.length);
-			var _g = 0;
-			var _g1 = sInt;
-			while(_g < _g1) {
-				var i = _g++;
-				this1[i + 2] = arr[i];
-			}
-			this1[0] = p;
-			this1[1] = s;
-			haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-		}
-		this1[k + 2] = uC_;
-		var k = (this1[0] | 0) * 27 + 17;
-		if(k > this1.length - 3) {
-			var l = Math.ceil(k * 2 + 2);
-			var p = this1[0];
-			var s = this1[1];
-			var sInt = this1[1] | 0;
-			var arr = this1.subarray(2,this1.length);
-			var this2 = new Float32Array(l + 2);
-			var this3 = this2;
-			this3[0] = 0.;
-			this3[1] = 0.;
-			var this2 = this3;
-			this1 = this2.subarray(2,this2.length);
-			var _g = 0;
-			var _g1 = sInt;
-			while(_g < _g1) {
-				var i = _g++;
-				this1[i + 2] = arr[i];
-			}
-			this1[0] = p;
-			this1[1] = s;
-			haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-		}
-		this1[k + 2] = vC_;
-		var k = (this1[0] | 0) * 27 + 25;
-		if(k > this1.length - 3) {
-			var l = Math.ceil(k * 2 + 2);
-			var p = this1[0];
-			var s = this1[1];
-			var sInt = this1[1] | 0;
-			var arr = this1.subarray(2,this1.length);
-			var this2 = new Float32Array(l + 2);
-			var this3 = this2;
-			this3[0] = 0.;
-			this3[1] = 0.;
-			var this2 = this3;
-			this1 = this2.subarray(2,this2.length);
-			var _g = 0;
-			var _g1 = sInt;
-			while(_g < _g1) {
-				var i = _g++;
-				this1[i + 2] = arr[i];
-			}
-			this1[0] = p;
-			this1[1] = s;
-			haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-		}
-		this1[k + 2] = uB_;
-		var k = (this1[0] | 0) * 27 + 26;
-		if(k > this1.length - 3) {
-			var l = Math.ceil(k * 2 + 2);
-			var p = this1[0];
-			var s = this1[1];
-			var sInt = this1[1] | 0;
-			var arr = this1.subarray(2,this1.length);
-			var this2 = new Float32Array(l + 2);
-			var this3 = this2;
-			this3[0] = 0.;
-			this3[1] = 0.;
-			var this2 = this3;
-			this1 = this2.subarray(2,this2.length);
-			var _g = 0;
-			var _g1 = sInt;
-			while(_g < _g1) {
-				var i = _g++;
-				this1[i + 2] = arr[i];
-			}
-			this1[0] = p;
-			this1[1] = s;
-			haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-		}
-		this1[k + 2] = vB_;
+		this1[(this1[0] | 0) * 27 + 16 + 2] = uC_;
+		this1[(this1[0] | 0) * 27 + 17 + 2] = vC_;
+		this1[(this1[0] | 0) * 27 + 25 + 2] = uB_;
+		this1[(this1[0] | 0) * 27 + 26 + 2] = vB_;
 	} else {
-		var k = (this1[0] | 0) * 27 + 16;
-		if(k > this1.length - 3) {
-			var l = Math.ceil(k * 2 + 2);
-			var p = this1[0];
-			var s = this1[1];
-			var sInt = this1[1] | 0;
-			var arr = this1.subarray(2,this1.length);
-			var this2 = new Float32Array(l + 2);
-			var this3 = this2;
-			this3[0] = 0.;
-			this3[1] = 0.;
-			var this2 = this3;
-			this1 = this2.subarray(2,this2.length);
-			var _g = 0;
-			var _g1 = sInt;
-			while(_g < _g1) {
-				var i = _g++;
-				this1[i + 2] = arr[i];
-			}
-			this1[0] = p;
-			this1[1] = s;
-			haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-		}
-		this1[k + 2] = uB_;
-		var k = (this1[0] | 0) * 27 + 17;
-		if(k > this1.length - 3) {
-			var l = Math.ceil(k * 2 + 2);
-			var p = this1[0];
-			var s = this1[1];
-			var sInt = this1[1] | 0;
-			var arr = this1.subarray(2,this1.length);
-			var this2 = new Float32Array(l + 2);
-			var this3 = this2;
-			this3[0] = 0.;
-			this3[1] = 0.;
-			var this2 = this3;
-			this1 = this2.subarray(2,this2.length);
-			var _g = 0;
-			var _g1 = sInt;
-			while(_g < _g1) {
-				var i = _g++;
-				this1[i + 2] = arr[i];
-			}
-			this1[0] = p;
-			this1[1] = s;
-			haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-		}
-		this1[k + 2] = vB_;
-		var k = (this1[0] | 0) * 27 + 25;
-		if(k > this1.length - 3) {
-			var l = Math.ceil(k * 2 + 2);
-			var p = this1[0];
-			var s = this1[1];
-			var sInt = this1[1] | 0;
-			var arr = this1.subarray(2,this1.length);
-			var this2 = new Float32Array(l + 2);
-			var this3 = this2;
-			this3[0] = 0.;
-			this3[1] = 0.;
-			var this2 = this3;
-			this1 = this2.subarray(2,this2.length);
-			var _g = 0;
-			var _g1 = sInt;
-			while(_g < _g1) {
-				var i = _g++;
-				this1[i + 2] = arr[i];
-			}
-			this1[0] = p;
-			this1[1] = s;
-			haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-		}
-		this1[k + 2] = uC_;
-		var k = (this1[0] | 0) * 27 + 26;
-		if(k > this1.length - 3) {
-			var l = Math.ceil(k * 2 + 2);
-			var p = this1[0];
-			var s = this1[1];
-			var sInt = this1[1] | 0;
-			var arr = this1.subarray(2,this1.length);
-			var this2 = new Float32Array(l + 2);
-			var this3 = this2;
-			this3[0] = 0.;
-			this3[1] = 0.;
-			var this2 = this3;
-			this1 = this2.subarray(2,this2.length);
-			var _g = 0;
-			var _g1 = sInt;
-			while(_g < _g1) {
-				var i = _g++;
-				this1[i + 2] = arr[i];
-			}
-			this1[0] = p;
-			this1[1] = s;
-			haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-		}
-		this1[k + 2] = vC_;
+		this1[(this1[0] | 0) * 27 + 16 + 2] = uB_;
+		this1[(this1[0] | 0) * 27 + 17 + 2] = vB_;
+		this1[(this1[0] | 0) * 27 + 25 + 2] = uC_;
+		this1[(this1[0] | 0) * 27 + 26 + 2] = vC_;
 	}
 	return windAdjust;
 };
@@ -10494,294 +9135,18 @@ hyperKitGL_io_FloatColorTrianglesUV.fullHit = function(this1,px,py) {
 	}
 };
 hyperKitGL_io_FloatColorTrianglesUV.moveDeltaUV = function(this1,du,dv) {
-	var k = (this1[0] | 0) * 27 + 7;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	var v = this1[k + 2] + du;
-	var k = (this1[0] | 0) * 27 + 7;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
-	var k = (this1[0] | 0) * 27 + 8;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	var v = this1[k + 2] + dv;
-	var k = (this1[0] | 0) * 27 + 8;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
-	var k = (this1[0] | 0) * 27 + 16;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	var v = this1[k + 2] + du;
-	var k = (this1[0] | 0) * 27 + 16;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
-	var k = (this1[0] | 0) * 27 + 17;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	var v = this1[k + 2] + dv;
-	var k = (this1[0] | 0) * 27 + 17;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
-	var k = (this1[0] | 0) * 27 + 25;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	var v = this1[k + 2] + du;
-	var k = (this1[0] | 0) * 27 + 25;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
-	var k = (this1[0] | 0) * 27 + 26;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	var v = this1[k + 2] + dv;
-	var k = (this1[0] | 0) * 27 + 26;
-	if(k > this1.length - 3) {
-		var l = Math.ceil(k * 2 + 2);
-		var p = this1[0];
-		var s = this1[1];
-		var sInt = this1[1] | 0;
-		var arr = this1.subarray(2,this1.length);
-		var this2 = new Float32Array(l + 2);
-		var this3 = this2;
-		this3[0] = 0.;
-		this3[1] = 0.;
-		var this2 = this3;
-		this1 = this2.subarray(2,this2.length);
-		var _g = 0;
-		var _g1 = sInt;
-		while(_g < _g1) {
-			var i = _g++;
-			this1[i + 2] = arr[i];
-		}
-		this1[0] = p;
-		this1[1] = s;
-		haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-	}
-	this1[k + 2] = v;
+	var v = this1[(this1[0] | 0) * 27 + 7 + 2] + du;
+	this1[(this1[0] | 0) * 27 + 7 + 2] = v;
+	var v = this1[(this1[0] | 0) * 27 + 8 + 2] + dv;
+	this1[(this1[0] | 0) * 27 + 8 + 2] = v;
+	var v = this1[(this1[0] | 0) * 27 + 16 + 2] + du;
+	this1[(this1[0] | 0) * 27 + 16 + 2] = v;
+	var v = this1[(this1[0] | 0) * 27 + 17 + 2] + dv;
+	this1[(this1[0] | 0) * 27 + 17 + 2] = v;
+	var v = this1[(this1[0] | 0) * 27 + 25 + 2] + du;
+	this1[(this1[0] | 0) * 27 + 25 + 2] = v;
+	var v = this1[(this1[0] | 0) * 27 + 26 + 2] + dv;
+	this1[(this1[0] | 0) * 27 + 26 + 2] = v;
 };
 var hyperKitGLsamples_galapagos_Galapagos = function(width,height) {
 	this.y = 0;
@@ -10973,7 +9338,6 @@ hyperKitGLsamples_galapagos_View.prototype = {
 		}
 	}
 	,drawDot: function(cx,cy,radius) {
-		haxe_Log.trace("drawDot " + Std.string(this.pen),{ fileName : "../../../src/hyperKitGLsamples/galapagos/View.hx", lineNumber : 105, className : "hyperKitGLsamples.galapagos.View", methodName : "drawDot"});
 		var pen = this.pen;
 		var pi = Math.PI;
 		var theta = pi / 2;
@@ -18061,686 +16425,59 @@ trilateral3_nodule_PenColor.prototype = $extend(trilateral3_nodule_PenNodule.pro
 		var color3Abstract = { set_argb : function(col) {
 			hyperKitGL_io_FloatColorTriangles.set_redA(_e17,(col >> 16 & 255) / 255);
 			var v = (col & 255) / 255;
-			var k = (_e17[0] | 0) * 21 + 5;
-			if(k > _e17.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e17[0];
-				var s = _e17[1];
-				var sInt = _e17[1] | 0;
-				var arr = _e17.subarray(2,_e17.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e17 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e17[i + 2] = arr[i];
-				}
-				_e17[0] = p;
-				_e17[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e17[k + 2] = v;
+			_e17[(_e17[0] | 0) * 21 + 5 + 2] = v;
 			var v = (col >> 8 & 255) / 255;
-			var k = (_e17[0] | 0) * 21 + 4;
-			if(k > _e17.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e17[0];
-				var s = _e17[1];
-				var sInt = _e17[1] | 0;
-				var arr = _e17.subarray(2,_e17.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e17 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e17[i + 2] = arr[i];
-				}
-				_e17[0] = p;
-				_e17[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e17[k + 2] = v;
+			_e17[(_e17[0] | 0) * 21 + 4 + 2] = v;
 			var v = (col >> 24 & 255) / 255;
-			var k = (_e17[0] | 0) * 21 + 6;
-			if(k > _e17.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e17[0];
-				var s = _e17[1];
-				var sInt = _e17[1] | 0;
-				var arr = _e17.subarray(2,_e17.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e17 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e17[i + 2] = arr[i];
-				}
-				_e17[0] = p;
-				_e17[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e17[k + 2] = v;
+			_e17[(_e17[0] | 0) * 21 + 6 + 2] = v;
 			hyperKitGL_io_FloatColorTriangles.set_redB(_e17,(col >> 16 & 255) / 255);
 			var v = (col & 255) / 255;
-			var k = (_e17[0] | 0) * 21 + 12;
-			if(k > _e17.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e17[0];
-				var s = _e17[1];
-				var sInt = _e17[1] | 0;
-				var arr = _e17.subarray(2,_e17.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e17 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e17[i + 2] = arr[i];
-				}
-				_e17[0] = p;
-				_e17[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e17[k + 2] = v;
+			_e17[(_e17[0] | 0) * 21 + 12 + 2] = v;
 			var v = (col >> 8 & 255) / 255;
-			var k = (_e17[0] | 0) * 21 + 11;
-			if(k > _e17.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e17[0];
-				var s = _e17[1];
-				var sInt = _e17[1] | 0;
-				var arr = _e17.subarray(2,_e17.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e17 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e17[i + 2] = arr[i];
-				}
-				_e17[0] = p;
-				_e17[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e17[k + 2] = v;
+			_e17[(_e17[0] | 0) * 21 + 11 + 2] = v;
 			var v = (col >> 24 & 255) / 255;
-			var k = (_e17[0] | 0) * 21 + 13;
-			if(k > _e17.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e17[0];
-				var s = _e17[1];
-				var sInt = _e17[1] | 0;
-				var arr = _e17.subarray(2,_e17.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e17 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e17[i + 2] = arr[i];
-				}
-				_e17[0] = p;
-				_e17[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e17[k + 2] = v;
+			_e17[(_e17[0] | 0) * 21 + 13 + 2] = v;
 			hyperKitGL_io_FloatColorTriangles.set_redC(_e17,(col >> 16 & 255) / 255);
 			var v = (col & 255) / 255;
-			var k = (_e17[0] | 0) * 21 + 19;
-			if(k > _e17.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e17[0];
-				var s = _e17[1];
-				var sInt = _e17[1] | 0;
-				var arr = _e17.subarray(2,_e17.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e17 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e17[i + 2] = arr[i];
-				}
-				_e17[0] = p;
-				_e17[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e17[k + 2] = v;
+			_e17[(_e17[0] | 0) * 21 + 19 + 2] = v;
 			var v = (col >> 8 & 255) / 255;
-			var k = (_e17[0] | 0) * 21 + 18;
-			if(k > _e17.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e17[0];
-				var s = _e17[1];
-				var sInt = _e17[1] | 0;
-				var arr = _e17.subarray(2,_e17.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e17 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e17[i + 2] = arr[i];
-				}
-				_e17[0] = p;
-				_e17[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e17[k + 2] = v;
+			_e17[(_e17[0] | 0) * 21 + 18 + 2] = v;
 			var v = (col >> 24 & 255) / 255;
-			var k = (_e17[0] | 0) * 21 + 20;
-			if(k > _e17.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e17[0];
-				var s = _e17[1];
-				var sInt = _e17[1] | 0;
-				var arr = _e17.subarray(2,_e17.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e17 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e17[i + 2] = arr[i];
-				}
-				_e17[0] = p;
-				_e17[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e17[k + 2] = v;
+			_e17[(_e17[0] | 0) * 21 + 20 + 2] = v;
 			return col;
 		}, set_argbA : function(col) {
 			hyperKitGL_io_FloatColorTriangles.set_redA(_e18,(col >> 16 & 255) / 255);
 			var v = (col & 255) / 255;
-			var k = (_e18[0] | 0) * 21 + 5;
-			if(k > _e18.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e18[0];
-				var s = _e18[1];
-				var sInt = _e18[1] | 0;
-				var arr = _e18.subarray(2,_e18.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e18 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e18[i + 2] = arr[i];
-				}
-				_e18[0] = p;
-				_e18[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e18[k + 2] = v;
+			_e18[(_e18[0] | 0) * 21 + 5 + 2] = v;
 			var v = (col >> 8 & 255) / 255;
-			var k = (_e18[0] | 0) * 21 + 4;
-			if(k > _e18.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e18[0];
-				var s = _e18[1];
-				var sInt = _e18[1] | 0;
-				var arr = _e18.subarray(2,_e18.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e18 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e18[i + 2] = arr[i];
-				}
-				_e18[0] = p;
-				_e18[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e18[k + 2] = v;
+			_e18[(_e18[0] | 0) * 21 + 4 + 2] = v;
 			var v = (col >> 24 & 255) / 255;
-			var k = (_e18[0] | 0) * 21 + 6;
-			if(k > _e18.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e18[0];
-				var s = _e18[1];
-				var sInt = _e18[1] | 0;
-				var arr = _e18.subarray(2,_e18.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e18 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e18[i + 2] = arr[i];
-				}
-				_e18[0] = p;
-				_e18[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e18[k + 2] = v;
+			_e18[(_e18[0] | 0) * 21 + 6 + 2] = v;
 			return col;
 		}, get_argbA : function() {
-			var k = (_e19[0] | 0) * 21 + 6;
-			if(k > _e19.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e19[0];
-				var s = _e19[1];
-				var sInt = _e19[1] | 0;
-				var arr = _e19.subarray(2,_e19.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e19 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e19[i + 2] = arr[i];
-				}
-				_e19[0] = p;
-				_e19[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var color3Abstract = Math.round(_e19[k + 2] * 255) << 24 | Math.round(hyperKitGL_io_FloatColorTriangles.get_redA(_e19) * 255) << 16;
-			var k = (_e19[0] | 0) * 21 + 4;
-			if(k > _e19.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e19[0];
-				var s = _e19[1];
-				var sInt = _e19[1] | 0;
-				var arr = _e19.subarray(2,_e19.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e19 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e19[i + 2] = arr[i];
-				}
-				_e19[0] = p;
-				_e19[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var color3Abstract1 = color3Abstract | Math.round(_e19[k + 2] * 255) << 8;
-			var k = (_e19[0] | 0) * 21 + 5;
-			if(k > _e19.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e19[0];
-				var s = _e19[1];
-				var sInt = _e19[1] | 0;
-				var arr = _e19.subarray(2,_e19.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e19 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e19[i + 2] = arr[i];
-				}
-				_e19[0] = p;
-				_e19[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			return color3Abstract1 | Math.round(_e19[k + 2] * 255);
+			return Math.round(_e19[(_e19[0] | 0) * 21 + 6 + 2] * 255) << 24 | Math.round(hyperKitGL_io_FloatColorTriangles.get_redA(_e19) * 255) << 16 | Math.round(_e19[(_e19[0] | 0) * 21 + 4 + 2] * 255) << 8 | Math.round(_e19[(_e19[0] | 0) * 21 + 5 + 2] * 255);
 		}, set_argbB : function(col) {
 			hyperKitGL_io_FloatColorTriangles.set_redB(_e20,(col >> 16 & 255) / 255);
 			var v = (col & 255) / 255;
-			var k = (_e20[0] | 0) * 21 + 12;
-			if(k > _e20.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e20[0];
-				var s = _e20[1];
-				var sInt = _e20[1] | 0;
-				var arr = _e20.subarray(2,_e20.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e20 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e20[i + 2] = arr[i];
-				}
-				_e20[0] = p;
-				_e20[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e20[k + 2] = v;
+			_e20[(_e20[0] | 0) * 21 + 12 + 2] = v;
 			var v = (col >> 8 & 255) / 255;
-			var k = (_e20[0] | 0) * 21 + 11;
-			if(k > _e20.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e20[0];
-				var s = _e20[1];
-				var sInt = _e20[1] | 0;
-				var arr = _e20.subarray(2,_e20.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e20 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e20[i + 2] = arr[i];
-				}
-				_e20[0] = p;
-				_e20[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e20[k + 2] = v;
+			_e20[(_e20[0] | 0) * 21 + 11 + 2] = v;
 			var v = (col >> 24 & 255) / 255;
-			var k = (_e20[0] | 0) * 21 + 13;
-			if(k > _e20.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e20[0];
-				var s = _e20[1];
-				var sInt = _e20[1] | 0;
-				var arr = _e20.subarray(2,_e20.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e20 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e20[i + 2] = arr[i];
-				}
-				_e20[0] = p;
-				_e20[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e20[k + 2] = v;
+			_e20[(_e20[0] | 0) * 21 + 13 + 2] = v;
 			return col;
 		}, get_argbB : function() {
-			var k = (_e21[0] | 0) * 21 + 13;
-			if(k > _e21.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e21[0];
-				var s = _e21[1];
-				var sInt = _e21[1] | 0;
-				var arr = _e21.subarray(2,_e21.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e21 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e21[i + 2] = arr[i];
-				}
-				_e21[0] = p;
-				_e21[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var color3Abstract = Math.round(_e21[k + 2] * 255) << 24 | Math.round(hyperKitGL_io_FloatColorTriangles.get_redB(_e21) * 255) << 16;
-			var k = (_e21[0] | 0) * 21 + 11;
-			if(k > _e21.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e21[0];
-				var s = _e21[1];
-				var sInt = _e21[1] | 0;
-				var arr = _e21.subarray(2,_e21.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e21 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e21[i + 2] = arr[i];
-				}
-				_e21[0] = p;
-				_e21[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var color3Abstract1 = color3Abstract | Math.round(_e21[k + 2] * 255) << 8;
-			var k = (_e21[0] | 0) * 21 + 12;
-			if(k > _e21.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e21[0];
-				var s = _e21[1];
-				var sInt = _e21[1] | 0;
-				var arr = _e21.subarray(2,_e21.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e21 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e21[i + 2] = arr[i];
-				}
-				_e21[0] = p;
-				_e21[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			return color3Abstract1 | Math.round(_e21[k + 2] * 255);
+			return Math.round(_e21[(_e21[0] | 0) * 21 + 13 + 2] * 255) << 24 | Math.round(hyperKitGL_io_FloatColorTriangles.get_redB(_e21) * 255) << 16 | Math.round(_e21[(_e21[0] | 0) * 21 + 11 + 2] * 255) << 8 | Math.round(_e21[(_e21[0] | 0) * 21 + 12 + 2] * 255);
 		}, set_argbC : function(col) {
 			hyperKitGL_io_FloatColorTriangles.set_redC(_e22,(col >> 16 & 255) / 255);
 			var v = (col & 255) / 255;
-			var k = (_e22[0] | 0) * 21 + 19;
-			if(k > _e22.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e22[0];
-				var s = _e22[1];
-				var sInt = _e22[1] | 0;
-				var arr = _e22.subarray(2,_e22.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e22 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e22[i + 2] = arr[i];
-				}
-				_e22[0] = p;
-				_e22[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e22[k + 2] = v;
+			_e22[(_e22[0] | 0) * 21 + 19 + 2] = v;
 			var v = (col >> 8 & 255) / 255;
-			var k = (_e22[0] | 0) * 21 + 18;
-			if(k > _e22.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e22[0];
-				var s = _e22[1];
-				var sInt = _e22[1] | 0;
-				var arr = _e22.subarray(2,_e22.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e22 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e22[i + 2] = arr[i];
-				}
-				_e22[0] = p;
-				_e22[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e22[k + 2] = v;
+			_e22[(_e22[0] | 0) * 21 + 18 + 2] = v;
 			var v = (col >> 24 & 255) / 255;
-			var k = (_e22[0] | 0) * 21 + 20;
-			if(k > _e22.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e22[0];
-				var s = _e22[1];
-				var sInt = _e22[1] | 0;
-				var arr = _e22.subarray(2,_e22.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e22 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e22[i + 2] = arr[i];
-				}
-				_e22[0] = p;
-				_e22[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e22[k + 2] = v;
+			_e22[(_e22[0] | 0) * 21 + 20 + 2] = v;
 			return col;
 		}, get_argbC : function() {
-			var k = (_e23[0] | 0) * 21 + 20;
-			if(k > _e23.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e23[0];
-				var s = _e23[1];
-				var sInt = _e23[1] | 0;
-				var arr = _e23.subarray(2,_e23.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e23 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e23[i + 2] = arr[i];
-				}
-				_e23[0] = p;
-				_e23[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var color3Abstract = Math.round(_e23[k + 2] * 255) << 24 | Math.round(hyperKitGL_io_FloatColorTriangles.get_redC(_e23) * 255) << 16;
-			var k = (_e23[0] | 0) * 21 + 18;
-			if(k > _e23.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e23[0];
-				var s = _e23[1];
-				var sInt = _e23[1] | 0;
-				var arr = _e23.subarray(2,_e23.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e23 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e23[i + 2] = arr[i];
-				}
-				_e23[0] = p;
-				_e23[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var color3Abstract1 = color3Abstract | Math.round(_e23[k + 2] * 255) << 8;
-			var k = (_e23[0] | 0) * 21 + 19;
-			if(k > _e23.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e23[0];
-				var s = _e23[1];
-				var sInt = _e23[1] | 0;
-				var arr = _e23.subarray(2,_e23.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e23 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e23[i + 2] = arr[i];
-				}
-				_e23[0] = p;
-				_e23[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			return color3Abstract1 | Math.round(_e23[k + 2] * 255);
+			return Math.round(_e23[(_e23[0] | 0) * 21 + 20 + 2] * 255) << 24 | Math.round(hyperKitGL_io_FloatColorTriangles.get_redC(_e23) * 255) << 16 | Math.round(_e23[(_e23[0] | 0) * 21 + 18 + 2] * 255) << 8 | Math.round(_e23[(_e23[0] | 0) * 21 + 19 + 2] * 255);
 		}};
 		var _e24 = t;
 		var _e25 = t;
@@ -18763,232 +16500,25 @@ trilateral3_nodule_PenColor.prototype = $extend(trilateral3_nodule_PenNodule.pro
 		}, cornerColors : function(colorA,colorB,colorC) {
 			hyperKitGL_io_FloatColorTriangles.set_redA(_e25,(colorA >> 16 & 255) / 255);
 			var v = (colorA & 255) / 255;
-			var k = (_e25[0] | 0) * 21 + 5;
-			if(k > _e25.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e25[0];
-				var s = _e25[1];
-				var sInt = _e25[1] | 0;
-				var arr = _e25.subarray(2,_e25.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e25 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e25[i + 2] = arr[i];
-				}
-				_e25[0] = p;
-				_e25[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e25[k + 2] = v;
+			_e25[(_e25[0] | 0) * 21 + 5 + 2] = v;
 			var v = (colorA >> 8 & 255) / 255;
-			var k = (_e25[0] | 0) * 21 + 4;
-			if(k > _e25.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e25[0];
-				var s = _e25[1];
-				var sInt = _e25[1] | 0;
-				var arr = _e25.subarray(2,_e25.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e25 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e25[i + 2] = arr[i];
-				}
-				_e25[0] = p;
-				_e25[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e25[k + 2] = v;
+			_e25[(_e25[0] | 0) * 21 + 4 + 2] = v;
 			var v = (colorA >> 24 & 255) / 255;
-			var k = (_e25[0] | 0) * 21 + 6;
-			if(k > _e25.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e25[0];
-				var s = _e25[1];
-				var sInt = _e25[1] | 0;
-				var arr = _e25.subarray(2,_e25.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e25 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e25[i + 2] = arr[i];
-				}
-				_e25[0] = p;
-				_e25[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e25[k + 2] = v;
+			_e25[(_e25[0] | 0) * 21 + 6 + 2] = v;
 			hyperKitGL_io_FloatColorTriangles.set_redB(_e25,(colorB >> 16 & 255) / 255);
 			var v = (colorB & 255) / 255;
-			var k = (_e25[0] | 0) * 21 + 12;
-			if(k > _e25.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e25[0];
-				var s = _e25[1];
-				var sInt = _e25[1] | 0;
-				var arr = _e25.subarray(2,_e25.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e25 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e25[i + 2] = arr[i];
-				}
-				_e25[0] = p;
-				_e25[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e25[k + 2] = v;
+			_e25[(_e25[0] | 0) * 21 + 12 + 2] = v;
 			var v = (colorB >> 8 & 255) / 255;
-			var k = (_e25[0] | 0) * 21 + 11;
-			if(k > _e25.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e25[0];
-				var s = _e25[1];
-				var sInt = _e25[1] | 0;
-				var arr = _e25.subarray(2,_e25.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e25 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e25[i + 2] = arr[i];
-				}
-				_e25[0] = p;
-				_e25[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e25[k + 2] = v;
+			_e25[(_e25[0] | 0) * 21 + 11 + 2] = v;
 			var v = (colorB >> 24 & 255) / 255;
-			var k = (_e25[0] | 0) * 21 + 13;
-			if(k > _e25.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e25[0];
-				var s = _e25[1];
-				var sInt = _e25[1] | 0;
-				var arr = _e25.subarray(2,_e25.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e25 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e25[i + 2] = arr[i];
-				}
-				_e25[0] = p;
-				_e25[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e25[k + 2] = v;
+			_e25[(_e25[0] | 0) * 21 + 13 + 2] = v;
 			hyperKitGL_io_FloatColorTriangles.set_redC(_e25,(colorC >> 16 & 255) / 255);
 			var v = (colorC & 255) / 255;
-			var k = (_e25[0] | 0) * 21 + 19;
-			if(k > _e25.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e25[0];
-				var s = _e25[1];
-				var sInt = _e25[1] | 0;
-				var arr = _e25.subarray(2,_e25.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e25 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e25[i + 2] = arr[i];
-				}
-				_e25[0] = p;
-				_e25[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e25[k + 2] = v;
+			_e25[(_e25[0] | 0) * 21 + 19 + 2] = v;
 			var v = (colorC >> 8 & 255) / 255;
-			var k = (_e25[0] | 0) * 21 + 18;
-			if(k > _e25.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e25[0];
-				var s = _e25[1];
-				var sInt = _e25[1] | 0;
-				var arr = _e25.subarray(2,_e25.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e25 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e25[i + 2] = arr[i];
-				}
-				_e25[0] = p;
-				_e25[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e25[k + 2] = v;
+			_e25[(_e25[0] | 0) * 21 + 18 + 2] = v;
 			var v = (colorC >> 24 & 255) / 255;
-			var k = (_e25[0] | 0) * 21 + 20;
-			if(k > _e25.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e25[0];
-				var s = _e25[1];
-				var sInt = _e25[1] | 0;
-				var arr = _e25.subarray(2,_e25.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e25 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e25[i + 2] = arr[i];
-				}
-				_e25[0] = p;
-				_e25[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e25[k + 2] = v;
+			_e25[(_e25[0] | 0) * 21 + 20 + 2] = v;
 		}, colorTriangles : function(color,times) {
 			var _g = 0;
 			var _g1 = times;
@@ -18996,232 +16526,25 @@ trilateral3_nodule_PenColor.prototype = $extend(trilateral3_nodule_PenNodule.pro
 				var i = _g++;
 				hyperKitGL_io_FloatColorTriangles.set_redA(_e26,(color >> 16 & 255) / 255);
 				var v = (color & 255) / 255;
-				var k = (_e26[0] | 0) * 21 + 5;
-				if(k > _e26.length - 3) {
-					var l = Math.ceil(k * 2 + 2);
-					var p = _e26[0];
-					var s = _e26[1];
-					var sInt = _e26[1] | 0;
-					var arr = _e26.subarray(2,_e26.length);
-					var this1 = new Float32Array(l + 2);
-					var this2 = this1;
-					this2[0] = 0.;
-					this2[1] = 0.;
-					var this3 = this2;
-					_e26 = this3.subarray(2,this3.length);
-					var _g2 = 0;
-					var _g3 = sInt;
-					while(_g2 < _g3) {
-						var i1 = _g2++;
-						_e26[i1 + 2] = arr[i1];
-					}
-					_e26[0] = p;
-					_e26[1] = s;
-					haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-				}
-				_e26[k + 2] = v;
+				_e26[(_e26[0] | 0) * 21 + 5 + 2] = v;
 				var v1 = (color >> 8 & 255) / 255;
-				var k1 = (_e26[0] | 0) * 21 + 4;
-				if(k1 > _e26.length - 3) {
-					var l1 = Math.ceil(k1 * 2 + 2);
-					var p1 = _e26[0];
-					var s1 = _e26[1];
-					var sInt1 = _e26[1] | 0;
-					var arr1 = _e26.subarray(2,_e26.length);
-					var this4 = new Float32Array(l1 + 2);
-					var this5 = this4;
-					this5[0] = 0.;
-					this5[1] = 0.;
-					var this6 = this5;
-					_e26 = this6.subarray(2,this6.length);
-					var _g4 = 0;
-					var _g5 = sInt1;
-					while(_g4 < _g5) {
-						var i2 = _g4++;
-						_e26[i2 + 2] = arr1[i2];
-					}
-					_e26[0] = p1;
-					_e26[1] = s1;
-					haxe_Log.trace("resize now " + (l1 + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-				}
-				_e26[k1 + 2] = v1;
+				_e26[(_e26[0] | 0) * 21 + 4 + 2] = v1;
 				var v2 = (color >> 24 & 255) / 255;
-				var k2 = (_e26[0] | 0) * 21 + 6;
-				if(k2 > _e26.length - 3) {
-					var l2 = Math.ceil(k2 * 2 + 2);
-					var p2 = _e26[0];
-					var s2 = _e26[1];
-					var sInt2 = _e26[1] | 0;
-					var arr2 = _e26.subarray(2,_e26.length);
-					var this7 = new Float32Array(l2 + 2);
-					var this8 = this7;
-					this8[0] = 0.;
-					this8[1] = 0.;
-					var this9 = this8;
-					_e26 = this9.subarray(2,this9.length);
-					var _g6 = 0;
-					var _g7 = sInt2;
-					while(_g6 < _g7) {
-						var i3 = _g6++;
-						_e26[i3 + 2] = arr2[i3];
-					}
-					_e26[0] = p2;
-					_e26[1] = s2;
-					haxe_Log.trace("resize now " + (l2 + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-				}
-				_e26[k2 + 2] = v2;
+				_e26[(_e26[0] | 0) * 21 + 6 + 2] = v2;
 				hyperKitGL_io_FloatColorTriangles.set_redB(_e26,(color >> 16 & 255) / 255);
 				var v3 = (color & 255) / 255;
-				var k3 = (_e26[0] | 0) * 21 + 12;
-				if(k3 > _e26.length - 3) {
-					var l3 = Math.ceil(k3 * 2 + 2);
-					var p3 = _e26[0];
-					var s3 = _e26[1];
-					var sInt3 = _e26[1] | 0;
-					var arr3 = _e26.subarray(2,_e26.length);
-					var this10 = new Float32Array(l3 + 2);
-					var this11 = this10;
-					this11[0] = 0.;
-					this11[1] = 0.;
-					var this12 = this11;
-					_e26 = this12.subarray(2,this12.length);
-					var _g8 = 0;
-					var _g9 = sInt3;
-					while(_g8 < _g9) {
-						var i4 = _g8++;
-						_e26[i4 + 2] = arr3[i4];
-					}
-					_e26[0] = p3;
-					_e26[1] = s3;
-					haxe_Log.trace("resize now " + (l3 + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-				}
-				_e26[k3 + 2] = v3;
+				_e26[(_e26[0] | 0) * 21 + 12 + 2] = v3;
 				var v4 = (color >> 8 & 255) / 255;
-				var k4 = (_e26[0] | 0) * 21 + 11;
-				if(k4 > _e26.length - 3) {
-					var l4 = Math.ceil(k4 * 2 + 2);
-					var p4 = _e26[0];
-					var s4 = _e26[1];
-					var sInt4 = _e26[1] | 0;
-					var arr4 = _e26.subarray(2,_e26.length);
-					var this13 = new Float32Array(l4 + 2);
-					var this14 = this13;
-					this14[0] = 0.;
-					this14[1] = 0.;
-					var this15 = this14;
-					_e26 = this15.subarray(2,this15.length);
-					var _g10 = 0;
-					var _g11 = sInt4;
-					while(_g10 < _g11) {
-						var i5 = _g10++;
-						_e26[i5 + 2] = arr4[i5];
-					}
-					_e26[0] = p4;
-					_e26[1] = s4;
-					haxe_Log.trace("resize now " + (l4 + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-				}
-				_e26[k4 + 2] = v4;
+				_e26[(_e26[0] | 0) * 21 + 11 + 2] = v4;
 				var v5 = (color >> 24 & 255) / 255;
-				var k5 = (_e26[0] | 0) * 21 + 13;
-				if(k5 > _e26.length - 3) {
-					var l5 = Math.ceil(k5 * 2 + 2);
-					var p5 = _e26[0];
-					var s5 = _e26[1];
-					var sInt5 = _e26[1] | 0;
-					var arr5 = _e26.subarray(2,_e26.length);
-					var this16 = new Float32Array(l5 + 2);
-					var this17 = this16;
-					this17[0] = 0.;
-					this17[1] = 0.;
-					var this18 = this17;
-					_e26 = this18.subarray(2,this18.length);
-					var _g12 = 0;
-					var _g13 = sInt5;
-					while(_g12 < _g13) {
-						var i6 = _g12++;
-						_e26[i6 + 2] = arr5[i6];
-					}
-					_e26[0] = p5;
-					_e26[1] = s5;
-					haxe_Log.trace("resize now " + (l5 + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-				}
-				_e26[k5 + 2] = v5;
+				_e26[(_e26[0] | 0) * 21 + 13 + 2] = v5;
 				hyperKitGL_io_FloatColorTriangles.set_redC(_e26,(color >> 16 & 255) / 255);
 				var v6 = (color & 255) / 255;
-				var k6 = (_e26[0] | 0) * 21 + 19;
-				if(k6 > _e26.length - 3) {
-					var l6 = Math.ceil(k6 * 2 + 2);
-					var p6 = _e26[0];
-					var s6 = _e26[1];
-					var sInt6 = _e26[1] | 0;
-					var arr6 = _e26.subarray(2,_e26.length);
-					var this19 = new Float32Array(l6 + 2);
-					var this20 = this19;
-					this20[0] = 0.;
-					this20[1] = 0.;
-					var this21 = this20;
-					_e26 = this21.subarray(2,this21.length);
-					var _g14 = 0;
-					var _g15 = sInt6;
-					while(_g14 < _g15) {
-						var i7 = _g14++;
-						_e26[i7 + 2] = arr6[i7];
-					}
-					_e26[0] = p6;
-					_e26[1] = s6;
-					haxe_Log.trace("resize now " + (l6 + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-				}
-				_e26[k6 + 2] = v6;
+				_e26[(_e26[0] | 0) * 21 + 19 + 2] = v6;
 				var v7 = (color >> 8 & 255) / 255;
-				var k7 = (_e26[0] | 0) * 21 + 18;
-				if(k7 > _e26.length - 3) {
-					var l7 = Math.ceil(k7 * 2 + 2);
-					var p7 = _e26[0];
-					var s7 = _e26[1];
-					var sInt7 = _e26[1] | 0;
-					var arr7 = _e26.subarray(2,_e26.length);
-					var this22 = new Float32Array(l7 + 2);
-					var this23 = this22;
-					this23[0] = 0.;
-					this23[1] = 0.;
-					var this24 = this23;
-					_e26 = this24.subarray(2,this24.length);
-					var _g16 = 0;
-					var _g17 = sInt7;
-					while(_g16 < _g17) {
-						var i8 = _g16++;
-						_e26[i8 + 2] = arr7[i8];
-					}
-					_e26[0] = p7;
-					_e26[1] = s7;
-					haxe_Log.trace("resize now " + (l7 + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-				}
-				_e26[k7 + 2] = v7;
+				_e26[(_e26[0] | 0) * 21 + 18 + 2] = v7;
 				var v8 = (color >> 24 & 255) / 255;
-				var k8 = (_e26[0] | 0) * 21 + 20;
-				if(k8 > _e26.length - 3) {
-					var l8 = Math.ceil(k8 * 2 + 2);
-					var p8 = _e26[0];
-					var s8 = _e26[1];
-					var sInt8 = _e26[1] | 0;
-					var arr8 = _e26.subarray(2,_e26.length);
-					var this25 = new Float32Array(l8 + 2);
-					var this26 = this25;
-					this26[0] = 0.;
-					this26[1] = 0.;
-					var this27 = this26;
-					_e26 = this27.subarray(2,this27.length);
-					var _g18 = 0;
-					var _g19 = sInt8;
-					while(_g18 < _g19) {
-						var i9 = _g18++;
-						_e26[i9 + 2] = arr8[i9];
-					}
-					_e26[0] = p8;
-					_e26[1] = s8;
-					haxe_Log.trace("resize now " + (l8 + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-				}
-				_e26[k8 + 2] = v8;
+				_e26[(_e26[0] | 0) * 21 + 20 + 2] = v8;
 				var pos_ = _e26[0] + 1;
 				_e26[0] = pos_;
 				if(_e26[0] > _e26[1] - 1) {
@@ -19229,222 +16552,7 @@ trilateral3_nodule_PenColor.prototype = $extend(trilateral3_nodule_PenNodule.pro
 				}
 			}
 		}, getTriInt : function() {
-			var k = (_e27[0] | 0) * 21 + 6;
-			if(k > _e27.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e27[0];
-				var s = _e27[1];
-				var sInt = _e27[1] | 0;
-				var arr = _e27.subarray(2,_e27.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e27 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e27[i + 2] = arr[i];
-				}
-				_e27[0] = p;
-				_e27[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var _g = Math.round(_e27[k + 2] * 255) << 24 | Math.round(hyperKitGL_io_FloatColorTriangles.get_redA(_e27) * 255) << 16;
-			var k = (_e27[0] | 0) * 21 + 4;
-			if(k > _e27.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e27[0];
-				var s = _e27[1];
-				var sInt = _e27[1] | 0;
-				var arr = _e27.subarray(2,_e27.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e27 = this1.subarray(2,this1.length);
-				var _g1 = 0;
-				var _g2 = sInt;
-				while(_g1 < _g2) {
-					var i = _g1++;
-					_e27[i + 2] = arr[i];
-				}
-				_e27[0] = p;
-				_e27[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var _g1 = _g | Math.round(_e27[k + 2] * 255) << 8;
-			var k = (_e27[0] | 0) * 21 + 5;
-			if(k > _e27.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e27[0];
-				var s = _e27[1];
-				var sInt = _e27[1] | 0;
-				var arr = _e27.subarray(2,_e27.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e27 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g2 = sInt;
-				while(_g < _g2) {
-					var i = _g++;
-					_e27[i + 2] = arr[i];
-				}
-				_e27[0] = p;
-				_e27[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var _g = _g1 | Math.round(_e27[k + 2] * 255);
-			var k = (_e27[0] | 0) * 21 + 13;
-			if(k > _e27.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e27[0];
-				var s = _e27[1];
-				var sInt = _e27[1] | 0;
-				var arr = _e27.subarray(2,_e27.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e27 = this1.subarray(2,this1.length);
-				var _g1 = 0;
-				var _g2 = sInt;
-				while(_g1 < _g2) {
-					var i = _g1++;
-					_e27[i + 2] = arr[i];
-				}
-				_e27[0] = p;
-				_e27[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var _g1 = Math.round(_e27[k + 2] * 255) << 24 | Math.round(hyperKitGL_io_FloatColorTriangles.get_redB(_e27) * 255) << 16;
-			var k = (_e27[0] | 0) * 21 + 11;
-			if(k > _e27.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e27[0];
-				var s = _e27[1];
-				var sInt = _e27[1] | 0;
-				var arr = _e27.subarray(2,_e27.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e27 = this1.subarray(2,this1.length);
-				var _g2 = 0;
-				var _g3 = sInt;
-				while(_g2 < _g3) {
-					var i = _g2++;
-					_e27[i + 2] = arr[i];
-				}
-				_e27[0] = p;
-				_e27[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var _g2 = _g1 | Math.round(_e27[k + 2] * 255) << 8;
-			var k = (_e27[0] | 0) * 21 + 12;
-			if(k > _e27.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e27[0];
-				var s = _e27[1];
-				var sInt = _e27[1] | 0;
-				var arr = _e27.subarray(2,_e27.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e27 = this1.subarray(2,this1.length);
-				var _g1 = 0;
-				var _g3 = sInt;
-				while(_g1 < _g3) {
-					var i = _g1++;
-					_e27[i + 2] = arr[i];
-				}
-				_e27[0] = p;
-				_e27[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var _g1 = _g2 | Math.round(_e27[k + 2] * 255);
-			var k = (_e27[0] | 0) * 21 + 20;
-			if(k > _e27.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e27[0];
-				var s = _e27[1];
-				var sInt = _e27[1] | 0;
-				var arr = _e27.subarray(2,_e27.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e27 = this1.subarray(2,this1.length);
-				var _g2 = 0;
-				var _g3 = sInt;
-				while(_g2 < _g3) {
-					var i = _g2++;
-					_e27[i + 2] = arr[i];
-				}
-				_e27[0] = p;
-				_e27[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var paintAbstract = Math.round(_e27[k + 2] * 255) << 24 | Math.round(hyperKitGL_io_FloatColorTriangles.get_redC(_e27) * 255) << 16;
-			var k = (_e27[0] | 0) * 21 + 18;
-			if(k > _e27.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e27[0];
-				var s = _e27[1];
-				var sInt = _e27[1] | 0;
-				var arr = _e27.subarray(2,_e27.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e27 = this1.subarray(2,this1.length);
-				var _g2 = 0;
-				var _g3 = sInt;
-				while(_g2 < _g3) {
-					var i = _g2++;
-					_e27[i + 2] = arr[i];
-				}
-				_e27[0] = p;
-				_e27[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var paintAbstract1 = paintAbstract | Math.round(_e27[k + 2] * 255) << 8;
-			var k = (_e27[0] | 0) * 21 + 19;
-			if(k > _e27.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e27[0];
-				var s = _e27[1];
-				var sInt = _e27[1] | 0;
-				var arr = _e27.subarray(2,_e27.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e27 = this1.subarray(2,this1.length);
-				var _g2 = 0;
-				var _g3 = sInt;
-				while(_g2 < _g3) {
-					var i = _g2++;
-					_e27[i + 2] = arr[i];
-				}
-				_e27[0] = p;
-				_e27[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			return new trilateral3_structure_TriInt(_g,_g1,paintAbstract1 | Math.round(_e27[k + 2] * 255));
+			return new trilateral3_structure_TriInt(Math.round(_e27[(_e27[0] | 0) * 21 + 6 + 2] * 255) << 24 | Math.round(hyperKitGL_io_FloatColorTriangles.get_redA(_e27) * 255) << 16 | Math.round(_e27[(_e27[0] | 0) * 21 + 4 + 2] * 255) << 8 | Math.round(_e27[(_e27[0] | 0) * 21 + 5 + 2] * 255),Math.round(_e27[(_e27[0] | 0) * 21 + 13 + 2] * 255) << 24 | Math.round(hyperKitGL_io_FloatColorTriangles.get_redB(_e27) * 255) << 16 | Math.round(_e27[(_e27[0] | 0) * 21 + 11 + 2] * 255) << 8 | Math.round(_e27[(_e27[0] | 0) * 21 + 12 + 2] * 255),Math.round(_e27[(_e27[0] | 0) * 21 + 20 + 2] * 255) << 24 | Math.round(hyperKitGL_io_FloatColorTriangles.get_redC(_e27) * 255) << 16 | Math.round(_e27[(_e27[0] | 0) * 21 + 18 + 2] * 255) << 8 | Math.round(_e27[(_e27[0] | 0) * 21 + 19 + 2] * 255));
 		}, transform : function(m) {
 			trilateral3_geom_FlatColorTriangles.transform(_e28,m);
 		}, transformRange : function(m,startEnd) {
@@ -19493,28 +16601,6 @@ trilateral3_nodule_PenColor.prototype = $extend(trilateral3_nodule_PenNodule.pro
 				var _g1 = ending;
 				while(_g < _g1) {
 					var i = _g++;
-					if(i > _e37.length - 3) {
-						var l = Math.ceil(i * 2 + 2);
-						var p = _e37[0];
-						var s = _e37[1];
-						var sInt = _e37[1] | 0;
-						var arr = _e37.subarray(2,_e37.length);
-						var this1 = new Float32Array(l + 2);
-						var this2 = this1;
-						this2[0] = 0.;
-						this2[1] = 0.;
-						var this3 = this2;
-						_e37 = this3.subarray(2,this3.length);
-						var _g2 = 0;
-						var _g3 = sInt;
-						while(_g2 < _g3) {
-							var i1 = _g2++;
-							_e37[i1 + 2] = arr[i1];
-						}
-						_e37[0] = p;
-						_e37[1] = s;
-						haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-					}
 					temp[count] = _e37[i + 2];
 					++count;
 				}
@@ -19523,54 +16609,8 @@ trilateral3_nodule_PenColor.prototype = $extend(trilateral3_nodule_PenNodule.pro
 				var _g1 = starting;
 				while(_g < _g1) {
 					var i = _g++;
-					var k = ending - 1 - i;
-					var k1 = starting - 1 - i;
-					if(k1 > _e37.length - 3) {
-						var l = Math.ceil(k1 * 2 + 2);
-						var p = _e37[0];
-						var s = _e37[1];
-						var sInt = _e37[1] | 0;
-						var arr = _e37.subarray(2,_e37.length);
-						var this1 = new Float32Array(l + 2);
-						var this2 = this1;
-						this2[0] = 0.;
-						this2[1] = 0.;
-						var this3 = this2;
-						_e37 = this3.subarray(2,this3.length);
-						var _g2 = 0;
-						var _g3 = sInt;
-						while(_g2 < _g3) {
-							var i1 = _g2++;
-							_e37[i1 + 2] = arr[i1];
-						}
-						_e37[0] = p;
-						_e37[1] = s;
-						haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-					}
-					var v = _e37[k1 + 2];
-					if(k > _e37.length - 3) {
-						var l1 = Math.ceil(k * 2 + 2);
-						var p1 = _e37[0];
-						var s1 = _e37[1];
-						var sInt1 = _e37[1] | 0;
-						var arr1 = _e37.subarray(2,_e37.length);
-						var this4 = new Float32Array(l1 + 2);
-						var this5 = this4;
-						this5[0] = 0.;
-						this5[1] = 0.;
-						var this6 = this5;
-						_e37 = this6.subarray(2,this6.length);
-						var _g4 = 0;
-						var _g5 = sInt1;
-						while(_g4 < _g5) {
-							var i2 = _g4++;
-							_e37[i2 + 2] = arr1[i2];
-						}
-						_e37[0] = p1;
-						_e37[1] = s1;
-						haxe_Log.trace("resize now " + (l1 + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-					}
-					_e37[k + 2] = v;
+					var v = _e37[starting - 1 - i + 2];
+					_e37[ending - 1 - i + 2] = v;
 				}
 				count = 0;
 				var _g = 0;
@@ -19578,28 +16618,6 @@ trilateral3_nodule_PenColor.prototype = $extend(trilateral3_nodule_PenNodule.pro
 				while(_g < _g1) {
 					var i = _g++;
 					var v = temp[count - 2];
-					if(i > _e37.length - 3) {
-						var l = Math.ceil(i * 2 + 2);
-						var p = _e37[0];
-						var s = _e37[1];
-						var sInt = _e37[1] | 0;
-						var arr = _e37.subarray(2,_e37.length);
-						var this1 = new Float32Array(l + 2);
-						var this2 = this1;
-						this2[0] = 0.;
-						this2[1] = 0.;
-						var this3 = this2;
-						_e37 = this3.subarray(2,this3.length);
-						var _g2 = 0;
-						var _g3 = sInt;
-						while(_g2 < _g3) {
-							var i1 = _g2++;
-							_e37[i1 + 2] = arr[i1];
-						}
-						_e37[0] = p;
-						_e37[1] = s;
-						haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-					}
 					_e37[i + 2] = v;
 					++count;
 				}
@@ -19619,102 +16637,10 @@ trilateral3_nodule_PenColor.prototype = $extend(trilateral3_nodule_PenNodule.pro
 				var _g1 = totalLen;
 				while(_g < _g1) {
 					var i = _g++;
-					var k = start0 + i;
-					if(k > _e39.length - 3) {
-						var l = Math.ceil(k * 2 + 2);
-						var p = _e39[0];
-						var s = _e39[1];
-						var sInt = _e39[1] | 0;
-						var arr = _e39.subarray(2,_e39.length);
-						var this1 = new Float32Array(l + 2);
-						var this2 = this1;
-						this2[0] = 0.;
-						this2[1] = 0.;
-						var this3 = this2;
-						_e39 = this3.subarray(2,this3.length);
-						var _g2 = 0;
-						var _g3 = sInt;
-						while(_g2 < _g3) {
-							var i1 = _g2++;
-							_e39[i1 + 2] = arr[i1];
-						}
-						_e39[0] = p;
-						_e39[1] = s;
-						haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-					}
-					temp0 = _e39[k + 2];
-					var k1 = start1 + i;
-					if(k1 > _e39.length - 3) {
-						var l1 = Math.ceil(k1 * 2 + 2);
-						var p1 = _e39[0];
-						var s1 = _e39[1];
-						var sInt1 = _e39[1] | 0;
-						var arr1 = _e39.subarray(2,_e39.length);
-						var this4 = new Float32Array(l1 + 2);
-						var this5 = this4;
-						this5[0] = 0.;
-						this5[1] = 0.;
-						var this6 = this5;
-						_e39 = this6.subarray(2,this6.length);
-						var _g4 = 0;
-						var _g5 = sInt1;
-						while(_g4 < _g5) {
-							var i2 = _g4++;
-							_e39[i2 + 2] = arr1[i2];
-						}
-						_e39[0] = p1;
-						_e39[1] = s1;
-						haxe_Log.trace("resize now " + (l1 + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-					}
-					temp1 = _e39[k1 + 2];
-					var k2 = start0 + i;
-					if(k2 > _e39.length - 3) {
-						var l2 = Math.ceil(k2 * 2 + 2);
-						var p2 = _e39[0];
-						var s2 = _e39[1];
-						var sInt2 = _e39[1] | 0;
-						var arr2 = _e39.subarray(2,_e39.length);
-						var this7 = new Float32Array(l2 + 2);
-						var this8 = this7;
-						this8[0] = 0.;
-						this8[1] = 0.;
-						var this9 = this8;
-						_e39 = this9.subarray(2,this9.length);
-						var _g6 = 0;
-						var _g7 = sInt2;
-						while(_g6 < _g7) {
-							var i3 = _g6++;
-							_e39[i3 + 2] = arr2[i3];
-						}
-						_e39[0] = p2;
-						_e39[1] = s2;
-						haxe_Log.trace("resize now " + (l2 + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-					}
-					_e39[k2 + 2] = temp1;
-					var k3 = start1 + i;
-					if(k3 > _e39.length - 3) {
-						var l3 = Math.ceil(k3 * 2 + 2);
-						var p3 = _e39[0];
-						var s3 = _e39[1];
-						var sInt3 = _e39[1] | 0;
-						var arr3 = _e39.subarray(2,_e39.length);
-						var this10 = new Float32Array(l3 + 2);
-						var this11 = this10;
-						this11[0] = 0.;
-						this11[1] = 0.;
-						var this12 = this11;
-						_e39 = this12.subarray(2,this12.length);
-						var _g8 = 0;
-						var _g9 = sInt3;
-						while(_g8 < _g9) {
-							var i4 = _g8++;
-							_e39[i4 + 2] = arr3[i4];
-						}
-						_e39[0] = p3;
-						_e39[1] = s3;
-						haxe_Log.trace("resize now " + (l3 + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-					}
-					_e39[k3 + 2] = temp0;
+					temp0 = _e39[start0 + i + 2];
+					temp1 = _e39[start1 + i + 2];
+					_e39[start0 + i + 2] = temp1;
+					_e39[start1 + i + 2] = temp0;
 				}
 				return true;
 			} else {
@@ -19881,880 +16807,37 @@ trilateral3_nodule_PenTexture.prototype = $extend(trilateral3_nodule_PenNodule.p
 		var triangleAbstractUV = { moveDelta : function(du,dv) {
 			hyperKitGL_io_FloatColorTrianglesUV.moveDeltaUV(_e17,du,dv);
 		}, get_u : function() {
-			var k = (_e18[0] | 0) * 27 + 7;
-			if(k > _e18.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e18[0];
-				var s = _e18[1];
-				var sInt = _e18[1] | 0;
-				var arr = _e18.subarray(2,_e18.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e18 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e18[i + 2] = arr[i];
-				}
-				_e18[0] = p;
-				_e18[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var triangleAbstractUV = _e18[k + 2];
-			var k = (_e18[0] | 0) * 27 + 16;
-			if(k > _e18.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e18[0];
-				var s = _e18[1];
-				var sInt = _e18[1] | 0;
-				var arr = _e18.subarray(2,_e18.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e18 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e18[i + 2] = arr[i];
-				}
-				_e18[0] = p;
-				_e18[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var triangleAbstractUV1 = Math.min(triangleAbstractUV,_e18[k + 2]);
-			var k = (_e18[0] | 0) * 27 + 25;
-			if(k > _e18.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e18[0];
-				var s = _e18[1];
-				var sInt = _e18[1] | 0;
-				var arr = _e18.subarray(2,_e18.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e18 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e18[i + 2] = arr[i];
-				}
-				_e18[0] = p;
-				_e18[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			return Math.min(triangleAbstractUV1,_e18[k + 2]);
+			return Math.min(Math.min(_e18[(_e18[0] | 0) * 27 + 7 + 2],_e18[(_e18[0] | 0) * 27 + 16 + 2]),_e18[(_e18[0] | 0) * 27 + 25 + 2]);
 		}, set_u : function(u_) {
-			var k = (_e19[0] | 0) * 27 + 7;
-			if(k > _e19.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e19[0];
-				var s = _e19[1];
-				var sInt = _e19[1] | 0;
-				var arr = _e19.subarray(2,_e19.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e19 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e19[i + 2] = arr[i];
-				}
-				_e19[0] = p;
-				_e19[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var du = _e19[k + 2];
-			var k = (_e19[0] | 0) * 27 + 16;
-			if(k > _e19.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e19[0];
-				var s = _e19[1];
-				var sInt = _e19[1] | 0;
-				var arr = _e19.subarray(2,_e19.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e19 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e19[i + 2] = arr[i];
-				}
-				_e19[0] = p;
-				_e19[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var du1 = Math.min(du,_e19[k + 2]);
-			var k = (_e19[0] | 0) * 27 + 25;
-			if(k > _e19.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e19[0];
-				var s = _e19[1];
-				var sInt = _e19[1] | 0;
-				var arr = _e19.subarray(2,_e19.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e19 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e19[i + 2] = arr[i];
-				}
-				_e19[0] = p;
-				_e19[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var du = u_ - Math.min(du1,_e19[k + 2]);
-			var k = (_e19[0] | 0) * 27 + 7;
-			if(k > _e19.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e19[0];
-				var s = _e19[1];
-				var sInt = _e19[1] | 0;
-				var arr = _e19.subarray(2,_e19.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e19 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e19[i + 2] = arr[i];
-				}
-				_e19[0] = p;
-				_e19[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var v = _e19[k + 2] + du;
-			var k = (_e19[0] | 0) * 27 + 7;
-			if(k > _e19.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e19[0];
-				var s = _e19[1];
-				var sInt = _e19[1] | 0;
-				var arr = _e19.subarray(2,_e19.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e19 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e19[i + 2] = arr[i];
-				}
-				_e19[0] = p;
-				_e19[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e19[k + 2] = v;
-			var k = (_e19[0] | 0) * 27 + 16;
-			if(k > _e19.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e19[0];
-				var s = _e19[1];
-				var sInt = _e19[1] | 0;
-				var arr = _e19.subarray(2,_e19.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e19 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e19[i + 2] = arr[i];
-				}
-				_e19[0] = p;
-				_e19[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var v = _e19[k + 2] + du;
-			var k = (_e19[0] | 0) * 27 + 16;
-			if(k > _e19.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e19[0];
-				var s = _e19[1];
-				var sInt = _e19[1] | 0;
-				var arr = _e19.subarray(2,_e19.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e19 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e19[i + 2] = arr[i];
-				}
-				_e19[0] = p;
-				_e19[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e19[k + 2] = v;
-			var k = (_e19[0] | 0) * 27 + 25;
-			if(k > _e19.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e19[0];
-				var s = _e19[1];
-				var sInt = _e19[1] | 0;
-				var arr = _e19.subarray(2,_e19.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e19 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e19[i + 2] = arr[i];
-				}
-				_e19[0] = p;
-				_e19[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var v = _e19[k + 2] + du;
-			var k = (_e19[0] | 0) * 27 + 25;
-			if(k > _e19.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e19[0];
-				var s = _e19[1];
-				var sInt = _e19[1] | 0;
-				var arr = _e19.subarray(2,_e19.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e19 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e19[i + 2] = arr[i];
-				}
-				_e19[0] = p;
-				_e19[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e19[k + 2] = v;
+			var du = u_ - Math.min(Math.min(_e19[(_e19[0] | 0) * 27 + 7 + 2],_e19[(_e19[0] | 0) * 27 + 16 + 2]),_e19[(_e19[0] | 0) * 27 + 25 + 2]);
+			var v = _e19[(_e19[0] | 0) * 27 + 7 + 2] + du;
+			_e19[(_e19[0] | 0) * 27 + 7 + 2] = v;
+			var v = _e19[(_e19[0] | 0) * 27 + 16 + 2] + du;
+			_e19[(_e19[0] | 0) * 27 + 16 + 2] = v;
+			var v = _e19[(_e19[0] | 0) * 27 + 25 + 2] + du;
+			_e19[(_e19[0] | 0) * 27 + 25 + 2] = v;
 			return u_;
 		}, get_v : function() {
-			var k = (_e20[0] | 0) * 27 + 8;
-			if(k > _e20.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e20[0];
-				var s = _e20[1];
-				var sInt = _e20[1] | 0;
-				var arr = _e20.subarray(2,_e20.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e20 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e20[i + 2] = arr[i];
-				}
-				_e20[0] = p;
-				_e20[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var triangleAbstractUV = _e20[k + 2];
-			var k = (_e20[0] | 0) * 27 + 17;
-			if(k > _e20.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e20[0];
-				var s = _e20[1];
-				var sInt = _e20[1] | 0;
-				var arr = _e20.subarray(2,_e20.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e20 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e20[i + 2] = arr[i];
-				}
-				_e20[0] = p;
-				_e20[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var triangleAbstractUV1 = Math.min(triangleAbstractUV,_e20[k + 2]);
-			var k = (_e20[0] | 0) * 27 + 26;
-			if(k > _e20.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e20[0];
-				var s = _e20[1];
-				var sInt = _e20[1] | 0;
-				var arr = _e20.subarray(2,_e20.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e20 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e20[i + 2] = arr[i];
-				}
-				_e20[0] = p;
-				_e20[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			return Math.min(triangleAbstractUV1,_e20[k + 2]);
+			return Math.min(Math.min(_e20[(_e20[0] | 0) * 27 + 8 + 2],_e20[(_e20[0] | 0) * 27 + 17 + 2]),_e20[(_e20[0] | 0) * 27 + 26 + 2]);
 		}, set_v : function(v_) {
-			var k = (_e21[0] | 0) * 27 + 8;
-			if(k > _e21.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e21[0];
-				var s = _e21[1];
-				var sInt = _e21[1] | 0;
-				var arr = _e21.subarray(2,_e21.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e21 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e21[i + 2] = arr[i];
-				}
-				_e21[0] = p;
-				_e21[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var dv = _e21[k + 2];
-			var k = (_e21[0] | 0) * 27 + 17;
-			if(k > _e21.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e21[0];
-				var s = _e21[1];
-				var sInt = _e21[1] | 0;
-				var arr = _e21.subarray(2,_e21.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e21 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e21[i + 2] = arr[i];
-				}
-				_e21[0] = p;
-				_e21[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var dv1 = Math.min(dv,_e21[k + 2]);
-			var k = (_e21[0] | 0) * 27 + 26;
-			if(k > _e21.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e21[0];
-				var s = _e21[1];
-				var sInt = _e21[1] | 0;
-				var arr = _e21.subarray(2,_e21.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e21 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e21[i + 2] = arr[i];
-				}
-				_e21[0] = p;
-				_e21[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var dv = v_ - Math.min(dv1,_e21[k + 2]);
-			var k = (_e21[0] | 0) * 27 + 8;
-			if(k > _e21.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e21[0];
-				var s = _e21[1];
-				var sInt = _e21[1] | 0;
-				var arr = _e21.subarray(2,_e21.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e21 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e21[i + 2] = arr[i];
-				}
-				_e21[0] = p;
-				_e21[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var v = _e21[k + 2] + dv;
-			var k = (_e21[0] | 0) * 27 + 8;
-			if(k > _e21.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e21[0];
-				var s = _e21[1];
-				var sInt = _e21[1] | 0;
-				var arr = _e21.subarray(2,_e21.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e21 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e21[i + 2] = arr[i];
-				}
-				_e21[0] = p;
-				_e21[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e21[k + 2] = v;
-			var k = (_e21[0] | 0) * 27 + 17;
-			if(k > _e21.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e21[0];
-				var s = _e21[1];
-				var sInt = _e21[1] | 0;
-				var arr = _e21.subarray(2,_e21.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e21 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e21[i + 2] = arr[i];
-				}
-				_e21[0] = p;
-				_e21[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var v = _e21[k + 2] + dv;
-			var k = (_e21[0] | 0) * 27 + 17;
-			if(k > _e21.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e21[0];
-				var s = _e21[1];
-				var sInt = _e21[1] | 0;
-				var arr = _e21.subarray(2,_e21.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e21 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e21[i + 2] = arr[i];
-				}
-				_e21[0] = p;
-				_e21[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e21[k + 2] = v;
-			var k = (_e21[0] | 0) * 27 + 26;
-			if(k > _e21.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e21[0];
-				var s = _e21[1];
-				var sInt = _e21[1] | 0;
-				var arr = _e21.subarray(2,_e21.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e21 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e21[i + 2] = arr[i];
-				}
-				_e21[0] = p;
-				_e21[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var v = _e21[k + 2] + dv;
-			var k = (_e21[0] | 0) * 27 + 26;
-			if(k > _e21.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e21[0];
-				var s = _e21[1];
-				var sInt = _e21[1] | 0;
-				var arr = _e21.subarray(2,_e21.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e21 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e21[i + 2] = arr[i];
-				}
-				_e21[0] = p;
-				_e21[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e21[k + 2] = v;
+			var dv = v_ - Math.min(Math.min(_e21[(_e21[0] | 0) * 27 + 8 + 2],_e21[(_e21[0] | 0) * 27 + 17 + 2]),_e21[(_e21[0] | 0) * 27 + 26 + 2]);
+			var v = _e21[(_e21[0] | 0) * 27 + 8 + 2] + dv;
+			_e21[(_e21[0] | 0) * 27 + 8 + 2] = v;
+			var v = _e21[(_e21[0] | 0) * 27 + 17 + 2] + dv;
+			_e21[(_e21[0] | 0) * 27 + 17 + 2] = v;
+			var v = _e21[(_e21[0] | 0) * 27 + 26 + 2] + dv;
+			_e21[(_e21[0] | 0) * 27 + 26 + 2] = v;
 			return v_;
 		}, get_bottomV : function() {
-			var k = (_e22[0] | 0) * 27 + 8;
-			if(k > _e22.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e22[0];
-				var s = _e22[1];
-				var sInt = _e22[1] | 0;
-				var arr = _e22.subarray(2,_e22.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e22 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e22[i + 2] = arr[i];
-				}
-				_e22[0] = p;
-				_e22[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var triangleAbstractUV = _e22[k + 2];
-			var k = (_e22[0] | 0) * 27 + 17;
-			if(k > _e22.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e22[0];
-				var s = _e22[1];
-				var sInt = _e22[1] | 0;
-				var arr = _e22.subarray(2,_e22.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e22 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e22[i + 2] = arr[i];
-				}
-				_e22[0] = p;
-				_e22[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var triangleAbstractUV1 = Math.max(triangleAbstractUV,_e22[k + 2]);
-			var k = (_e22[0] | 0) * 27 + 26;
-			if(k > _e22.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e22[0];
-				var s = _e22[1];
-				var sInt = _e22[1] | 0;
-				var arr = _e22.subarray(2,_e22.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e22 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e22[i + 2] = arr[i];
-				}
-				_e22[0] = p;
-				_e22[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			return Math.max(triangleAbstractUV1,_e22[k + 2]);
+			return Math.max(Math.max(_e22[(_e22[0] | 0) * 27 + 8 + 2],_e22[(_e22[0] | 0) * 27 + 17 + 2]),_e22[(_e22[0] | 0) * 27 + 26 + 2]);
 		}, get_rightU : function() {
-			var k = (_e23[0] | 0) * 27 + 7;
-			if(k > _e23.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e23[0];
-				var s = _e23[1];
-				var sInt = _e23[1] | 0;
-				var arr = _e23.subarray(2,_e23.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e23 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e23[i + 2] = arr[i];
-				}
-				_e23[0] = p;
-				_e23[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var triangleAbstractUV = _e23[k + 2];
-			var k = (_e23[0] | 0) * 27 + 16;
-			if(k > _e23.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e23[0];
-				var s = _e23[1];
-				var sInt = _e23[1] | 0;
-				var arr = _e23.subarray(2,_e23.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e23 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e23[i + 2] = arr[i];
-				}
-				_e23[0] = p;
-				_e23[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var triangleAbstractUV1 = Math.max(triangleAbstractUV,_e23[k + 2]);
-			var k = (_e23[0] | 0) * 27 + 25;
-			if(k > _e23.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e23[0];
-				var s = _e23[1];
-				var sInt = _e23[1] | 0;
-				var arr = _e23.subarray(2,_e23.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e23 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e23[i + 2] = arr[i];
-				}
-				_e23[0] = p;
-				_e23[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			return Math.max(triangleAbstractUV1,_e23[k + 2]);
+			return Math.max(Math.max(_e23[(_e23[0] | 0) * 27 + 7 + 2],_e23[(_e23[0] | 0) * 27 + 16 + 2]),_e23[(_e23[0] | 0) * 27 + 25 + 2]);
 		}, triangleUV : function(uA_,vA_,uB_,vB_,uC_,vC_,windAdjust_) {
 			return hyperKitGL_io_FloatColorTrianglesUV.triangleUV(_e24,uA_,vA_,uB_,vB_,uC_,vC_,windAdjust_);
 		}, getTriangleUV : function() {
-			var k = (_e25[0] | 0) * 27 + 7;
-			if(k > _e25.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e25[0];
-				var s = _e25[1];
-				var sInt = _e25[1] | 0;
-				var arr = _e25.subarray(2,_e25.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e25 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e25[i + 2] = arr[i];
-				}
-				_e25[0] = p;
-				_e25[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var _g = _e25[k + 2];
-			var k = (_e25[0] | 0) * 27 + 8;
-			if(k > _e25.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e25[0];
-				var s = _e25[1];
-				var sInt = _e25[1] | 0;
-				var arr = _e25.subarray(2,_e25.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e25 = this1.subarray(2,this1.length);
-				var _g1 = 0;
-				var _g2 = sInt;
-				while(_g1 < _g2) {
-					var i = _g1++;
-					_e25[i + 2] = arr[i];
-				}
-				_e25[0] = p;
-				_e25[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var ta = new trilateral3_matrix_UV(_g,_e25[k + 2]);
-			var k = (_e25[0] | 0) * 27 + 16;
-			if(k > _e25.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e25[0];
-				var s = _e25[1];
-				var sInt = _e25[1] | 0;
-				var arr = _e25.subarray(2,_e25.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e25 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e25[i + 2] = arr[i];
-				}
-				_e25[0] = p;
-				_e25[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var _g = _e25[k + 2];
-			var k = (_e25[0] | 0) * 27 + 17;
-			if(k > _e25.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e25[0];
-				var s = _e25[1];
-				var sInt = _e25[1] | 0;
-				var arr = _e25.subarray(2,_e25.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e25 = this1.subarray(2,this1.length);
-				var _g1 = 0;
-				var _g2 = sInt;
-				while(_g1 < _g2) {
-					var i = _g1++;
-					_e25[i + 2] = arr[i];
-				}
-				_e25[0] = p;
-				_e25[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var tb = new trilateral3_matrix_UV(_g,_e25[k + 2]);
-			var k = (_e25[0] | 0) * 27 + 25;
-			if(k > _e25.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e25[0];
-				var s = _e25[1];
-				var sInt = _e25[1] | 0;
-				var arr = _e25.subarray(2,_e25.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e25 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e25[i + 2] = arr[i];
-				}
-				_e25[0] = p;
-				_e25[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var _g = _e25[k + 2];
-			var k = (_e25[0] | 0) * 27 + 26;
-			if(k > _e25.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e25[0];
-				var s = _e25[1];
-				var sInt = _e25[1] | 0;
-				var arr = _e25.subarray(2,_e25.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e25 = this1.subarray(2,this1.length);
-				var _g1 = 0;
-				var _g2 = sInt;
-				while(_g1 < _g2) {
-					var i = _g1++;
-					_e25[i + 2] = arr[i];
-				}
-				_e25[0] = p;
-				_e25[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var tc = new trilateral3_matrix_UV(_g,_e25[k + 2]);
+			var ta = new trilateral3_matrix_UV(_e25[(_e25[0] | 0) * 27 + 7 + 2],_e25[(_e25[0] | 0) * 27 + 8 + 2]);
+			var tb = new trilateral3_matrix_UV(_e25[(_e25[0] | 0) * 27 + 16 + 2],_e25[(_e25[0] | 0) * 27 + 17 + 2]);
+			var tc = new trilateral3_matrix_UV(_e25[(_e25[0] | 0) * 27 + 25 + 2],_e25[(_e25[0] | 0) * 27 + 26 + 2]);
 			return new trilateral3_structure_TriangleUV(ta,tb,tc);
 		}};
 		var _e26 = t;
@@ -20767,686 +16850,59 @@ trilateral3_nodule_PenTexture.prototype = $extend(trilateral3_nodule_PenNodule.p
 		var color3Abstract = { set_argb : function(col) {
 			hyperKitGL_io_FloatColorTrianglesUV.set_redA(_e26,(col >> 16 & 255) / 255);
 			var v = (col & 255) / 255;
-			var k = (_e26[0] | 0) * 27 + 5;
-			if(k > _e26.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e26[0];
-				var s = _e26[1];
-				var sInt = _e26[1] | 0;
-				var arr = _e26.subarray(2,_e26.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e26 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e26[i + 2] = arr[i];
-				}
-				_e26[0] = p;
-				_e26[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e26[k + 2] = v;
+			_e26[(_e26[0] | 0) * 27 + 5 + 2] = v;
 			var v = (col >> 8 & 255) / 255;
-			var k = (_e26[0] | 0) * 27 + 4;
-			if(k > _e26.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e26[0];
-				var s = _e26[1];
-				var sInt = _e26[1] | 0;
-				var arr = _e26.subarray(2,_e26.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e26 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e26[i + 2] = arr[i];
-				}
-				_e26[0] = p;
-				_e26[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e26[k + 2] = v;
+			_e26[(_e26[0] | 0) * 27 + 4 + 2] = v;
 			var v = (col >> 24 & 255) / 255;
-			var k = (_e26[0] | 0) * 27 + 6;
-			if(k > _e26.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e26[0];
-				var s = _e26[1];
-				var sInt = _e26[1] | 0;
-				var arr = _e26.subarray(2,_e26.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e26 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e26[i + 2] = arr[i];
-				}
-				_e26[0] = p;
-				_e26[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e26[k + 2] = v;
+			_e26[(_e26[0] | 0) * 27 + 6 + 2] = v;
 			hyperKitGL_io_FloatColorTrianglesUV.set_redB(_e26,(col >> 16 & 255) / 255);
 			var v = (col & 255) / 255;
-			var k = (_e26[0] | 0) * 27 + 14;
-			if(k > _e26.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e26[0];
-				var s = _e26[1];
-				var sInt = _e26[1] | 0;
-				var arr = _e26.subarray(2,_e26.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e26 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e26[i + 2] = arr[i];
-				}
-				_e26[0] = p;
-				_e26[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e26[k + 2] = v;
+			_e26[(_e26[0] | 0) * 27 + 14 + 2] = v;
 			var v = (col >> 8 & 255) / 255;
-			var k = (_e26[0] | 0) * 27 + 13;
-			if(k > _e26.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e26[0];
-				var s = _e26[1];
-				var sInt = _e26[1] | 0;
-				var arr = _e26.subarray(2,_e26.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e26 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e26[i + 2] = arr[i];
-				}
-				_e26[0] = p;
-				_e26[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e26[k + 2] = v;
+			_e26[(_e26[0] | 0) * 27 + 13 + 2] = v;
 			var v = (col >> 24 & 255) / 255;
-			var k = (_e26[0] | 0) * 27 + 15;
-			if(k > _e26.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e26[0];
-				var s = _e26[1];
-				var sInt = _e26[1] | 0;
-				var arr = _e26.subarray(2,_e26.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e26 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e26[i + 2] = arr[i];
-				}
-				_e26[0] = p;
-				_e26[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e26[k + 2] = v;
+			_e26[(_e26[0] | 0) * 27 + 15 + 2] = v;
 			hyperKitGL_io_FloatColorTrianglesUV.set_redC(_e26,(col >> 16 & 255) / 255);
 			var v = (col & 255) / 255;
-			var k = (_e26[0] | 0) * 27 + 23;
-			if(k > _e26.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e26[0];
-				var s = _e26[1];
-				var sInt = _e26[1] | 0;
-				var arr = _e26.subarray(2,_e26.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e26 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e26[i + 2] = arr[i];
-				}
-				_e26[0] = p;
-				_e26[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e26[k + 2] = v;
+			_e26[(_e26[0] | 0) * 27 + 23 + 2] = v;
 			var v = (col >> 8 & 255) / 255;
-			var k = (_e26[0] | 0) * 27 + 22;
-			if(k > _e26.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e26[0];
-				var s = _e26[1];
-				var sInt = _e26[1] | 0;
-				var arr = _e26.subarray(2,_e26.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e26 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e26[i + 2] = arr[i];
-				}
-				_e26[0] = p;
-				_e26[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e26[k + 2] = v;
+			_e26[(_e26[0] | 0) * 27 + 22 + 2] = v;
 			var v = (col >> 24 & 255) / 255;
-			var k = (_e26[0] | 0) * 27 + 24;
-			if(k > _e26.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e26[0];
-				var s = _e26[1];
-				var sInt = _e26[1] | 0;
-				var arr = _e26.subarray(2,_e26.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e26 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e26[i + 2] = arr[i];
-				}
-				_e26[0] = p;
-				_e26[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e26[k + 2] = v;
+			_e26[(_e26[0] | 0) * 27 + 24 + 2] = v;
 			return col;
 		}, set_argbA : function(col) {
 			hyperKitGL_io_FloatColorTrianglesUV.set_redA(_e27,(col >> 16 & 255) / 255);
 			var v = (col & 255) / 255;
-			var k = (_e27[0] | 0) * 27 + 5;
-			if(k > _e27.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e27[0];
-				var s = _e27[1];
-				var sInt = _e27[1] | 0;
-				var arr = _e27.subarray(2,_e27.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e27 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e27[i + 2] = arr[i];
-				}
-				_e27[0] = p;
-				_e27[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e27[k + 2] = v;
+			_e27[(_e27[0] | 0) * 27 + 5 + 2] = v;
 			var v = (col >> 8 & 255) / 255;
-			var k = (_e27[0] | 0) * 27 + 4;
-			if(k > _e27.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e27[0];
-				var s = _e27[1];
-				var sInt = _e27[1] | 0;
-				var arr = _e27.subarray(2,_e27.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e27 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e27[i + 2] = arr[i];
-				}
-				_e27[0] = p;
-				_e27[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e27[k + 2] = v;
+			_e27[(_e27[0] | 0) * 27 + 4 + 2] = v;
 			var v = (col >> 24 & 255) / 255;
-			var k = (_e27[0] | 0) * 27 + 6;
-			if(k > _e27.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e27[0];
-				var s = _e27[1];
-				var sInt = _e27[1] | 0;
-				var arr = _e27.subarray(2,_e27.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e27 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e27[i + 2] = arr[i];
-				}
-				_e27[0] = p;
-				_e27[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e27[k + 2] = v;
+			_e27[(_e27[0] | 0) * 27 + 6 + 2] = v;
 			return col;
 		}, get_argbA : function() {
-			var k = (_e28[0] | 0) * 27 + 6;
-			if(k > _e28.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e28[0];
-				var s = _e28[1];
-				var sInt = _e28[1] | 0;
-				var arr = _e28.subarray(2,_e28.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e28 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e28[i + 2] = arr[i];
-				}
-				_e28[0] = p;
-				_e28[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var color3Abstract = Math.round(_e28[k + 2] * 255) << 24 | Math.round(hyperKitGL_io_FloatColorTrianglesUV.get_redA(_e28) * 255) << 16;
-			var k = (_e28[0] | 0) * 27 + 4;
-			if(k > _e28.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e28[0];
-				var s = _e28[1];
-				var sInt = _e28[1] | 0;
-				var arr = _e28.subarray(2,_e28.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e28 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e28[i + 2] = arr[i];
-				}
-				_e28[0] = p;
-				_e28[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var color3Abstract1 = color3Abstract | Math.round(_e28[k + 2] * 255) << 8;
-			var k = (_e28[0] | 0) * 27 + 5;
-			if(k > _e28.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e28[0];
-				var s = _e28[1];
-				var sInt = _e28[1] | 0;
-				var arr = _e28.subarray(2,_e28.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e28 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e28[i + 2] = arr[i];
-				}
-				_e28[0] = p;
-				_e28[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			return color3Abstract1 | Math.round(_e28[k + 2] * 255);
+			return Math.round(_e28[(_e28[0] | 0) * 27 + 6 + 2] * 255) << 24 | Math.round(hyperKitGL_io_FloatColorTrianglesUV.get_redA(_e28) * 255) << 16 | Math.round(_e28[(_e28[0] | 0) * 27 + 4 + 2] * 255) << 8 | Math.round(_e28[(_e28[0] | 0) * 27 + 5 + 2] * 255);
 		}, set_argbB : function(col) {
 			hyperKitGL_io_FloatColorTrianglesUV.set_redB(_e29,(col >> 16 & 255) / 255);
 			var v = (col & 255) / 255;
-			var k = (_e29[0] | 0) * 27 + 14;
-			if(k > _e29.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e29[0];
-				var s = _e29[1];
-				var sInt = _e29[1] | 0;
-				var arr = _e29.subarray(2,_e29.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e29 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e29[i + 2] = arr[i];
-				}
-				_e29[0] = p;
-				_e29[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e29[k + 2] = v;
+			_e29[(_e29[0] | 0) * 27 + 14 + 2] = v;
 			var v = (col >> 8 & 255) / 255;
-			var k = (_e29[0] | 0) * 27 + 13;
-			if(k > _e29.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e29[0];
-				var s = _e29[1];
-				var sInt = _e29[1] | 0;
-				var arr = _e29.subarray(2,_e29.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e29 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e29[i + 2] = arr[i];
-				}
-				_e29[0] = p;
-				_e29[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e29[k + 2] = v;
+			_e29[(_e29[0] | 0) * 27 + 13 + 2] = v;
 			var v = (col >> 24 & 255) / 255;
-			var k = (_e29[0] | 0) * 27 + 15;
-			if(k > _e29.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e29[0];
-				var s = _e29[1];
-				var sInt = _e29[1] | 0;
-				var arr = _e29.subarray(2,_e29.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e29 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e29[i + 2] = arr[i];
-				}
-				_e29[0] = p;
-				_e29[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e29[k + 2] = v;
+			_e29[(_e29[0] | 0) * 27 + 15 + 2] = v;
 			return col;
 		}, get_argbB : function() {
-			var k = (_e30[0] | 0) * 27 + 15;
-			if(k > _e30.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e30[0];
-				var s = _e30[1];
-				var sInt = _e30[1] | 0;
-				var arr = _e30.subarray(2,_e30.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e30 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e30[i + 2] = arr[i];
-				}
-				_e30[0] = p;
-				_e30[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var color3Abstract = Math.round(_e30[k + 2] * 255) << 24 | Math.round(hyperKitGL_io_FloatColorTrianglesUV.get_redB(_e30) * 255) << 16;
-			var k = (_e30[0] | 0) * 27 + 13;
-			if(k > _e30.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e30[0];
-				var s = _e30[1];
-				var sInt = _e30[1] | 0;
-				var arr = _e30.subarray(2,_e30.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e30 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e30[i + 2] = arr[i];
-				}
-				_e30[0] = p;
-				_e30[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var color3Abstract1 = color3Abstract | Math.round(_e30[k + 2] * 255) << 8;
-			var k = (_e30[0] | 0) * 27 + 14;
-			if(k > _e30.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e30[0];
-				var s = _e30[1];
-				var sInt = _e30[1] | 0;
-				var arr = _e30.subarray(2,_e30.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e30 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e30[i + 2] = arr[i];
-				}
-				_e30[0] = p;
-				_e30[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			return color3Abstract1 | Math.round(_e30[k + 2] * 255);
+			return Math.round(_e30[(_e30[0] | 0) * 27 + 15 + 2] * 255) << 24 | Math.round(hyperKitGL_io_FloatColorTrianglesUV.get_redB(_e30) * 255) << 16 | Math.round(_e30[(_e30[0] | 0) * 27 + 13 + 2] * 255) << 8 | Math.round(_e30[(_e30[0] | 0) * 27 + 14 + 2] * 255);
 		}, set_argbC : function(col) {
 			hyperKitGL_io_FloatColorTrianglesUV.set_redC(_e31,(col >> 16 & 255) / 255);
 			var v = (col & 255) / 255;
-			var k = (_e31[0] | 0) * 27 + 23;
-			if(k > _e31.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e31[0];
-				var s = _e31[1];
-				var sInt = _e31[1] | 0;
-				var arr = _e31.subarray(2,_e31.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e31 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e31[i + 2] = arr[i];
-				}
-				_e31[0] = p;
-				_e31[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e31[k + 2] = v;
+			_e31[(_e31[0] | 0) * 27 + 23 + 2] = v;
 			var v = (col >> 8 & 255) / 255;
-			var k = (_e31[0] | 0) * 27 + 22;
-			if(k > _e31.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e31[0];
-				var s = _e31[1];
-				var sInt = _e31[1] | 0;
-				var arr = _e31.subarray(2,_e31.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e31 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e31[i + 2] = arr[i];
-				}
-				_e31[0] = p;
-				_e31[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e31[k + 2] = v;
+			_e31[(_e31[0] | 0) * 27 + 22 + 2] = v;
 			var v = (col >> 24 & 255) / 255;
-			var k = (_e31[0] | 0) * 27 + 24;
-			if(k > _e31.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e31[0];
-				var s = _e31[1];
-				var sInt = _e31[1] | 0;
-				var arr = _e31.subarray(2,_e31.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e31 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e31[i + 2] = arr[i];
-				}
-				_e31[0] = p;
-				_e31[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e31[k + 2] = v;
+			_e31[(_e31[0] | 0) * 27 + 24 + 2] = v;
 			return col;
 		}, get_argbC : function() {
-			var k = (_e32[0] | 0) * 27 + 24;
-			if(k > _e32.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e32[0];
-				var s = _e32[1];
-				var sInt = _e32[1] | 0;
-				var arr = _e32.subarray(2,_e32.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e32 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e32[i + 2] = arr[i];
-				}
-				_e32[0] = p;
-				_e32[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var color3Abstract = Math.round(_e32[k + 2] * 255) << 24 | Math.round(hyperKitGL_io_FloatColorTrianglesUV.get_redC(_e32) * 255) << 16;
-			var k = (_e32[0] | 0) * 27 + 22;
-			if(k > _e32.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e32[0];
-				var s = _e32[1];
-				var sInt = _e32[1] | 0;
-				var arr = _e32.subarray(2,_e32.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e32 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e32[i + 2] = arr[i];
-				}
-				_e32[0] = p;
-				_e32[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var color3Abstract1 = color3Abstract | Math.round(_e32[k + 2] * 255) << 8;
-			var k = (_e32[0] | 0) * 27 + 23;
-			if(k > _e32.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e32[0];
-				var s = _e32[1];
-				var sInt = _e32[1] | 0;
-				var arr = _e32.subarray(2,_e32.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e32 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e32[i + 2] = arr[i];
-				}
-				_e32[0] = p;
-				_e32[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			return color3Abstract1 | Math.round(_e32[k + 2] * 255);
+			return Math.round(_e32[(_e32[0] | 0) * 27 + 24 + 2] * 255) << 24 | Math.round(hyperKitGL_io_FloatColorTrianglesUV.get_redC(_e32) * 255) << 16 | Math.round(_e32[(_e32[0] | 0) * 27 + 22 + 2] * 255) << 8 | Math.round(_e32[(_e32[0] | 0) * 27 + 23 + 2] * 255);
 		}};
 		var _e33 = t;
 		var _e34 = t;
@@ -21473,232 +16929,25 @@ trilateral3_nodule_PenTexture.prototype = $extend(trilateral3_nodule_PenNodule.p
 		}, cornerColors : function(colorA,colorB,colorC) {
 			hyperKitGL_io_FloatColorTrianglesUV.set_redA(_e35,(colorA >> 16 & 255) / 255);
 			var v = (colorA & 255) / 255;
-			var k = (_e35[0] | 0) * 27 + 5;
-			if(k > _e35.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e35[0];
-				var s = _e35[1];
-				var sInt = _e35[1] | 0;
-				var arr = _e35.subarray(2,_e35.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e35 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e35[i + 2] = arr[i];
-				}
-				_e35[0] = p;
-				_e35[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e35[k + 2] = v;
+			_e35[(_e35[0] | 0) * 27 + 5 + 2] = v;
 			var v = (colorA >> 8 & 255) / 255;
-			var k = (_e35[0] | 0) * 27 + 4;
-			if(k > _e35.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e35[0];
-				var s = _e35[1];
-				var sInt = _e35[1] | 0;
-				var arr = _e35.subarray(2,_e35.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e35 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e35[i + 2] = arr[i];
-				}
-				_e35[0] = p;
-				_e35[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e35[k + 2] = v;
+			_e35[(_e35[0] | 0) * 27 + 4 + 2] = v;
 			var v = (colorA >> 24 & 255) / 255;
-			var k = (_e35[0] | 0) * 27 + 6;
-			if(k > _e35.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e35[0];
-				var s = _e35[1];
-				var sInt = _e35[1] | 0;
-				var arr = _e35.subarray(2,_e35.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e35 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e35[i + 2] = arr[i];
-				}
-				_e35[0] = p;
-				_e35[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e35[k + 2] = v;
+			_e35[(_e35[0] | 0) * 27 + 6 + 2] = v;
 			hyperKitGL_io_FloatColorTrianglesUV.set_redB(_e35,(colorB >> 16 & 255) / 255);
 			var v = (colorB & 255) / 255;
-			var k = (_e35[0] | 0) * 27 + 14;
-			if(k > _e35.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e35[0];
-				var s = _e35[1];
-				var sInt = _e35[1] | 0;
-				var arr = _e35.subarray(2,_e35.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e35 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e35[i + 2] = arr[i];
-				}
-				_e35[0] = p;
-				_e35[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e35[k + 2] = v;
+			_e35[(_e35[0] | 0) * 27 + 14 + 2] = v;
 			var v = (colorB >> 8 & 255) / 255;
-			var k = (_e35[0] | 0) * 27 + 13;
-			if(k > _e35.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e35[0];
-				var s = _e35[1];
-				var sInt = _e35[1] | 0;
-				var arr = _e35.subarray(2,_e35.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e35 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e35[i + 2] = arr[i];
-				}
-				_e35[0] = p;
-				_e35[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e35[k + 2] = v;
+			_e35[(_e35[0] | 0) * 27 + 13 + 2] = v;
 			var v = (colorB >> 24 & 255) / 255;
-			var k = (_e35[0] | 0) * 27 + 15;
-			if(k > _e35.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e35[0];
-				var s = _e35[1];
-				var sInt = _e35[1] | 0;
-				var arr = _e35.subarray(2,_e35.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e35 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e35[i + 2] = arr[i];
-				}
-				_e35[0] = p;
-				_e35[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e35[k + 2] = v;
+			_e35[(_e35[0] | 0) * 27 + 15 + 2] = v;
 			hyperKitGL_io_FloatColorTrianglesUV.set_redC(_e35,(colorC >> 16 & 255) / 255);
 			var v = (colorC & 255) / 255;
-			var k = (_e35[0] | 0) * 27 + 23;
-			if(k > _e35.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e35[0];
-				var s = _e35[1];
-				var sInt = _e35[1] | 0;
-				var arr = _e35.subarray(2,_e35.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e35 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e35[i + 2] = arr[i];
-				}
-				_e35[0] = p;
-				_e35[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e35[k + 2] = v;
+			_e35[(_e35[0] | 0) * 27 + 23 + 2] = v;
 			var v = (colorC >> 8 & 255) / 255;
-			var k = (_e35[0] | 0) * 27 + 22;
-			if(k > _e35.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e35[0];
-				var s = _e35[1];
-				var sInt = _e35[1] | 0;
-				var arr = _e35.subarray(2,_e35.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e35 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e35[i + 2] = arr[i];
-				}
-				_e35[0] = p;
-				_e35[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e35[k + 2] = v;
+			_e35[(_e35[0] | 0) * 27 + 22 + 2] = v;
 			var v = (colorC >> 24 & 255) / 255;
-			var k = (_e35[0] | 0) * 27 + 24;
-			if(k > _e35.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e35[0];
-				var s = _e35[1];
-				var sInt = _e35[1] | 0;
-				var arr = _e35.subarray(2,_e35.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e35 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e35[i + 2] = arr[i];
-				}
-				_e35[0] = p;
-				_e35[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			_e35[k + 2] = v;
+			_e35[(_e35[0] | 0) * 27 + 24 + 2] = v;
 		}, colorTriangles : function(color,times) {
 			var _g = 0;
 			var _g1 = times;
@@ -21706,450 +16955,28 @@ trilateral3_nodule_PenTexture.prototype = $extend(trilateral3_nodule_PenNodule.p
 				var i = _g++;
 				hyperKitGL_io_FloatColorTrianglesUV.set_redA(_e36,(color >> 16 & 255) / 255);
 				var v = (color & 255) / 255;
-				var k = (_e36[0] | 0) * 27 + 5;
-				if(k > _e36.length - 3) {
-					var l = Math.ceil(k * 2 + 2);
-					var p = _e36[0];
-					var s = _e36[1];
-					var sInt = _e36[1] | 0;
-					var arr = _e36.subarray(2,_e36.length);
-					var this1 = new Float32Array(l + 2);
-					var this2 = this1;
-					this2[0] = 0.;
-					this2[1] = 0.;
-					var this3 = this2;
-					_e36 = this3.subarray(2,this3.length);
-					var _g2 = 0;
-					var _g3 = sInt;
-					while(_g2 < _g3) {
-						var i1 = _g2++;
-						_e36[i1 + 2] = arr[i1];
-					}
-					_e36[0] = p;
-					_e36[1] = s;
-					haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-				}
-				_e36[k + 2] = v;
+				_e36[(_e36[0] | 0) * 27 + 5 + 2] = v;
 				var v1 = (color >> 8 & 255) / 255;
-				var k1 = (_e36[0] | 0) * 27 + 4;
-				if(k1 > _e36.length - 3) {
-					var l1 = Math.ceil(k1 * 2 + 2);
-					var p1 = _e36[0];
-					var s1 = _e36[1];
-					var sInt1 = _e36[1] | 0;
-					var arr1 = _e36.subarray(2,_e36.length);
-					var this4 = new Float32Array(l1 + 2);
-					var this5 = this4;
-					this5[0] = 0.;
-					this5[1] = 0.;
-					var this6 = this5;
-					_e36 = this6.subarray(2,this6.length);
-					var _g4 = 0;
-					var _g5 = sInt1;
-					while(_g4 < _g5) {
-						var i2 = _g4++;
-						_e36[i2 + 2] = arr1[i2];
-					}
-					_e36[0] = p1;
-					_e36[1] = s1;
-					haxe_Log.trace("resize now " + (l1 + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-				}
-				_e36[k1 + 2] = v1;
+				_e36[(_e36[0] | 0) * 27 + 4 + 2] = v1;
 				var v2 = (color >> 24 & 255) / 255;
-				var k2 = (_e36[0] | 0) * 27 + 6;
-				if(k2 > _e36.length - 3) {
-					var l2 = Math.ceil(k2 * 2 + 2);
-					var p2 = _e36[0];
-					var s2 = _e36[1];
-					var sInt2 = _e36[1] | 0;
-					var arr2 = _e36.subarray(2,_e36.length);
-					var this7 = new Float32Array(l2 + 2);
-					var this8 = this7;
-					this8[0] = 0.;
-					this8[1] = 0.;
-					var this9 = this8;
-					_e36 = this9.subarray(2,this9.length);
-					var _g6 = 0;
-					var _g7 = sInt2;
-					while(_g6 < _g7) {
-						var i3 = _g6++;
-						_e36[i3 + 2] = arr2[i3];
-					}
-					_e36[0] = p2;
-					_e36[1] = s2;
-					haxe_Log.trace("resize now " + (l2 + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-				}
-				_e36[k2 + 2] = v2;
+				_e36[(_e36[0] | 0) * 27 + 6 + 2] = v2;
 				hyperKitGL_io_FloatColorTrianglesUV.set_redB(_e36,(color >> 16 & 255) / 255);
 				var v3 = (color & 255) / 255;
-				var k3 = (_e36[0] | 0) * 27 + 14;
-				if(k3 > _e36.length - 3) {
-					var l3 = Math.ceil(k3 * 2 + 2);
-					var p3 = _e36[0];
-					var s3 = _e36[1];
-					var sInt3 = _e36[1] | 0;
-					var arr3 = _e36.subarray(2,_e36.length);
-					var this10 = new Float32Array(l3 + 2);
-					var this11 = this10;
-					this11[0] = 0.;
-					this11[1] = 0.;
-					var this12 = this11;
-					_e36 = this12.subarray(2,this12.length);
-					var _g8 = 0;
-					var _g9 = sInt3;
-					while(_g8 < _g9) {
-						var i4 = _g8++;
-						_e36[i4 + 2] = arr3[i4];
-					}
-					_e36[0] = p3;
-					_e36[1] = s3;
-					haxe_Log.trace("resize now " + (l3 + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-				}
-				_e36[k3 + 2] = v3;
+				_e36[(_e36[0] | 0) * 27 + 14 + 2] = v3;
 				var v4 = (color >> 8 & 255) / 255;
-				var k4 = (_e36[0] | 0) * 27 + 13;
-				if(k4 > _e36.length - 3) {
-					var l4 = Math.ceil(k4 * 2 + 2);
-					var p4 = _e36[0];
-					var s4 = _e36[1];
-					var sInt4 = _e36[1] | 0;
-					var arr4 = _e36.subarray(2,_e36.length);
-					var this13 = new Float32Array(l4 + 2);
-					var this14 = this13;
-					this14[0] = 0.;
-					this14[1] = 0.;
-					var this15 = this14;
-					_e36 = this15.subarray(2,this15.length);
-					var _g10 = 0;
-					var _g11 = sInt4;
-					while(_g10 < _g11) {
-						var i5 = _g10++;
-						_e36[i5 + 2] = arr4[i5];
-					}
-					_e36[0] = p4;
-					_e36[1] = s4;
-					haxe_Log.trace("resize now " + (l4 + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-				}
-				_e36[k4 + 2] = v4;
+				_e36[(_e36[0] | 0) * 27 + 13 + 2] = v4;
 				var v5 = (color >> 24 & 255) / 255;
-				var k5 = (_e36[0] | 0) * 27 + 15;
-				if(k5 > _e36.length - 3) {
-					var l5 = Math.ceil(k5 * 2 + 2);
-					var p5 = _e36[0];
-					var s5 = _e36[1];
-					var sInt5 = _e36[1] | 0;
-					var arr5 = _e36.subarray(2,_e36.length);
-					var this16 = new Float32Array(l5 + 2);
-					var this17 = this16;
-					this17[0] = 0.;
-					this17[1] = 0.;
-					var this18 = this17;
-					_e36 = this18.subarray(2,this18.length);
-					var _g12 = 0;
-					var _g13 = sInt5;
-					while(_g12 < _g13) {
-						var i6 = _g12++;
-						_e36[i6 + 2] = arr5[i6];
-					}
-					_e36[0] = p5;
-					_e36[1] = s5;
-					haxe_Log.trace("resize now " + (l5 + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-				}
-				_e36[k5 + 2] = v5;
+				_e36[(_e36[0] | 0) * 27 + 15 + 2] = v5;
 				hyperKitGL_io_FloatColorTrianglesUV.set_redC(_e36,(color >> 16 & 255) / 255);
 				var v6 = (color & 255) / 255;
-				var k6 = (_e36[0] | 0) * 27 + 23;
-				if(k6 > _e36.length - 3) {
-					var l6 = Math.ceil(k6 * 2 + 2);
-					var p6 = _e36[0];
-					var s6 = _e36[1];
-					var sInt6 = _e36[1] | 0;
-					var arr6 = _e36.subarray(2,_e36.length);
-					var this19 = new Float32Array(l6 + 2);
-					var this20 = this19;
-					this20[0] = 0.;
-					this20[1] = 0.;
-					var this21 = this20;
-					_e36 = this21.subarray(2,this21.length);
-					var _g14 = 0;
-					var _g15 = sInt6;
-					while(_g14 < _g15) {
-						var i7 = _g14++;
-						_e36[i7 + 2] = arr6[i7];
-					}
-					_e36[0] = p6;
-					_e36[1] = s6;
-					haxe_Log.trace("resize now " + (l6 + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-				}
-				_e36[k6 + 2] = v6;
+				_e36[(_e36[0] | 0) * 27 + 23 + 2] = v6;
 				var v7 = (color >> 8 & 255) / 255;
-				var k7 = (_e36[0] | 0) * 27 + 22;
-				if(k7 > _e36.length - 3) {
-					var l7 = Math.ceil(k7 * 2 + 2);
-					var p7 = _e36[0];
-					var s7 = _e36[1];
-					var sInt7 = _e36[1] | 0;
-					var arr7 = _e36.subarray(2,_e36.length);
-					var this22 = new Float32Array(l7 + 2);
-					var this23 = this22;
-					this23[0] = 0.;
-					this23[1] = 0.;
-					var this24 = this23;
-					_e36 = this24.subarray(2,this24.length);
-					var _g16 = 0;
-					var _g17 = sInt7;
-					while(_g16 < _g17) {
-						var i8 = _g16++;
-						_e36[i8 + 2] = arr7[i8];
-					}
-					_e36[0] = p7;
-					_e36[1] = s7;
-					haxe_Log.trace("resize now " + (l7 + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-				}
-				_e36[k7 + 2] = v7;
+				_e36[(_e36[0] | 0) * 27 + 22 + 2] = v7;
 				var v8 = (color >> 24 & 255) / 255;
-				var k8 = (_e36[0] | 0) * 27 + 24;
-				if(k8 > _e36.length - 3) {
-					var l8 = Math.ceil(k8 * 2 + 2);
-					var p8 = _e36[0];
-					var s8 = _e36[1];
-					var sInt8 = _e36[1] | 0;
-					var arr8 = _e36.subarray(2,_e36.length);
-					var this25 = new Float32Array(l8 + 2);
-					var this26 = this25;
-					this26[0] = 0.;
-					this26[1] = 0.;
-					var this27 = this26;
-					_e36 = this27.subarray(2,this27.length);
-					var _g18 = 0;
-					var _g19 = sInt8;
-					while(_g18 < _g19) {
-						var i9 = _g18++;
-						_e36[i9 + 2] = arr8[i9];
-					}
-					_e36[0] = p8;
-					_e36[1] = s8;
-					haxe_Log.trace("resize now " + (l8 + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-				}
-				_e36[k8 + 2] = v8;
+				_e36[(_e36[0] | 0) * 27 + 24 + 2] = v8;
 			}
 		}, getTriInt : function() {
-			var k = (_e37[0] | 0) * 27 + 6;
-			if(k > _e37.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e37[0];
-				var s = _e37[1];
-				var sInt = _e37[1] | 0;
-				var arr = _e37.subarray(2,_e37.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e37 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e37[i + 2] = arr[i];
-				}
-				_e37[0] = p;
-				_e37[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var _g = Math.round(_e37[k + 2] * 255) << 24 | Math.round(hyperKitGL_io_FloatColorTrianglesUV.get_redA(_e37) * 255) << 16;
-			var k = (_e37[0] | 0) * 27 + 4;
-			if(k > _e37.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e37[0];
-				var s = _e37[1];
-				var sInt = _e37[1] | 0;
-				var arr = _e37.subarray(2,_e37.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e37 = this1.subarray(2,this1.length);
-				var _g1 = 0;
-				var _g2 = sInt;
-				while(_g1 < _g2) {
-					var i = _g1++;
-					_e37[i + 2] = arr[i];
-				}
-				_e37[0] = p;
-				_e37[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var _g1 = _g | Math.round(_e37[k + 2] * 255) << 8;
-			var k = (_e37[0] | 0) * 27 + 5;
-			if(k > _e37.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e37[0];
-				var s = _e37[1];
-				var sInt = _e37[1] | 0;
-				var arr = _e37.subarray(2,_e37.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e37 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g2 = sInt;
-				while(_g < _g2) {
-					var i = _g++;
-					_e37[i + 2] = arr[i];
-				}
-				_e37[0] = p;
-				_e37[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var _g = _g1 | Math.round(_e37[k + 2] * 255);
-			var k = (_e37[0] | 0) * 27 + 15;
-			if(k > _e37.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e37[0];
-				var s = _e37[1];
-				var sInt = _e37[1] | 0;
-				var arr = _e37.subarray(2,_e37.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e37 = this1.subarray(2,this1.length);
-				var _g1 = 0;
-				var _g2 = sInt;
-				while(_g1 < _g2) {
-					var i = _g1++;
-					_e37[i + 2] = arr[i];
-				}
-				_e37[0] = p;
-				_e37[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var _g1 = Math.round(_e37[k + 2] * 255) << 24 | Math.round(hyperKitGL_io_FloatColorTrianglesUV.get_redB(_e37) * 255) << 16;
-			var k = (_e37[0] | 0) * 27 + 13;
-			if(k > _e37.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e37[0];
-				var s = _e37[1];
-				var sInt = _e37[1] | 0;
-				var arr = _e37.subarray(2,_e37.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e37 = this1.subarray(2,this1.length);
-				var _g2 = 0;
-				var _g3 = sInt;
-				while(_g2 < _g3) {
-					var i = _g2++;
-					_e37[i + 2] = arr[i];
-				}
-				_e37[0] = p;
-				_e37[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var _g2 = _g1 | Math.round(_e37[k + 2] * 255) << 8;
-			var k = (_e37[0] | 0) * 27 + 14;
-			if(k > _e37.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e37[0];
-				var s = _e37[1];
-				var sInt = _e37[1] | 0;
-				var arr = _e37.subarray(2,_e37.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e37 = this1.subarray(2,this1.length);
-				var _g1 = 0;
-				var _g3 = sInt;
-				while(_g1 < _g3) {
-					var i = _g1++;
-					_e37[i + 2] = arr[i];
-				}
-				_e37[0] = p;
-				_e37[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var _g1 = _g2 | Math.round(_e37[k + 2] * 255);
-			var k = (_e37[0] | 0) * 27 + 24;
-			if(k > _e37.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e37[0];
-				var s = _e37[1];
-				var sInt = _e37[1] | 0;
-				var arr = _e37.subarray(2,_e37.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e37 = this1.subarray(2,this1.length);
-				var _g2 = 0;
-				var _g3 = sInt;
-				while(_g2 < _g3) {
-					var i = _g2++;
-					_e37[i + 2] = arr[i];
-				}
-				_e37[0] = p;
-				_e37[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var paintAbstract = Math.round(_e37[k + 2] * 255) << 24 | Math.round(hyperKitGL_io_FloatColorTrianglesUV.get_redC(_e37) * 255) << 16;
-			var k = (_e37[0] | 0) * 27 + 22;
-			if(k > _e37.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e37[0];
-				var s = _e37[1];
-				var sInt = _e37[1] | 0;
-				var arr = _e37.subarray(2,_e37.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e37 = this1.subarray(2,this1.length);
-				var _g2 = 0;
-				var _g3 = sInt;
-				while(_g2 < _g3) {
-					var i = _g2++;
-					_e37[i + 2] = arr[i];
-				}
-				_e37[0] = p;
-				_e37[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var paintAbstract1 = paintAbstract | Math.round(_e37[k + 2] * 255) << 8;
-			var k = (_e37[0] | 0) * 27 + 23;
-			if(k > _e37.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e37[0];
-				var s = _e37[1];
-				var sInt = _e37[1] | 0;
-				var arr = _e37.subarray(2,_e37.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e37 = this1.subarray(2,this1.length);
-				var _g2 = 0;
-				var _g3 = sInt;
-				while(_g2 < _g3) {
-					var i = _g2++;
-					_e37[i + 2] = arr[i];
-				}
-				_e37[0] = p;
-				_e37[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			return new trilateral3_structure_TriInt(_g,_g1,paintAbstract1 | Math.round(_e37[k + 2] * 255));
+			return new trilateral3_structure_TriInt(Math.round(_e37[(_e37[0] | 0) * 27 + 6 + 2] * 255) << 24 | Math.round(hyperKitGL_io_FloatColorTrianglesUV.get_redA(_e37) * 255) << 16 | Math.round(_e37[(_e37[0] | 0) * 27 + 4 + 2] * 255) << 8 | Math.round(_e37[(_e37[0] | 0) * 27 + 5 + 2] * 255),Math.round(_e37[(_e37[0] | 0) * 27 + 15 + 2] * 255) << 24 | Math.round(hyperKitGL_io_FloatColorTrianglesUV.get_redB(_e37) * 255) << 16 | Math.round(_e37[(_e37[0] | 0) * 27 + 13 + 2] * 255) << 8 | Math.round(_e37[(_e37[0] | 0) * 27 + 14 + 2] * 255),Math.round(_e37[(_e37[0] | 0) * 27 + 24 + 2] * 255) << 24 | Math.round(hyperKitGL_io_FloatColorTrianglesUV.get_redC(_e37) * 255) << 16 | Math.round(_e37[(_e37[0] | 0) * 27 + 22 + 2] * 255) << 8 | Math.round(_e37[(_e37[0] | 0) * 27 + 23 + 2] * 255));
 		}, transform : function(m) {
 			trilateral3_geom_FlatColorTrianglesUV.transform(_e38,m);
 		}, transformRange : function(m,startEnd) {
@@ -22160,150 +16987,9 @@ trilateral3_nodule_PenTexture.prototype = $extend(trilateral3_nodule_PenNodule.p
 			var pc = new trilateral3_matrix_Vertex(hyperKitGL_io_FloatColorTrianglesUV.get_cx(_e40),hyperKitGL_io_FloatColorTrianglesUV.get_cy(_e40),hyperKitGL_io_FloatColorTrianglesUV.get_cz(_e40),1.);
 			return new trilateral3_structure_Triangle3D(pa,pb,pc);
 		}, getTriangleUV : function() {
-			var k = (_e41[0] | 0) * 27 + 7;
-			if(k > _e41.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e41[0];
-				var s = _e41[1];
-				var sInt = _e41[1] | 0;
-				var arr = _e41.subarray(2,_e41.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e41 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e41[i + 2] = arr[i];
-				}
-				_e41[0] = p;
-				_e41[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var _g = _e41[k + 2];
-			var k = (_e41[0] | 0) * 27 + 8;
-			if(k > _e41.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e41[0];
-				var s = _e41[1];
-				var sInt = _e41[1] | 0;
-				var arr = _e41.subarray(2,_e41.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e41 = this1.subarray(2,this1.length);
-				var _g1 = 0;
-				var _g2 = sInt;
-				while(_g1 < _g2) {
-					var i = _g1++;
-					_e41[i + 2] = arr[i];
-				}
-				_e41[0] = p;
-				_e41[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var ta = new trilateral3_matrix_UV(_g,_e41[k + 2]);
-			var k = (_e41[0] | 0) * 27 + 16;
-			if(k > _e41.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e41[0];
-				var s = _e41[1];
-				var sInt = _e41[1] | 0;
-				var arr = _e41.subarray(2,_e41.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e41 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e41[i + 2] = arr[i];
-				}
-				_e41[0] = p;
-				_e41[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var _g = _e41[k + 2];
-			var k = (_e41[0] | 0) * 27 + 17;
-			if(k > _e41.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e41[0];
-				var s = _e41[1];
-				var sInt = _e41[1] | 0;
-				var arr = _e41.subarray(2,_e41.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e41 = this1.subarray(2,this1.length);
-				var _g1 = 0;
-				var _g2 = sInt;
-				while(_g1 < _g2) {
-					var i = _g1++;
-					_e41[i + 2] = arr[i];
-				}
-				_e41[0] = p;
-				_e41[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var tb = new trilateral3_matrix_UV(_g,_e41[k + 2]);
-			var k = (_e41[0] | 0) * 27 + 25;
-			if(k > _e41.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e41[0];
-				var s = _e41[1];
-				var sInt = _e41[1] | 0;
-				var arr = _e41.subarray(2,_e41.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e41 = this1.subarray(2,this1.length);
-				var _g = 0;
-				var _g1 = sInt;
-				while(_g < _g1) {
-					var i = _g++;
-					_e41[i + 2] = arr[i];
-				}
-				_e41[0] = p;
-				_e41[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var _g = _e41[k + 2];
-			var k = (_e41[0] | 0) * 27 + 26;
-			if(k > _e41.length - 3) {
-				var l = Math.ceil(k * 2 + 2);
-				var p = _e41[0];
-				var s = _e41[1];
-				var sInt = _e41[1] | 0;
-				var arr = _e41.subarray(2,_e41.length);
-				var this1 = new Float32Array(l + 2);
-				var this2 = this1;
-				this2[0] = 0.;
-				this2[1] = 0.;
-				var this1 = this2;
-				_e41 = this1.subarray(2,this1.length);
-				var _g1 = 0;
-				var _g2 = sInt;
-				while(_g1 < _g2) {
-					var i = _g1++;
-					_e41[i + 2] = arr[i];
-				}
-				_e41[0] = p;
-				_e41[1] = s;
-				haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-			}
-			var tc = new trilateral3_matrix_UV(_g,_e41[k + 2]);
+			var ta = new trilateral3_matrix_UV(_e41[(_e41[0] | 0) * 27 + 7 + 2],_e41[(_e41[0] | 0) * 27 + 8 + 2]);
+			var tb = new trilateral3_matrix_UV(_e41[(_e41[0] | 0) * 27 + 16 + 2],_e41[(_e41[0] | 0) * 27 + 17 + 2]);
+			var tc = new trilateral3_matrix_UV(_e41[(_e41[0] | 0) * 27 + 25 + 2],_e41[(_e41[0] | 0) * 27 + 26 + 2]);
 			return new trilateral3_structure_TriangleUV(ta,tb,tc);
 		}, next : function() {
 			var pos_ = _e42[0] + 1.;
@@ -22344,28 +17030,6 @@ trilateral3_nodule_PenTexture.prototype = $extend(trilateral3_nodule_PenNodule.p
 				var _g1 = ending;
 				while(_g < _g1) {
 					var i = _g++;
-					if(i > _e48.length - 3) {
-						var l = Math.ceil(i * 2 + 2);
-						var p = _e48[0];
-						var s = _e48[1];
-						var sInt = _e48[1] | 0;
-						var arr = _e48.subarray(2,_e48.length);
-						var this1 = new Float32Array(l + 2);
-						var this2 = this1;
-						this2[0] = 0.;
-						this2[1] = 0.;
-						var this3 = this2;
-						_e48 = this3.subarray(2,this3.length);
-						var _g2 = 0;
-						var _g3 = sInt;
-						while(_g2 < _g3) {
-							var i1 = _g2++;
-							_e48[i1 + 2] = arr[i1];
-						}
-						_e48[0] = p;
-						_e48[1] = s;
-						haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-					}
 					temp[count] = _e48[i + 2];
 					++count;
 				}
@@ -22374,54 +17038,8 @@ trilateral3_nodule_PenTexture.prototype = $extend(trilateral3_nodule_PenNodule.p
 				var _g1 = starting;
 				while(_g < _g1) {
 					var i = _g++;
-					var k = ending - 1 - i;
-					var k1 = starting - 1 - i;
-					if(k1 > _e48.length - 3) {
-						var l = Math.ceil(k1 * 2 + 2);
-						var p = _e48[0];
-						var s = _e48[1];
-						var sInt = _e48[1] | 0;
-						var arr = _e48.subarray(2,_e48.length);
-						var this1 = new Float32Array(l + 2);
-						var this2 = this1;
-						this2[0] = 0.;
-						this2[1] = 0.;
-						var this3 = this2;
-						_e48 = this3.subarray(2,this3.length);
-						var _g2 = 0;
-						var _g3 = sInt;
-						while(_g2 < _g3) {
-							var i1 = _g2++;
-							_e48[i1 + 2] = arr[i1];
-						}
-						_e48[0] = p;
-						_e48[1] = s;
-						haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-					}
-					var v = _e48[k1 + 2];
-					if(k > _e48.length - 3) {
-						var l1 = Math.ceil(k * 2 + 2);
-						var p1 = _e48[0];
-						var s1 = _e48[1];
-						var sInt1 = _e48[1] | 0;
-						var arr1 = _e48.subarray(2,_e48.length);
-						var this4 = new Float32Array(l1 + 2);
-						var this5 = this4;
-						this5[0] = 0.;
-						this5[1] = 0.;
-						var this6 = this5;
-						_e48 = this6.subarray(2,this6.length);
-						var _g4 = 0;
-						var _g5 = sInt1;
-						while(_g4 < _g5) {
-							var i2 = _g4++;
-							_e48[i2 + 2] = arr1[i2];
-						}
-						_e48[0] = p1;
-						_e48[1] = s1;
-						haxe_Log.trace("resize now " + (l1 + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-					}
-					_e48[k + 2] = v;
+					var v = _e48[starting - 1 - i + 2];
+					_e48[ending - 1 - i + 2] = v;
 				}
 				count = 0;
 				var _g = 0;
@@ -22429,28 +17047,6 @@ trilateral3_nodule_PenTexture.prototype = $extend(trilateral3_nodule_PenNodule.p
 				while(_g < _g1) {
 					var i = _g++;
 					var v = temp[count - 2];
-					if(i > _e48.length - 3) {
-						var l = Math.ceil(i * 2 + 2);
-						var p = _e48[0];
-						var s = _e48[1];
-						var sInt = _e48[1] | 0;
-						var arr = _e48.subarray(2,_e48.length);
-						var this1 = new Float32Array(l + 2);
-						var this2 = this1;
-						this2[0] = 0.;
-						this2[1] = 0.;
-						var this3 = this2;
-						_e48 = this3.subarray(2,this3.length);
-						var _g2 = 0;
-						var _g3 = sInt;
-						while(_g2 < _g3) {
-							var i1 = _g2++;
-							_e48[i1 + 2] = arr[i1];
-						}
-						_e48[0] = p;
-						_e48[1] = s;
-						haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-					}
 					_e48[i + 2] = v;
 					++count;
 				}
@@ -22470,102 +17066,10 @@ trilateral3_nodule_PenTexture.prototype = $extend(trilateral3_nodule_PenNodule.p
 				var _g1 = totalLen;
 				while(_g < _g1) {
 					var i = _g++;
-					var k = start0 + i;
-					if(k > _e50.length - 3) {
-						var l = Math.ceil(k * 2 + 2);
-						var p = _e50[0];
-						var s = _e50[1];
-						var sInt = _e50[1] | 0;
-						var arr = _e50.subarray(2,_e50.length);
-						var this1 = new Float32Array(l + 2);
-						var this2 = this1;
-						this2[0] = 0.;
-						this2[1] = 0.;
-						var this3 = this2;
-						_e50 = this3.subarray(2,this3.length);
-						var _g2 = 0;
-						var _g3 = sInt;
-						while(_g2 < _g3) {
-							var i1 = _g2++;
-							_e50[i1 + 2] = arr[i1];
-						}
-						_e50[0] = p;
-						_e50[1] = s;
-						haxe_Log.trace("resize now " + (l + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-					}
-					temp0 = _e50[k + 2];
-					var k1 = start1 + i;
-					if(k1 > _e50.length - 3) {
-						var l1 = Math.ceil(k1 * 2 + 2);
-						var p1 = _e50[0];
-						var s1 = _e50[1];
-						var sInt1 = _e50[1] | 0;
-						var arr1 = _e50.subarray(2,_e50.length);
-						var this4 = new Float32Array(l1 + 2);
-						var this5 = this4;
-						this5[0] = 0.;
-						this5[1] = 0.;
-						var this6 = this5;
-						_e50 = this6.subarray(2,this6.length);
-						var _g4 = 0;
-						var _g5 = sInt1;
-						while(_g4 < _g5) {
-							var i2 = _g4++;
-							_e50[i2 + 2] = arr1[i2];
-						}
-						_e50[0] = p1;
-						_e50[1] = s1;
-						haxe_Log.trace("resize now " + (l1 + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-					}
-					temp1 = _e50[k1 + 2];
-					var k2 = start0 + i;
-					if(k2 > _e50.length - 3) {
-						var l2 = Math.ceil(k2 * 2 + 2);
-						var p2 = _e50[0];
-						var s2 = _e50[1];
-						var sInt2 = _e50[1] | 0;
-						var arr2 = _e50.subarray(2,_e50.length);
-						var this7 = new Float32Array(l2 + 2);
-						var this8 = this7;
-						this8[0] = 0.;
-						this8[1] = 0.;
-						var this9 = this8;
-						_e50 = this9.subarray(2,this9.length);
-						var _g6 = 0;
-						var _g7 = sInt2;
-						while(_g6 < _g7) {
-							var i3 = _g6++;
-							_e50[i3 + 2] = arr2[i3];
-						}
-						_e50[0] = p2;
-						_e50[1] = s2;
-						haxe_Log.trace("resize now " + (l2 + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-					}
-					_e50[k2 + 2] = temp1;
-					var k3 = start1 + i;
-					if(k3 > _e50.length - 3) {
-						var l3 = Math.ceil(k3 * 2 + 2);
-						var p3 = _e50[0];
-						var s3 = _e50[1];
-						var sInt3 = _e50[1] | 0;
-						var arr3 = _e50.subarray(2,_e50.length);
-						var this10 = new Float32Array(l3 + 2);
-						var this11 = this10;
-						this11[0] = 0.;
-						this11[1] = 0.;
-						var this12 = this11;
-						_e50 = this12.subarray(2,this12.length);
-						var _g8 = 0;
-						var _g9 = sInt3;
-						while(_g8 < _g9) {
-							var i4 = _g8++;
-							_e50[i4 + 2] = arr3[i4];
-						}
-						_e50[0] = p3;
-						_e50[1] = s3;
-						haxe_Log.trace("resize now " + (l3 + 2),{ fileName : "hyperKitGL/io/Float32Flat.hx", lineNumber : 98, className : "hyperKitGL.io._Float32Flat.Float32Flat_Impl_", methodName : "resize"});
-					}
-					_e50[k3 + 2] = temp0;
+					temp0 = _e50[start0 + i + 2];
+					temp1 = _e50[start1 + i + 2];
+					_e50[start0 + i + 2] = temp1;
+					_e50[start1 + i + 2] = temp0;
 				}
 				return true;
 			} else {
@@ -22841,6 +17345,6 @@ hxGeomAlgo_PolyTools.zero = hxGeomAlgo_HxPoint._new(0,0);
 hxGeomAlgo_PolyTools.EPSILON = .00000001;
 hxPixels_Pixels.CHANNEL_MASK = 3;
 hyperKitGL_AnimateTimer.counter = 0;
-trilateral3_nodule_PenNodule.largeEnough = 20000;
+trilateral3_nodule_PenNodule.largeEnough = 50;
 hyperKitGLsamples_galapagos_Galapagos_main();
 })(typeof exports != "undefined" ? exports : typeof window != "undefined" ? window : typeof self != "undefined" ? self : this, typeof window != "undefined" ? window : typeof global != "undefined" ? global : typeof self != "undefined" ? self : this);

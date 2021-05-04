@@ -3151,6 +3151,10 @@ var hyperKitGL_PlyMix = function(width_,height_,hasImage,animate) {
 		hasImage = true;
 	}
 	this.mode = 0;
+	this.bgB = 0.5;
+	this.bgG = 0.0;
+	this.bgR = 0.5;
+	this.bgA = 0.9;
 	this.uvTransform = "uvTransform";
 	this.uniformColor = "bgColor";
 	this.uniformImage = "uImage0";
@@ -3344,12 +3348,20 @@ var hyperKitGL_PlyMix = function(width_,height_,hasImage,animate) {
 			}
 			var gl = this.gl;
 			var indices = this.indicesTexture;
+			var isDynamic = true;
+			if(isDynamic == null) {
+				isDynamic = false;
+			}
 			var buf = gl.createBuffer();
 			var staticDraw = 35044;
 			var dynamicDraw = 35048;
 			var arrBuffer = 34963;
 			gl.bindBuffer(arrBuffer,buf);
-			gl.bufferData(arrBuffer,new Uint16Array(indices),staticDraw);
+			if(isDynamic) {
+				gl.bufferData(arrBuffer,new Uint16Array(indices),dynamicDraw);
+			} else {
+				gl.bufferData(arrBuffer,new Uint16Array(indices),staticDraw);
+			}
 			gl.bindBuffer(arrBuffer,null);
 			this.bufIndices = buf;
 		}
@@ -3407,7 +3419,23 @@ var hyperKitGL_PlyMix = function(width_,height_,hasImage,animate) {
 				var gl = _gthis.gl;
 				var width = _gthis.width;
 				var height = _gthis.height;
-				gl.clearColor(0.5,0.0,0.5,0.9);
+				var r = _gthis.bgR;
+				var g = _gthis.bgG;
+				var b = _gthis.bgB;
+				var a = _gthis.bgA;
+				if(a == null) {
+					a = 0.;
+				}
+				if(b == null) {
+					b = 0.;
+				}
+				if(g == null) {
+					g = 0.;
+				}
+				if(r == null) {
+					r = 0.;
+				}
+				gl.clearColor(r,g,b,a);
 				gl.enable(2929);
 				gl.clear(16384);
 				gl.viewport(0,0,width,height);
@@ -3454,7 +3482,6 @@ hyperKitGL_PlyMix.prototype = {
 			case 2:
 				this.gl.useProgram(this.programTexture);
 				this.gl.bindBuffer(34962,this.bufTexture);
-				this.gl.bindBuffer(34962,this.bufIndices);
 				var gl = this.gl;
 				var program = this.programTexture;
 				var rgbaName = this.vertexColor;
@@ -3663,12 +3690,20 @@ hyperKitGL_PlyMix.prototype = {
 			}
 			var gl = this.gl;
 			var indices = this.indicesTexture;
+			var isDynamic = true;
+			if(isDynamic == null) {
+				isDynamic = false;
+			}
 			var buf = gl.createBuffer();
 			var staticDraw = 35044;
 			var dynamicDraw = 35048;
 			var arrBuffer = 34963;
 			gl.bindBuffer(arrBuffer,buf);
-			gl.bufferData(arrBuffer,new Uint16Array(indices),staticDraw);
+			if(isDynamic) {
+				gl.bufferData(arrBuffer,new Uint16Array(indices),dynamicDraw);
+			} else {
+				gl.bufferData(arrBuffer,new Uint16Array(indices),staticDraw);
+			}
 			gl.bindBuffer(arrBuffer,null);
 			this.bufIndices = buf;
 		}
@@ -3726,7 +3761,23 @@ hyperKitGL_PlyMix.prototype = {
 				var gl = _gthis.gl;
 				var width = _gthis.width;
 				var height = _gthis.height;
-				gl.clearColor(0.5,0.0,0.5,0.9);
+				var r = _gthis.bgR;
+				var g = _gthis.bgG;
+				var b = _gthis.bgB;
+				var a = _gthis.bgA;
+				if(a == null) {
+					a = 0.;
+				}
+				if(b == null) {
+					b = 0.;
+				}
+				if(g == null) {
+					g = 0.;
+				}
+				if(r == null) {
+					r = 0.;
+				}
+				gl.clearColor(r,g,b,a);
 				gl.enable(2929);
 				gl.clear(16384);
 				gl.viewport(0,0,width,height);
@@ -3740,7 +3791,7 @@ hyperKitGL_PlyMix.prototype = {
 		}
 	}
 	,draw: function() {
-		haxe_Log.trace("parent draw",{ fileName : "hyperKitGL/PlyMix.js.hx", lineNumber : 172, className : "hyperKitGL.PlyMix", methodName : "draw"});
+		haxe_Log.trace("parent draw",{ fileName : "hyperKitGL/PlyMix.js.hx", lineNumber : 176, className : "hyperKitGL.PlyMix", methodName : "draw"});
 	}
 	,drawTextureShape: function(start,end,bgColor) {
 		var modeChange = this.setProgramMode(2);
@@ -3783,7 +3834,6 @@ hyperKitGL_PlyMix.prototype = {
 			indicesTexture.push(count++);
 			indicesTexture.push(count++);
 		}
-		this.gl.bufferData(34963,new Uint16Array(this.indicesTexture),dynamicDraw);
 		this.drawData(this.programTexture,this.dataGLtexture,start,end,27);
 	}
 	,drawColorShape: function(start,end) {
@@ -3802,7 +3852,23 @@ hyperKitGL_PlyMix.prototype = {
 		var gl = this.gl;
 		var width = this.width;
 		var height = this.height;
-		gl.clearColor(0.5,0.0,0.5,0.9);
+		var r = this.bgR;
+		var g = this.bgG;
+		var b = this.bgB;
+		var a = this.bgA;
+		if(a == null) {
+			a = 0.;
+		}
+		if(b == null) {
+			b = 0.;
+		}
+		if(g == null) {
+			g = 0.;
+		}
+		if(r == null) {
+			r = 0.;
+		}
+		gl.clearColor(r,g,b,a);
 		gl.enable(2929);
 		gl.clear(16384);
 		gl.viewport(0,0,width,height);
@@ -3995,7 +4061,7 @@ hyperKitGL_io_ArrayColorTriangles.moveDelta = function(this1,dx,dy) {
 	hyperKitGL_io_ArrayColorTriangles.set_cy(this1,hyperKitGL_io_ArrayColorTriangles.get_cy(this1) + dy);
 };
 hyperKitGL_io_ArrayColorTriangles.fullHit = function(this1,px,py) {
-	if(px > Math.min(Math.min(hyperKitGL_io_ArrayColorTriangles.get_ax(this1),hyperKitGL_io_ArrayColorTriangles.get_bx(this1)),hyperKitGL_io_ArrayColorTriangles.get_cx(this1)) && px < Math.max(Math.max(hyperKitGL_io_ArrayColorTriangles.get_ax(this1),hyperKitGL_io_ArrayColorTriangles.get_bx(this1)),hyperKitGL_io_ArrayColorTriangles.get_cx(this1)) && py > Math.min(Math.min(hyperKitGL_io_ArrayColorTriangles.get_ay(this1),hyperKitGL_io_ArrayColorTriangles.get_by(this1)),hyperKitGL_io_ArrayColorTriangles.get_cy(this1)) && py < Math.max(Math.max(hyperKitGL_io_ArrayColorTriangles.get_ay(this1),hyperKitGL_io_ArrayColorTriangles.get_by(this1)),hyperKitGL_io_ArrayColorTriangles.get_cy(this1))) {
+	if(px > Math.min(Math.min(hyperKitGL_io_ArrayColorTriangles.get_ax(this1),hyperKitGL_io_ArrayColorTriangles.get_bx(this1)),hyperKitGL_io_ArrayColorTriangles.get_cx(this1)) && px < Math.max(Math.max(hyperKitGL_io_ArrayColorTriangles.get_ax(this1),hyperKitGL_io_ArrayColorTriangles.get_bx(this1)),hyperKitGL_io_ArrayColorTriangles.get_cx(this1)) && py > Math.max(Math.max(hyperKitGL_io_ArrayColorTriangles.get_ay(this1),hyperKitGL_io_ArrayColorTriangles.get_by(this1)),hyperKitGL_io_ArrayColorTriangles.get_cy(this1)) && py < Math.max(Math.max(hyperKitGL_io_ArrayColorTriangles.get_ay(this1),hyperKitGL_io_ArrayColorTriangles.get_by(this1)),hyperKitGL_io_ArrayColorTriangles.get_cy(this1))) {
 		return true;
 	}
 	var planeAB = (hyperKitGL_io_ArrayColorTriangles.get_ax(this1) - px) * (hyperKitGL_io_ArrayColorTriangles.get_by(this1) - py) - (hyperKitGL_io_ArrayColorTriangles.get_bx(this1) - px) * (hyperKitGL_io_ArrayColorTriangles.get_ay(this1) - py);
@@ -4255,7 +4321,23 @@ hyperKitGLsamples_gradientGrid_Main.prototype = $extend(hyperKitGL_PlyMix.protot
 			var gl = _gthis.gl;
 			var width = _gthis.width;
 			var height = _gthis.height;
-			gl.clearColor(0.5,0.0,0.5,0.9);
+			var r = _gthis.bgR;
+			var g = _gthis.bgG;
+			var b = _gthis.bgB;
+			var a = _gthis.bgA;
+			if(a == null) {
+				a = 0.;
+			}
+			if(b == null) {
+				b = 0.;
+			}
+			if(g == null) {
+				g = 0.;
+			}
+			if(r == null) {
+				r = 0.;
+			}
+			gl.clearColor(r,g,b,a);
 			gl.enable(2929);
 			gl.clear(16384);
 			gl.viewport(0,0,width,height);
@@ -4524,8 +4606,8 @@ trilateral3_nodule_PenArrColor.prototype = $extend(trilateral3_nodule_PenNodule.
 		var _e15 = t;
 		var _e16 = t;
 		var triangleAbstract = { rotate : function(x,y,theta) {
-			var cos = Math.cos(theta);
-			var sin = Math.sin(theta);
+			var cos = Math.cos(-theta);
+			var sin = Math.sin(-theta);
 			hyperKitGL_io_ArrayColorTriangles.set_ax(_e,hyperKitGL_io_ArrayColorTriangles.get_ax(_e) - x);
 			hyperKitGL_io_ArrayColorTriangles.set_ay(_e,hyperKitGL_io_ArrayColorTriangles.get_ay(_e) - y);
 			hyperKitGL_io_ArrayColorTriangles.set_bx(_e,hyperKitGL_io_ArrayColorTriangles.get_bx(_e) - x);
@@ -4603,9 +4685,9 @@ trilateral3_nodule_PenArrColor.prototype = $extend(trilateral3_nodule_PenNodule.
 			hyperKitGL_io_ArrayColorTriangles.set_cx(_e9,hyperKitGL_io_ArrayColorTriangles.get_cx(_e9) + dx);
 			return x;
 		}, get_y : function() {
-			return Math.min(Math.min(hyperKitGL_io_ArrayColorTriangles.get_ay(_e10),hyperKitGL_io_ArrayColorTriangles.get_by(_e10)),hyperKitGL_io_ArrayColorTriangles.get_cy(_e10));
+			return Math.max(Math.max(hyperKitGL_io_ArrayColorTriangles.get_ay(_e10),hyperKitGL_io_ArrayColorTriangles.get_by(_e10)),hyperKitGL_io_ArrayColorTriangles.get_cy(_e10));
 		}, set_y : function(y) {
-			var dy = y - Math.min(Math.min(hyperKitGL_io_ArrayColorTriangles.get_ay(_e11),hyperKitGL_io_ArrayColorTriangles.get_by(_e11)),hyperKitGL_io_ArrayColorTriangles.get_cy(_e11));
+			var dy = y - Math.max(Math.max(hyperKitGL_io_ArrayColorTriangles.get_ay(_e11),hyperKitGL_io_ArrayColorTriangles.get_by(_e11)),hyperKitGL_io_ArrayColorTriangles.get_cy(_e11));
 			hyperKitGL_io_ArrayColorTriangles.set_ay(_e11,hyperKitGL_io_ArrayColorTriangles.get_ay(_e11) + dy);
 			hyperKitGL_io_ArrayColorTriangles.set_by(_e11,hyperKitGL_io_ArrayColorTriangles.get_by(_e11) + dy);
 			hyperKitGL_io_ArrayColorTriangles.set_cy(_e11,hyperKitGL_io_ArrayColorTriangles.get_cy(_e11) + dy);
@@ -4895,6 +4977,8 @@ trilateral3_reShape_GradientGrid.prototype = {
 		var ix = 0;
 		this.arrShaper = [];
 		var count = 0;
+		var ix1;
+		var iy1;
 		var _g = 0;
 		var _g1 = row;
 		while(_g < _g1) {
@@ -4906,6 +4990,8 @@ trilateral3_reShape_GradientGrid.prototype = {
 				var quadShaper = new trilateral3_reShape_QuadShaper(this.pen,ds);
 				this.arrShaper[this.arrShaper.length] = quadShaper;
 				ds += 2;
+				ix1 = ix + 1;
+				iy1 = iy + 1;
 				var x = ix * dX;
 				var y = iy * dY;
 				var col1 = -16777216;
@@ -4919,7 +5005,7 @@ trilateral3_reShape_GradientGrid.prototype = {
 				var this3 = Math.round((col1 >> 24 & 255) / 255 * 255) << 24 | Math.round((col1 >> 16 & 255) / 255 * 255) << 16 | Math.round((col1 >> 8 & 255) / 255 * 255) << 8 | Math.round(v2 * 255);
 				col1 = this3;
 				var colorA = col1;
-				var x1 = (ix + 1) * dX;
+				var x1 = ix1 * dX;
 				var y1 = iy * dY;
 				var col2 = -16777216;
 				var v3 = fRed(x1,y1);
@@ -4932,8 +5018,8 @@ trilateral3_reShape_GradientGrid.prototype = {
 				var this6 = Math.round((col2 >> 24 & 255) / 255 * 255) << 24 | Math.round((col2 >> 16 & 255) / 255 * 255) << 16 | Math.round((col2 >> 8 & 255) / 255 * 255) << 8 | Math.round(v5 * 255);
 				col2 = this6;
 				var colorB = col2;
-				var x2 = (ix + 1) * dX;
-				var y2 = (iy + 1) * dY;
+				var x2 = ix1 * dX;
+				var y2 = iy1 * dY;
 				var col3 = -16777216;
 				var v6 = fRed(x2,y2);
 				var this7 = Math.round((col3 >> 24 & 255) / 255 * 255) << 24 | Math.round(v6 * 255) << 16 | Math.round((col3 >> 8 & 255) / 255 * 255) << 8 | Math.round((col3 & 255) / 255 * 255);
@@ -4946,7 +5032,7 @@ trilateral3_reShape_GradientGrid.prototype = {
 				col3 = this9;
 				var colorC = col3;
 				var x3 = ix * dX;
-				var y3 = (iy + 1) * dY;
+				var y3 = iy1 * dY;
 				var col4 = -16777216;
 				var v9 = fRed(x3,y3);
 				var this10 = Math.round((col4 >> 24 & 255) / 255 * 255) << 24 | Math.round(v9 * 255) << 16 | Math.round((col4 >> 8 & 255) / 255 * 255) << 8 | Math.round((col4 & 255) / 255 * 255);
@@ -5045,6 +5131,12 @@ var trilateral3_reShape_QuadShaper = function(pen,start,wid,hi) {
 	}
 	if(wid == null) {
 		wid = 1000;
+	}
+	if(start == null) {
+		start = -1.;
+	}
+	if(start == -1) {
+		start = pen.paintType.get_pos();
 	}
 	this.pen = pen;
 	this.start = start;
@@ -5199,12 +5291,16 @@ trilateral3_reShape_QuadShaper.prototype = {
 		if(colorA == null) {
 			colorA = -1;
 		}
+		var p = this.pen.paintType.get_pos();
+		var v = this.start;
+		this.pen.paintType.set_pos(v);
 		var v = this.start;
 		this.pen.paintType.set_pos(v);
 		this.pen.paintType.cornerColors(colorA,colorD,colorB);
 		var v = this.start + 1;
 		this.pen.paintType.set_pos(v);
 		this.pen.paintType.cornerColors(colorB,colorD,colorC);
+		this.pen.paintType.set_pos(p);
 	}
 };
 var trilateral3_reShape_TrianglesShaper = function(pen,wid,hi) {

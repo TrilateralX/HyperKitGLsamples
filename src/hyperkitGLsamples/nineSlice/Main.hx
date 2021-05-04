@@ -33,8 +33,11 @@ import trilateral3.matrix.Vertex;
 import trilateral3.Trilateral;
 import trilateral3.structure.RangeEntity;
 import trilateral3.reShape.NineSlice;
+
+import hyperKitGLsamples.imageEncode.ButtonImage;
 // To trace on screen
 import hyperKitGL.DivertTrace;
+
 function main(){
     new Main( 1000, 1000 );
     var divertTrace = new DivertTrace();
@@ -88,7 +91,7 @@ class Main extends PlyMix {
     inline 
     function loadButtonImage(){
         // built in load images
-        imageLoader.loadEncoded( [ ButtonImage.png ],[ 'ButtonImage' ] );
+        imageLoader.loadEncoded( [ ButtonImage.png_ ],[ 'ButtonImage' ] );
     }
     inline 
     function setupImage(){
@@ -136,8 +139,8 @@ class Main extends PlyMix {
     public function renderDraw(){
         var haveTextures: Bool = false;
         var haveColors:   Bool = false;
-        var c = Math.cos(theta);
-        var s = Math.sin(theta);
+        var c = Math.cos(theta)/2.;
+        var s = Math.sin(theta)/2.;
         tick+= 0.01;
         count = Math.round( tick );
         count2 = colors.length - 1 - count;
@@ -145,9 +148,9 @@ class Main extends PlyMix {
         nineSlice.scaleBorder( 1 + c/200, true );
         nineSlice.dim( Math.abs( 400*c ) + 600, Math.abs( 300*s ) + 600 );
         nineSlice.modifyColors( colors[count2], colors[count2], colors[count2], colors[count2]
-                             , colors[count], Red, White, colors[count]
-                             , colors[count2], Yellow, Blue, colors[count2]
-                             , colors[count], colors[count], colors[count], colors[count] );
+                              , colors[count], Red, White, colors[count]
+                              , colors[count2], Yellow, Blue, colors[count2]
+                              , colors[count], colors[count], colors[count], colors[count] );
         theta+= 0.01;
         for( a_shape in draw_Shape ){
             switch( a_shape.textured ){

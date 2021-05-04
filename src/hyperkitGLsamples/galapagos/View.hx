@@ -102,7 +102,7 @@ class View {
         }*/
     }
     public function drawDot( cx:Float, cy:Float, radius: Float ):Void { 
-        trace( 'drawDot ' + pen );
+        //trace( 'drawDot ' + pen );
         circle( pen, cx, cy, radius );
     }
     // line style setup and fills

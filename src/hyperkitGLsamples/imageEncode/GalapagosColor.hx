@@ -1,7 +1,7 @@
-package hyperKitGLsamples.galapagos;
+package hyperKitGLsamples.imageEncode;
 
 class GalapagosColor{ 
-    public var png_: String = png;
+    public static var png_: String = png;
 }
     // inline base64 encoded png of the Haxe Logo
 inline var png: String =

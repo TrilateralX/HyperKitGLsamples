@@ -32,7 +32,7 @@ import trilateral3.geom.Transformer;
 import trilateral3.matrix.Vertex;
 import trilateral3.Trilateral;
 import trilateral3.structure.RangeEntity;
-
+import hyperKitGLsamples.imageEncode.Flower;
 // To trace on screen
 import hyperKitGL.DivertTrace;
 function main(){
@@ -96,7 +96,7 @@ class Main extends PlyMix {
     inline 
     function loadFlower(){
         // built in load images
-        imageLoader.loadEncoded( [ Flower.png ],[ 'Flower' ] );
+        imageLoader.loadEncoded( [ Flower.png_ ],[ 'Flower' ] );
     }
     inline 
     function setupImage(){
