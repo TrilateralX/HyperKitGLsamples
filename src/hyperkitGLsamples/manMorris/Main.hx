@@ -36,6 +36,8 @@ import hyperKitGLsamples.imageEncode.Flower;
 import trilateral3base.TrilateralBase;
 import trilateral3.structure.RegularShape;
 import trilateral3.shape.Regular;
+import trilateral3.reShape.DepthArray;
+import trilateral3.reShape.RangeDepth;
 // morrisMen
 import morrisMen.MorrisNode;
 import morrisMen.NineMorrisBoard;
@@ -48,12 +50,14 @@ function main(){
 
 class Main extends TrilateralBase {
     var regular: Regular;
+    var rangeDepth: RangeDepth;
+    var itemCounter:                Int;
     public
     function new( width: Int, height: Int, flower: String ){
         super( width, height, flower );
     }
     function firstDraw(){
-        trace('** draw/construct 9 men morris  **');
+        trace( '** draw/construct 9 men morris  **' );
         regular = penColor;
         var board = new NineMorrisBoard( 100., 100., 300. );
         board.generate();
@@ -61,6 +65,7 @@ class Main extends TrilateralBase {
         var nodes = board.morrisNodes;
         var connections = board.connections;
         var starter = penColor.range.start();
+        rangeDepth = new RangeDepth( penColor, 24 );
         var col = [ 0xffff0000, 0xffff0000, 0xffff0000
                   , 0xff00ff00, 0xff00ff00, 0xff00ff00
                   , 0xfffff000, 0xfffff000, 0xfffff000
@@ -70,8 +75,41 @@ class Main extends TrilateralBase {
                   , 0xFF00ff00, 0xff00ff00, 0xff00ff00 ];
         for( i in 0...nodes.length ){
             n = nodes[i];
+            var r = Std.random( 3 );
+            var piece: Piece_ = r;
+            var p = new Piece( r );
+            n.contain = p;
+        }
+        for( i in 0...nodes.length ){
+            n = nodes[i];
+            var pos1 = penColor.pos;
             var p3 = n.pos3D;
-            var regularShape: RegularShape = { x: p3.x, y: p3.y, radius: 8, color: col[ i ] };
+            var regularShape: RegularShape = { x: p3.x, y: p3.y, radius: 12, color: col[ i ] };
+            switch( n.contain ){
+                case NONE: 'NONE';
+                    regularShape.color = 0x00FFFFFF;
+                    regularShape.radius = 30;
+                case PLAY0: "PLAY0";
+                    regularShape.color = 0xFFFF0000;
+                    regularShape.radius = 30;
+                case PLAY1: "PLAY1";
+                    regularShape.color = 0xFF0000FF;
+                    regularShape.radius = 30;
+                case _: 
+                // 
+            }
+            if( n.contain != NONE ){
+                regular.circle( regularShape );
+                var circleRange: IteratorRange = penColor.range.difEnd();
+                rangeDepth.addShape( new RangeShaper( penColor, circleRange ) );
+            }
+        }
+        for( i in 0...nodes.length ){
+            n = nodes[i];
+            var pos1 = penColor.pos;
+            var p3 = n.pos3D;
+            var regularShape: RegularShape = { x: p3.x, y: p3.y, radius: 12, color: col[ i ] };
+            regularShape.color = 0xFFFFFFFF;
             regular.circle( regularShape );
         }
         var c: MorrisConnection;
@@ -83,7 +121,71 @@ class Main extends TrilateralBase {
         }
         draw_Shape[ draw_Shape.length ] = { textured: false
                                           , range:    penColor.range.end()
-                                          };
+                                          };   
+                                                                       
+        mainSheet.mouseDownSetup();
+        mainSheet.mouseDownXY = mouseDownXY;
+        mainSheet.mouseUpXY   = mouseUpXY;
+        mainSheet.mouseMoveXY = mouseMoveXY;
+    }
+    public var historyCount         = new Array<Int>();
+    var tempX: Float = 0;
+    var tempY: Float = 0;
+    var wasHit: Bool = true;
+    var movePiece = false;
+    var t = 0.;
+    var step = 0.12;  
+    public function mouseDownXY( xy: XY ){
+        if( movePiece ) return;
+        movePiece = true;
+        step = 0.06;
+        // #if trilateral_hitDebug 
+          //    var dist = quadDepth.distHit( mxy.x, mxy.y );
+            //  trace( dist ); #end 
+        hitTile( xy );
+    }
+    
+    public
+    function mouseUpXY( xy: XY ){
+        mainSheet.mouseDragStop();
+    }
+    
+    public function mouseMoveXY( xy: XY ){
+        if( movePiece ) return;
+        if( wasHit ) {
+            var px = xy.x - tempX;
+            var py = xy.y - tempY;
+            rangeDepth.setXY( itemCounter, px, py );
+        }
+    }
+    inline
+    function hitTile( mxy: XY ){
+        trace( 'hitTile ');
+        var results = rangeDepth.fullHit( mxy.x, mxy.y );
+        trace( results );
+        wasHit = results[0] != null;
+        if( wasHit ) {
+            mainSheet.mouseDownDisable();
+            var countNo = results[ 0 ]; // since results are in depth order.    
+            moveTile( countNo, true, mxy );
+            mainSheet.mouseMoveSetup();
+        } else {
+            movePiece = true;
+        }
+    }
+    
+    inline
+    function moveTile( countNo: Int, allowHistory: Bool, ?mxy: XY ){
+        itemCounter = countNo;
+        var xy = rangeDepth.getXY( countNo );
+        if( mxy != null ) storeHitOffset( xy, mxy );
+        //rangeDepth.toTopCount( countNo );
+        movePiece   = false;
+    }
+    inline
+    function storeHitOffset( xy: XY, mxy: XY ){
+        tempX = ( mxy.x - xy.x );
+        tempY = ( mxy.y - xy.y );
     }
     function renderAnimate(){
         //trace('-- render/animate everything --');

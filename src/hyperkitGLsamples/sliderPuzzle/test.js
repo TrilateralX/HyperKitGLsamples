@@ -5976,6 +5976,8 @@ var trilateral3_drawing_Pen = function(paintType_) {
 	this.useTexture = false;
 	this.z2D = 0.;
 	this.paintType = paintType_;
+	haxe_Log.trace("init pen ",{ fileName : "trilateral3/drawing/Pen.hx", lineNumber : 41, className : "trilateral3.drawing.Pen", methodName : "new"});
+	this.range = new trilateral3_shape_PenRangeFactory(this);
 };
 trilateral3_drawing_Pen.__name__ = true;
 var trilateral3_geom_FlatArrayTriangles = {};
@@ -6001,7 +6003,7 @@ trilateral3_geom_FlatArrayTriangles.transform = function(this1,m) {
 };
 trilateral3_geom_FlatArrayTriangles.transformRange = function(this1,m,startEnd) {
 	var start = startEnd.start;
-	var end = startEnd.end;
+	var end = startEnd.max;
 	this1[0] = start;
 	var tmp = end > this1.length - 1 - 1;
 	var _g = start;
@@ -6036,7 +6038,7 @@ trilateral3_geom_FlatArrayTrianglesUV.transform = function(this1,m) {
 };
 trilateral3_geom_FlatArrayTrianglesUV.transformRange = function(this1,m,startEnd) {
 	var start = startEnd.start;
-	var end = startEnd.end;
+	var end = startEnd.max;
 	this1[0] = start;
 	var tmp = end > this1.length - 1 - 1;
 	var _g = start;
@@ -7406,11 +7408,12 @@ var trilateral3_shape_IntIterStart = function(min_,max_) {
 	this.max = max_;
 };
 trilateral3_shape_IntIterStart.__name__ = true;
-var trilateral3_structure_StartEnd = function(start,end) {
-	this.start = start;
-	this.end = end;
+var trilateral3_shape_PenRangeFactory = function(pen) {
+	this.pen = pen;
+	this.posMin = pen.paintType.get_pos() | 0;
+	this.lastPos = this.posMin;
 };
-trilateral3_structure_StartEnd.__name__ = true;
+trilateral3_shape_PenRangeFactory.__name__ = true;
 var trilateral3_structure_TriInt = function(a,b,c) {
 	this.a = a;
 	this.b = b;

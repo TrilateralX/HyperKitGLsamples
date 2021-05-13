@@ -15,6 +15,13 @@ Std.__name__ = true;
 Std.string = function(s) {
 	return js_Boot.__string_rec(s,"");
 };
+Std.random = function(x) {
+	if(x <= 0) {
+		return 0;
+	} else {
+		return Math.floor(Math.random() * x);
+	}
+};
 var fracs_DifferencePreference = $hxEnums["fracs.DifferencePreference"] = { __ename__:"fracs.DifferencePreference",__constructs__:null
 	,CLOCKWISE: {_hx_name:"CLOCKWISE",_hx_index:0,__enum__:"fracs.DifferencePreference",toString:$estr}
 	,ANTICLOCKWISE: {_hx_name:"ANTICLOCKWISE",_hx_index:1,__enum__:"fracs.DifferencePreference",toString:$estr}
@@ -3994,7 +4001,41 @@ hyperKitGL_Sheet.prototype = {
 		this.gl = this.canvasGL.getContext("webgl",{ premultipliedAlpha : false});
 		this.cx = this.canvas2D.getContext("2d");
 	}
+	,mouseDown: function(e) {
+		if(this.mouseDownXY != null) {
+			var tmp = this.mouseDownXY;
+			var p = e;
+			e.stopPropagation();
+			e.preventDefault();
+			tmp(new hyperKitGL_XY((p.pageX - this.canvasGL.offsetLeft) * this.pixelRatio,(p.pageY - this.canvasGL.offsetTop) * this.pixelRatio));
+		}
+	}
+	,mouseMove: function(e) {
+		if(this.mouseMoveXY != null) {
+			var tmp = this.mouseMoveXY;
+			var p = e;
+			e.stopPropagation();
+			e.preventDefault();
+			tmp(new hyperKitGL_XY((p.pageX - this.canvasGL.offsetLeft) * this.pixelRatio,(p.pageY - this.canvasGL.offsetTop) * this.pixelRatio));
+		}
+	}
+	,mouseUp: function(e) {
+		if(this.mouseUpXY != null) {
+			var tmp = this.mouseUpXY;
+			var p = e;
+			e.stopPropagation();
+			e.preventDefault();
+			tmp(new hyperKitGL_XY((p.pageX - this.canvasGL.offsetLeft) * this.pixelRatio,(p.pageY - this.canvasGL.offsetTop) * this.pixelRatio));
+		}
+	}
 };
+var hyperKitGL_XY = function(x,y) {
+	this.y = 0.;
+	this.x = 0.;
+	this.x = x;
+	this.y = y;
+};
+hyperKitGL_XY.__name__ = true;
 var hyperKitGL_io_ArrayColorTriangles = {};
 hyperKitGL_io_ArrayColorTriangles.get_ax = function(this1) {
 	return this1[(this1[0] | 0) * 21 + 1];
@@ -4554,13 +4595,18 @@ trilateral3base_TrilateralBase.prototype = $extend(hyperKitGL_PlyMix.prototype,{
 	}
 });
 var hyperKitGLsamples_manMorris_Main = function(width,height,flower) {
+	this.step = 0.12;
+	this.movePiece = false;
+	this.wasHit = true;
+	this.tempY = 0;
+	this.tempX = 0;
 	trilateral3base_TrilateralBase.call(this,width,height,flower);
 };
 hyperKitGLsamples_manMorris_Main.__name__ = true;
 hyperKitGLsamples_manMorris_Main.__super__ = trilateral3base_TrilateralBase;
 hyperKitGLsamples_manMorris_Main.prototype = $extend(trilateral3base_TrilateralBase.prototype,{
 	firstDraw: function() {
-		haxe_Log.trace("** draw/construct 9 men morris  **",{ fileName : "../../../src/hyperKitGLsamples/manMorris/Main.hx", lineNumber : 56, className : "hyperKitGLsamples.manMorris.Main", methodName : "firstDraw"});
+		haxe_Log.trace("** draw/construct 9 men morris  **",{ fileName : "../../../src/hyperKitGLsamples/manMorris/Main.hx", lineNumber : 60, className : "hyperKitGLsamples.manMorris.Main", methodName : "firstDraw"});
 		this.regular = this.penColor;
 		var board = new morrisMen_NineMorrisBoard(100.,100.,300.);
 		board.generate();
@@ -4570,14 +4616,107 @@ hyperKitGLsamples_manMorris_Main.prototype = $extend(trilateral3base_TrilateralB
 		var _this = this.penColor.range;
 		_this.posMin = _this.pen.paintType.get_pos() | 0;
 		var starter = _this.posMin;
+		this.rangeDepth = new trilateral3_reShape_RangeDepth(this.penColor,24);
 		var col = [-65536,-65536,-65536,-16711936,-16711936,-16711936,-4096,-4096,-4096,-3856,-3856,-3856,-3856,-3856,-3856,-16715521,-16715521,-16715521,-16776961,-16776961,-16776961,-16711936,-16711936,-16711936];
 		var _g = 0;
 		var _g1 = nodes.length;
 		while(_g < _g1) {
 			var i = _g++;
 			n = nodes[i];
+			var r = Std.random(3);
+			var piece = r;
+			var p = morrisMen_Piece._new(r);
+			n.contain = p;
+		}
+		var _g = 0;
+		var _g1 = nodes.length;
+		while(_g < _g1) {
+			var i = _g++;
+			n = nodes[i];
+			var pos1 = this.penColor.paintType.get_pos();
 			var p3 = n.pos3D;
-			var regularShape = new trilateral3_structure_RegularShape(p3.x,p3.y,8,col[i]);
+			var regularShape = new trilateral3_structure_RegularShape(p3.x,p3.y,12,col[i]);
+			switch(n.contain) {
+			case 0:
+				regularShape.color = 16777215;
+				regularShape.radius = 30;
+				break;
+			case 1:
+				regularShape.color = -65536;
+				regularShape.radius = 30;
+				break;
+			case 2:
+				regularShape.color = -16776961;
+				regularShape.radius = 30;
+				break;
+			default:
+			}
+			if(n.contain != 0) {
+				var this1 = this.regular;
+				var start = this1.range.pen.paintType.get_pos() | 0;
+				var paintType = this1.paintType;
+				var ax = regularShape.x;
+				var ay = regularShape.y;
+				var radius = regularShape.radius;
+				var sides = 36;
+				if(sides == null) {
+					sides = 36;
+				}
+				var pi = Math.PI;
+				var theta = pi / 2;
+				var step = pi * 2 / sides;
+				var bx;
+				var by;
+				var cx;
+				var cy;
+				var _g2 = 0;
+				var _g3 = sides;
+				while(_g2 < _g3) {
+					var i1 = _g2++;
+					bx = ax + radius * Math.sin(theta);
+					by = ay + radius * Math.cos(theta);
+					theta += step;
+					cx = ax + radius * Math.sin(theta);
+					cy = ay + radius * Math.cos(theta);
+					paintType.triangle(ax,ay,0,bx,by,0,cx,cy,0);
+					var m = trilateral3_Trilateral.transformMatrix;
+					if(m != null) {
+						paintType.transform(m);
+					}
+					paintType.next();
+				}
+				var len = sides;
+				var col1 = regularShape.color;
+				this1.paintType.set_pos(start);
+				var color = col1;
+				if(color == -1) {
+					color = this1.currentColor;
+				}
+				this1.paintType.colorTriangles(color,len);
+				var _this = this1.range;
+				var ii_min = _this.posMin;
+				var ii_max = _this.pen.paintType.get_pos() | 0;
+				var this2 = new trilateral3_shape_IntIterStart(ii_min,ii_max);
+				var _this1 = this.penColor.range;
+				var lastPosNext = _this1.pen.paintType.get_pos() | 0;
+				var ii_min1 = _this1.lastPos;
+				var ii_max1 = lastPosNext;
+				var this3 = new trilateral3_shape_IntIterStart(ii_min1,ii_max1);
+				var out = this3;
+				_this1.lastPos = lastPosNext;
+				var circleRange = out;
+				this.rangeDepth.addShape(new trilateral3_reShape_RangeShaper(this.penColor,circleRange));
+			}
+		}
+		var _g = 0;
+		var _g1 = nodes.length;
+		while(_g < _g1) {
+			var i = _g++;
+			n = nodes[i];
+			var pos1 = this.penColor.paintType.get_pos();
+			var p3 = n.pos3D;
+			var regularShape = new trilateral3_structure_RegularShape(p3.x,p3.y,12,col[i]);
+			regularShape.color = -1;
 			var this1 = this.regular;
 			var start = this1.range.pen.paintType.get_pos() | 0;
 			var paintType = this1.paintType;
@@ -4673,13 +4812,64 @@ hyperKitGLsamples_manMorris_Main.prototype = $extend(trilateral3base_TrilateralB
 		var ii_max = _this.pen.paintType.get_pos() | 0;
 		var this1 = new trilateral3_shape_IntIterStart(ii_min,ii_max);
 		tmp[tmp1] = new trilateral3_structure_RangeEntity(false,this1,-1);
+		var _this = this.mainSheet;
+		var body = window.document.body;
+		body.onmousedown = $bind(_this,_this.mouseDown);
+		body.onmouseup = $bind(_this,_this.mouseUp);
+		this.mainSheet.mouseDownXY = $bind(this,this.mouseDownXY);
+		this.mainSheet.mouseUpXY = $bind(this,this.mouseUpXY);
+		this.mainSheet.mouseMoveXY = $bind(this,this.mouseMoveXY);
+	}
+	,mouseDownXY: function(xy) {
+		if(this.movePiece) {
+			return;
+		}
+		this.movePiece = true;
+		this.step = 0.06;
+		haxe_Log.trace("hitTile ",{ fileName : "../../../src/hyperKitGLsamples/manMorris/Main.hx", lineNumber : 163, className : "hyperKitGLsamples.manMorris.Main", methodName : "hitTile"});
+		var results = this.rangeDepth.fullHit(xy.x,xy.y);
+		haxe_Log.trace(results,{ fileName : "../../../src/hyperKitGLsamples/manMorris/Main.hx", lineNumber : 165, className : "hyperKitGLsamples.manMorris.Main", methodName : "hitTile"});
+		this.wasHit = results[0] != null;
+		if(this.wasHit) {
+			var _this = this.mainSheet;
+			window.document.body.onmousedown = null;
+			var countNo = results[0];
+			this.itemCounter = countNo;
+			var xy1 = this.rangeDepth.getXY(countNo);
+			if(xy != null) {
+				this.tempX = xy.x - xy1.x;
+				this.tempY = xy.y - xy1.y;
+			}
+			this.movePiece = false;
+			var _this = this.mainSheet;
+			var body = window.document.body;
+			body.onmousemove = $bind(_this,_this.mouseMove);
+		} else {
+			this.movePiece = true;
+		}
+	}
+	,mouseUpXY: function(xy) {
+		var _this = this.mainSheet;
+		var body = window.document.body;
+		body.onmousemove = null;
+		body.onmousedown = $bind(_this,_this.mouseDown);
+	}
+	,mouseMoveXY: function(xy) {
+		if(this.movePiece) {
+			return;
+		}
+		if(this.wasHit) {
+			var px = xy.x - this.tempX;
+			var py = xy.y - this.tempY;
+			this.rangeDepth.setXY(this.itemCounter,px,py);
+		}
 	}
 	,renderAnimate: function() {
 	}
 });
 function hyperKitGLsamples_manMorris_Main_main() {
 	new hyperKitGLsamples_manMorris_Main(1000,1000,hyperKitGLsamples_imageEncode_Flower.png_);
-	haxe_Log.trace("manMorris example",{ fileName : "../../../src/hyperKitGLsamples/manMorris/Main.hx", lineNumber : 46, className : "hyperKitGLsamples.manMorris._Main.Main_Fields_", methodName : "main"});
+	haxe_Log.trace("manMorris example",{ fileName : "../../../src/hyperKitGLsamples/manMorris/Main.hx", lineNumber : 48, className : "hyperKitGLsamples.manMorris._Main.Main_Fields_", methodName : "main"});
 }
 var js_Boot = function() { };
 js_Boot.__name__ = true;
@@ -4774,6 +4964,11 @@ js_Boot.__string_rec = function(o,s) {
 	default:
 		return String(o);
 	}
+};
+var morrisMen_Piece = {};
+morrisMen_Piece._new = function(p) {
+	var this1 = p;
+	return this1;
 };
 var morrisMen_FriendMorris = function(morrisNode,rose) {
 	this.morrisNode = morrisNode;
@@ -12499,6 +12694,185 @@ trilateral3_nodule_PenArrTexture.prototype = $extend(trilateral3_nodule_PenNodul
 		return (this.colorTriangles.length - 1) * 3 | 0;
 	}
 });
+var trilateral3_reShape_RangeDepth = function(pen_,rangeLen_) {
+	this.count = 0;
+	this.depthPieces = [];
+	this.orderCount = [];
+	this.pen = pen_;
+	this.rangeLen = rangeLen_;
+	var curPos = this.pen.paintType.get_pos();
+	this.startRange = curPos;
+};
+trilateral3_reShape_RangeDepth.__name__ = true;
+trilateral3_reShape_RangeDepth.prototype = {
+	addShape: function(rangeShaper) {
+		this.depthPieces[this.depthPieces.length] = rangeShaper;
+		this.orderCount[this.orderCount.length] = this.count;
+		this.count++;
+		var curPos = this.pen.paintType.get_pos();
+		var ii_min = this.startRange;
+		var ii_max = curPos;
+		var this1 = new trilateral3_shape_IntIterStart(ii_min,ii_max);
+		this.range = this1;
+	}
+	,getShape: function(countNo) {
+		return this.depthPieces[this.orderCount.indexOf(countNo)];
+	}
+	,setXY: function(id,x,y) {
+		var _this = this.getShape(id);
+		var xy = new hyperKitGL_XY(x,y);
+		_this.lastXY = new hyperKitGL_XY(_this.px,_this.py);
+		var dx = _this.px - xy.x;
+		var dy = _this.py - xy.y;
+		var p = _this.pen.paintType.get_pos();
+		var this1 = _this.range;
+		var _g_min = this1.start;
+		var _g_max = this1.max;
+		while(_g_min < _g_max) {
+			var i = _g_min++;
+			_this.pen.paintType.set_pos(i);
+			var _this1 = _this.tri;
+			var _this2 = _this.tri;
+			var val = _this2.curr.get_x() * _this2.wid + _this2.wid - dx;
+			var val_ = (val - _this1.wid) / _this1.wid;
+			_this1.curr.set_x(val_);
+			var _this3 = _this.tri;
+			var _this4 = _this.tri;
+			var val1 = -(_this4.curr.get_y() * _this4.hi - _this4.hi) - dy;
+			var val_1 = -(val1 - _this3.hi) / _this3.hi;
+			_this3.curr.set_y(val_1);
+		}
+		_this.pen.paintType.set_pos(p);
+		_this.px = xy.x;
+		_this.py = xy.y;
+	}
+	,getXY: function(id) {
+		var _this = this.getShape(id);
+		return new hyperKitGL_XY(_this.px,_this.py);
+	}
+	,fullHit: function(x,y) {
+		var hitArray = [];
+		var j;
+		var l = this.orderCount.length;
+		var l1 = l - 1;
+		var _g = 0;
+		var _g1 = l;
+		while(_g < _g1) {
+			var i = _g++;
+			j = l1 - i;
+			if(this.depthPieces[j].wasHit(x,y)) {
+				hitArray[hitArray.length] = this.orderCount[j];
+			}
+		}
+		return hitArray;
+	}
+};
+var trilateral3_reShape_RangeShaper = function(pen,iteratorRange,wid,hi) {
+	if(hi == null) {
+		hi = 1000;
+	}
+	if(wid == null) {
+		wid = 1000;
+	}
+	this.pv = 10000000000.;
+	this.pu = 10000000000.;
+	this.ph = 0.;
+	this.pw = 0.;
+	this.py = 10000000000.;
+	this.px = 10000000000.;
+	this.pen = pen;
+	this.range = iteratorRange;
+	this.start = iteratorRange.start;
+	this.tri = new trilateral3_reShape_TrianglesShaper(pen,wid,hi);
+	var this1 = this.range;
+	var _g_min = this1.start;
+	var _g_max = this1.max;
+	while(_g_min < _g_max) {
+		var i = _g_min++;
+		pen.paintType.set_pos(i);
+		var _this = this.tri;
+		var tx = _this.curr.get_x() * _this.wid + _this.wid;
+		var _this1 = this.tri;
+		var ty = -(_this1.curr.get_y() * _this1.hi - _this1.hi);
+		if(tx < this.px) {
+			this.px = tx;
+		} else {
+			var tw = tx - this.px;
+			if(tw > this.pw) {
+				this.pw = tw;
+			}
+		}
+		if(ty < this.py) {
+			this.py = ty;
+		} else {
+			var th = ty - this.py;
+			if(th > this.ph) {
+				this.ph = th;
+			}
+		}
+		if(this.tri.currUV != null) {
+			if(-this.tri.currUV.get_u() * 1000 < this.pu) {
+				this.pu = -this.tri.currUV.get_u() * 1000;
+			}
+			if(-this.tri.currUV.get_v() * 1000 < this.pv) {
+				this.pv = -this.tri.currUV.get_v() * 1000;
+			}
+		}
+	}
+	var v = this.range.max;
+	pen.paintType.set_pos(v);
+};
+trilateral3_reShape_RangeShaper.__name__ = true;
+trilateral3_reShape_RangeShaper.prototype = {
+	fullHit: function(x,y) {
+		var hitArray = [];
+		var count = 0;
+		var hit = false;
+		var p = this.pen.paintType.get_pos();
+		var this1 = this.range;
+		var _g_min = this1.start;
+		var _g_max = this1.max;
+		while(_g_min < _g_max) {
+			var t = _g_min++;
+			this.pen.paintType.set_pos(t);
+			hit = this.tri.fullHit(x,y);
+			if(hit) {
+				hitArray[hitArray.length] = count;
+			}
+			++count;
+		}
+		this.pen.paintType.set_pos(p);
+		return hitArray;
+	}
+	,wasHit: function(x,y) {
+		var hits = this.fullHit(x,y);
+		return hits.length != 0;
+	}
+};
+var trilateral3_reShape_TrianglesShaper = function(pen,wid,hi) {
+	if(hi == null) {
+		hi = 1000;
+	}
+	if(wid == null) {
+		wid = 1000;
+	}
+	this.pen = pen;
+	this.wid = wid;
+	this.hi = hi;
+	this.curr = pen.paintType.triangleCurrent;
+	if(pen.paintType.triangleCurrentUV != null) {
+		this.currUV = pen.paintType.triangleCurrentUV;
+	}
+	this.curr3color = pen.paintType.color3current;
+};
+trilateral3_reShape_TrianglesShaper.__name__ = true;
+trilateral3_reShape_TrianglesShaper.prototype = {
+	fullHit: function(x,y) {
+		x = (x - this.wid) / this.wid;
+		y = -(y - this.hi) / this.hi;
+		return this.curr.fullHit(x,y);
+	}
+};
 var trilateral3_shape_IntIterStart = function(min_,max_) {
 	this.start = min_;
 	this.max = max_;
